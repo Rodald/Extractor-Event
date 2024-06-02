@@ -1,0 +1,9 @@
+name: Event
+version: '${project.version}'
+main: net.rodald.event.Event
+api-version: '1.20'
+
+commands:
+  extractor:
+    description: Places the extractor
+    usage: /<command>
