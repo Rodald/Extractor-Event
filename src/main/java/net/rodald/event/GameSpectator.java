@@ -22,4 +22,8 @@ public class GameSpectator {
             player.removeMetadata("game_spectator", plugin);
         }
         }
+
+        public static boolean getSpectator(Player player) {
+            return player.hasMetadata("game_spectator");
+        }
 }
