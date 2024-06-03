@@ -36,6 +36,7 @@ public final class Event extends JavaPlugin {
 
         double radius = 2;
         Extractor checker = new Extractor(this, radius);
+        new GameSpectator(this);
         getServer().getPluginManager().registerEvents(new PointSystem(this), this);
     }
 
