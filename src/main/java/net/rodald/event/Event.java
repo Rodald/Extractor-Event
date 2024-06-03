@@ -8,21 +8,35 @@ import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Text;
 
 public final class Event extends JavaPlugin {
 
+
     @Override
     public void onEnable() {
         // Plugin startup logic
-        World world = Bukkit.getWorld("world");
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+
+        // Holen des bestehenden Objectives oder Erstellen eines neuen
+        Objective objective = scoreboard.getObjective("extractorPoints");
+        if (objective == null) {
+            objective = scoreboard.registerNewObjective("extractorPoints", "dummy", "Extractor Points");
+            objective.setDisplaySlot(org.bukkit.scoreboard.DisplaySlot.SIDEBAR);
+        }
+
+        // Füge Spielern das Scoreboard hinzu (optional)
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.setScoreboard(scoreboard);
+        }
+
         double radius = 2;
         Extractor checker = new Extractor(this, radius);
-
-        assert world != null;
-        world.getBlockAt(99, 85, -8).setType(Material.DIAMOND_BLOCK);
-
+        getServer().getPluginManager().registerEvents(new PointSystem(this), this);
     }
 
     @Override
