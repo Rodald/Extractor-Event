@@ -15,7 +15,6 @@ public class GameSpectator {
         player.setAllowFlight(mode);
         player.setInvisible(mode);
         player.setInvulnerable(mode);
-        String modeE = ("test" == "test") ? "yes" : "no";
 
         if (!player.hasMetadata("game_spectator")) {
             player.setMetadata("game_spectator", new FixedMetadataValue(plugin, true));
