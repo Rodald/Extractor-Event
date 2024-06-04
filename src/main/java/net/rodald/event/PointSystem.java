@@ -23,12 +23,11 @@ public class PointSystem implements Listener {
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         Player damager = (Player) event.getDamager();
+
         if (event.getEntity() instanceof Zombie) {
             Zombie target = (Zombie) event.getEntity();
 
             if (event.getDamager() instanceof Player) {
-
-
                 damager.sendMessage("You shoot something");
                 addPoints("extractorPoints", damager, 1);
                 damager.sendMessage("Your current Score is: ", Integer.toString(getPoints("extractorPoints", damager)));
@@ -56,5 +55,19 @@ public class PointSystem implements Listener {
     public int getPoints(String objectiveName, Player player) {
         Objective objective = scoreboard.getObjective(objectiveName);
         return objective.getScore(player.getName()).getScore();
+    }
+    public void setPoints(String objectiveName, Player player, int points) {
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        Objective objective = scoreboard.getObjective(objectiveName);
+
+        if (objective == null) {
+            Bukkit.getLogger().warning("Objective '" + objectiveName + "' does not exist in the scoreboard.");
+            return; // Beende die Methode, wenn das Objective nicht existiert
+        }
+
+        Score score = objective.getScore(player.getName());
+        score.setScore(points);
+
+        Bukkit.getLogger().info("Added " + points + " points to player '" + player.getName() + "' in objective '" + objectiveName + "'. New score: " + points);
     }
 }
