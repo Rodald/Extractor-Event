@@ -1,6 +1,7 @@
 package net.rodald.event;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
@@ -99,6 +100,28 @@ public class PointSystem implements Listener {
         Score score = objective.getScore(player.getName());
         score.setScore(0);
     }
+
+    public void resetAllPoints(String objectiveName) {
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        Objective objective = scoreboard.getObjective(objectiveName);
+
+        if (objective == null) {
+            Bukkit.getLogger().warning("Objective '" + objectiveName + "' does not exist in the scoreboard.");
+            return; // Beende die Methode, wenn das Objective nicht existiert
+        }
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            Score score = objective.getScore(player.getName());
+            score.setScore(0);
+        }
+
+        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+            Score score = objective.getScore(player.getName());
+            score.setScore(0);
+        }
+    }
+
+
 
 
 }
