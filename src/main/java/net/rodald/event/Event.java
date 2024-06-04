@@ -12,6 +12,8 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Method;
+
 public final class Event extends JavaPlugin {
 
 
@@ -44,34 +46,71 @@ public final class Event extends JavaPlugin {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
 
-                if (args.length > 0 && args[0].equalsIgnoreCase("place")) {
-                    // Hole die Welt, in der sich der Spieler befindet
-                    World world = player.getWorld();
-                    // Hole die Koordinaten des Spielers
-                    int x = player.getLocation().getBlockX();
-                    int y = player.getLocation().getBlockY();
-                    int z = player.getLocation().getBlockZ();
-                    // Setze den Block an den Spielerkoordinaten
-                    world.getBlockAt(x, y, z).setType(Material.DIAMOND_BLOCK);
-                    TextDisplay text_display = (TextDisplay) world.spawnEntity(player.getLocation().toCenterLocation(), EntityType.TEXT_DISPLAY);
-                    text_display.setGravity(false);
-                    text_display.setInvulnerable(true);
-                    text_display.addScoreboardTag("extractor");
-                    text_display.setText(ChatColor.GREEN + "Hold " +
-                        ChatColor.YELLOW + "[Sneak]" +
-                        ChatColor.GREEN + "\nto extract");
-                    text_display.setBillboard(Display.Billboard.CENTER);
-                    return true;
-                } else if (args.length > 0 && args[0].equalsIgnoreCase("setSpectator")) {
-                    GameSpectator.setSpectator(Bukkit.getPlayer(args[1]), Boolean.valueOf(args[2]));
-                    return true;
-                } else {
-                    player.sendMessage("Usage: /extractor place");
+                if (args.length == 0) {
+                    player.sendMessage("Usage: /extractor <place|setSpectator> [args]");
                     return false;
                 }
-            } else {
-                sender.sendMessage("This Command can only be executed by a Player.");
-                return false;
+
+                switch (args[0].toLowerCase()) {
+                    case "place":
+                        // Hole die Welt, in der sich der Spieler befindet
+                        World world = player.getWorld();
+                        // Hole die Koordinaten des Spielers
+                        int x = player.getLocation().getBlockX();
+                        int y = player.getLocation().getBlockY();
+                        int z = player.getLocation().getBlockZ();
+                        // Setze den Block an den Spielerkoordinaten
+                        world.getBlockAt(x, y, z).setType(Material.DIAMOND_BLOCK);
+                        TextDisplay text_display = (TextDisplay) world.spawnEntity(player.getLocation().toCenterLocation(), EntityType.TEXT_DISPLAY);
+                        text_display.setGravity(false);
+                        text_display.setInvulnerable(true);
+                        text_display.addScoreboardTag("extractor");
+                        text_display.setText(ChatColor.GREEN + "Hold " +
+                                ChatColor.YELLOW + "[Sneak]" +
+                                ChatColor.GREEN + "\nto extract");
+                        text_display.setBillboard(Display.Billboard.CENTER);
+                        return true;
+
+                    case "setspectator":
+                        if (args.length < 3) {
+                            player.sendMessage("Usage: /extractor setSpectator <player> <true|false>");
+                            return false;
+                        }
+                        Player targetPlayer = Bukkit.getPlayer(args[1]);
+                        if (targetPlayer == null) {
+                            player.sendMessage("Player not found.");
+                            return true;
+                        }
+                        boolean spectatorMode = Boolean.parseBoolean(args[2]);
+                        GameSpectator.setSpectator(targetPlayer, spectatorMode);
+                        return true;
+
+                    case "invoke":
+                        if (args.length < 1) {
+                            sender.sendMessage("Please specify a method name.");
+                            return false;
+                        }
+
+                        String methodName = args[0];
+                        try {
+                            // Get the method with no parameters
+                            Method method = this.getClass().getMethod(methodName);
+                            // Invoke the method on the plugin instance
+                            method.invoke(this);
+                            sender.sendMessage("Method " + methodName + " invoked successfully.");
+                        } catch (NoSuchMethodException e) {
+                            sender.sendMessage("Method " + methodName + " not found.");
+                        } catch (Exception e) {
+                            sender.sendMessage("An error occurred while invoking the method.");
+                            e.printStackTrace();
+                        }
+
+                        return true;
+
+                    default:
+                        player.sendMessage("Usage: /extractor <place|setSpectator> [args]");
+                        return false;
+                }
             }
         }
         return false;

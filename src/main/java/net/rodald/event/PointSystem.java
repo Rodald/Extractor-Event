@@ -49,8 +49,6 @@ public class PointSystem implements Listener {
         Score score = objective.getScore(player.getName());
         int newScore = score.getScore() + points;
         score.setScore(newScore);
-
-        Bukkit.getLogger().info("Added " + points + " points to player '" + player.getName() + "' in objective '" + objectiveName + "'. New score: " + newScore);
     }
 
     public int getPoints(String objectiveName, Player player) {
@@ -68,8 +66,6 @@ public class PointSystem implements Listener {
 
         Score score = objective.getScore(player.getName());
         score.setScore(points);
-
-        Bukkit.getLogger().info("Added " + points + " points to player '" + player.getName() + "' in objective '" + objectiveName + "'. New score: " + points);
     }
 
     public void removePoints(String objectiveName, Player player, int points) {
@@ -84,8 +80,6 @@ public class PointSystem implements Listener {
         Score score = objective.getScore(player.getName());
         int newScore = score.getScore() - points;
         score.setScore(newScore);
-
-        Bukkit.getLogger().info("Added " + points + " points to player '" + player.getName() + "' in objective '" + objectiveName + "'. New score: " + newScore);
     }
 
     public void resetPoints(String objectiveName, Player player) {
@@ -120,8 +114,4 @@ public class PointSystem implements Listener {
             score.setScore(0);
         }
     }
-
-
-
-
 }
