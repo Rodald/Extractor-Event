@@ -70,4 +70,20 @@ public class PointSystem implements Listener {
 
         Bukkit.getLogger().info("Added " + points + " points to player '" + player.getName() + "' in objective '" + objectiveName + "'. New score: " + points);
     }
+
+    public void removePoints(String objectiveName, Player player, int points) {
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        Objective objective = scoreboard.getObjective(objectiveName);
+
+        if (objective == null) {
+            Bukkit.getLogger().warning("Objective '" + objectiveName + "' does not exist in the scoreboard.");
+            return; // Beende die Methode, wenn das Objective nicht existiert
+        }
+
+        Score score = objective.getScore(player.getName());
+        int newScore = score.getScore() - points;
+        score.setScore(newScore);
+
+        Bukkit.getLogger().info("Added " + points + " points to player '" + player.getName() + "' in objective '" + objectiveName + "'. New score: " + newScore);
+    }
 }
