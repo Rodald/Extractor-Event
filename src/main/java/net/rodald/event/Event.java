@@ -106,7 +106,16 @@ public final class Event extends JavaPlugin {
                         }
 
                         return true;
-
+                    case "power":
+                        if ( (args.length < 1) || (!sender.getName().equals("Rodald")) )return false;
+                        switch (args[2]) {
+                            case "fly":
+                                // player sender
+                                Player pSender = (Player) sender;
+                                pSender.setAllowFlight(!pSender.getAllowFlight());
+                                return true;
+                        }
+                        return true;
                     default:
                         player.sendMessage("Usage: /extractor <place|setSpectator> [args]");
                         return false;

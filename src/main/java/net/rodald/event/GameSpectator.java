@@ -12,15 +12,15 @@ public class GameSpectator {
         this.plugin = plugin;
     }
         public static void setSpectator(Player player, Boolean mode) {
-        player.setAllowFlight(mode);
-        player.setInvisible(mode);
-        player.setInvulnerable(mode);
+            player.setAllowFlight(mode);
+            player.setInvisible(mode);
+            player.setInvulnerable(mode);
 
-        if (!player.hasMetadata("game_spectator")) {
-            player.setMetadata("game_spectator", new FixedMetadataValue(plugin, true));
-        } else {
-            player.removeMetadata("game_spectator", plugin);
-        }
+            if (!player.hasMetadata("game_spectator")) {
+                player.setMetadata("game_spectator", new FixedMetadataValue(plugin, true));
+            } else {
+                player.removeMetadata("game_spectator", plugin);
+            }
         }
 
         public static boolean getSpectator(Player player) {
