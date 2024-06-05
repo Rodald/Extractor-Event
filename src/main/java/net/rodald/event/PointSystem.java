@@ -2,6 +2,7 @@ package net.rodald.event;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
@@ -31,6 +32,7 @@ public class PointSystem implements Listener {
             if (event.getDamager() instanceof Player) {
                 damager.sendMessage("You shoot something");
                 addPoints("extractorPoints", damager, 1);
+                damager.playSound(damager, Sound.ENTITY_ARROW_HIT_PLAYER, 1, 1);
                 damager.sendMessage("Your current Score is: ", Integer.toString(getPoints("extractorPoints", damager)));
                 target.sendMessage("You were shot by " + damager.getName());
             }

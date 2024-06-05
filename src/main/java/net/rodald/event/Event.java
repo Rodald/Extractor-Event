@@ -91,7 +91,7 @@ public final class Event extends JavaPlugin {
                             return false;
                         }
 
-                        String methodName = args[0];
+                        String methodName = args[1];
                         try {
                             // Get the method with no parameters
                             Method method = this.getClass().getMethod(methodName);
