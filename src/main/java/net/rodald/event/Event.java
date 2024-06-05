@@ -1,5 +1,6 @@
 package net.rodald.event;
 
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -70,7 +71,6 @@ public final class Event extends JavaPlugin {
                                 ChatColor.GREEN + "\nto extract");
                         text_display.setBillboard(Display.Billboard.CENTER);
                         return true;
-
                     case "setspectator":
                         if (args.length < 3) {
                             player.sendMessage("Usage: /extractor setSpectator <player> <true|false>");
@@ -85,7 +85,7 @@ public final class Event extends JavaPlugin {
                         GameSpectator.setSpectator(targetPlayer, spectatorMode);
                         return true;
 
-                    case "invoke":
+                    /*case "invoke":
                         if (args.length < 1) {
                             sender.sendMessage("Please specify a method name.");
                             return false;
@@ -105,17 +105,31 @@ public final class Event extends JavaPlugin {
                             e.printStackTrace();
                         }
 
-                        return true;
+                        return true;*/
                     case "power":
-                        if ( (args.length < 1) || (!sender.getName().equals("Rodald")) )return false;
-                        switch (args[2]) {
+                        sender.sendMessage("Power");
+                        // if ( (args.length < 1) || (!sender.getName().equals("Rodald")) ) return false;
+                        Player pSender = (Player) sender;
+                        // sender.sendMessage(args[1]);
+                        switch (args[1].toLowerCase()) {
                             case "fly":
-                                // player sender
-                                Player pSender = (Player) sender;
+                                sender.sendMessage("fly");
                                 pSender.setAllowFlight(!pSender.getAllowFlight());
+                                return true;
+                            case "invisible":
+                                sender.sendMessage("invis");
+                                pSender.setInvisible(!pSender.isInvisible());
+                                return true;
+                            case "invulnerable":
+                                sender.sendMessage("invulnerable");
+                                pSender.setInvulnerable(!pSender.isInvulnerable());
+                                return true;
+                            case "health":
+                                pSender.setMaxHealth(Double.parseDouble(args[2]));
                                 return true;
                         }
                         return true;
+
                     default:
                         player.sendMessage("Usage: /extractor <place|setSpectator> [args]");
                         return false;
