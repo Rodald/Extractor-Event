@@ -112,6 +112,7 @@ public final class Event extends JavaPlugin {
                         Player pSender = (Player) sender;
                         Player target = Bukkit.getPlayer(args[args.length]);
                         sender.sendMessage("target: " + target);
+
                         // sender.sendMessage(args[1]);
                         switch (args[1].toLowerCase()) {
                             case "fly":
