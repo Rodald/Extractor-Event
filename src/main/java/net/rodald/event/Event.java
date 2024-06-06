@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 
 public final class Event extends JavaPlugin {
 
-    private PowerGUI powerGUI;
+    public static PowerGUI powerGUI;
 
 
     @Override
