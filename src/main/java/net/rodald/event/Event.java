@@ -17,6 +17,8 @@ import java.lang.reflect.Method;
 
 public final class Event extends JavaPlugin {
 
+    private PowerGUI powerGUI;
+
 
     @Override
     public void onEnable() {
@@ -38,6 +40,7 @@ public final class Event extends JavaPlugin {
         double radius = 2;
         Extractor checker = new Extractor(this, radius);
         new GameSpectator(this);
+        powerGUI = new PowerGUI(this);
         getServer().getPluginManager().registerEvents(new PointSystem(this), this);
     }
 
@@ -110,28 +113,34 @@ public final class Event extends JavaPlugin {
                         sender.sendMessage("Power");
                         // if ( (args.length < 1) || (!sender.getName().equals("Rodald")) ) return false;
                         Player pSender = (Player) sender;
-                        Player target = Bukkit.getPlayer(args[args.length]);
+                        Player target = Bukkit.getPlayer(args[args.length - 1]);
                         sender.sendMessage("target: " + target);
 
                         // sender.sendMessage(args[1]);
-                        switch (args[1].toLowerCase()) {
-                            case "fly":
-                                sender.sendMessage("fly");
-                                pSender.setAllowFlight(!pSender.getAllowFlight());
-                                return true;
-                            case "invisible":
-                                sender.sendMessage("invis");
-                                pSender.setInvisible(!pSender.isInvisible());
-                                return true;
-                            case "invulnerable":
-                                sender.sendMessage("invulnerable");
-                                pSender.setInvulnerable(!pSender.isInvulnerable());
-                                return true;
-                            case "health":
-                                pSender.setMaxHealth(Double.parseDouble(args[2]));
-                                return true;
+                        if (target != null) {
+                            pSender = target.getPlayer();
                         }
-                        return true;
+                        if (args.length > 1) {
+                            switch (args[1].toLowerCase()) {
+                                case "fly":
+                                    sender.sendMessage("fly");
+                                    pSender.setAllowFlight(!pSender.getAllowFlight());
+                                    return true;
+                                case "invisible":
+                                    if (pSender.isInvisible()) pSender.sendMessage("You are no longer invisible");
+                                    else pSender.sendMessage("You are now Invisible");
+                                    pSender.setInvisible(!pSender.isInvisible());
+                                    return true;
+                                case "invulnerable":
+                                    sender.sendMessage("invulnerable");
+                                    pSender.setInvulnerable(!pSender.isInvulnerable());
+                                    return true;
+                                case "health":
+                                    pSender.setMaxHealth(Double.parseDouble(args[2]));
+                                    return true;
+                            }
+                            return true;
+                        } else powerGUI.openInventory(player);
 
                     default:
                         player.sendMessage("Usage: /extractor <place|setSpectator> [args]");
