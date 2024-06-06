@@ -3,7 +3,9 @@ package net.rodald.event;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,17 +26,17 @@ public class PointSystem implements Listener {
     }
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        Player damager = (Player) event.getDamager();
+        if (event.getEntity() instanceof Zombie && event.getDamager() instanceof Projectile) {
+            Projectile projectile = (Projectile) event.getDamager();
 
-        if (event.getEntity() instanceof Zombie) {
-            Zombie target = (Zombie) event.getEntity();
+            if (projectile instanceof Arrow && projectile.getShooter() instanceof Player) {
+                Player damager = (Player) projectile.getShooter();
+                Zombie target = (Zombie) event.getEntity();
 
-            if (event.getDamager() instanceof Player) {
-                damager.sendMessage("You shoot something");
+                damager.sendMessage("You shot a zombie");
                 addPoints("extractorPoints", damager, 1);
                 damager.playSound(damager, Sound.ENTITY_ARROW_HIT_PLAYER, 1, 1);
-                damager.sendMessage("Your current Score is: ", Integer.toString(getPoints("extractorPoints", damager)));
-                target.sendMessage("You were shot by " + damager.getName());
+                damager.sendMessage("Your current Score is: " + getPoints("extractorPoints", damager));
             }
         }
     }
