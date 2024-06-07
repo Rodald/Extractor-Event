@@ -19,11 +19,13 @@ public final class Event extends JavaPlugin {
 
     public static PowerGUI powerGUI;
 
-
     @Override
     public void onEnable() {
         // Plugin startup logic
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+
+        PlayerHeadsGUI playerHeadsGUI = PlayerHeadsGUI.getInstance();
+        getServer().getPluginManager().registerEvents(playerHeadsGUI, this);
 
         // Holen des bestehenden Objectives oder Erstellen eines neuen
         Objective objective = scoreboard.getObjective("extractorPoints");
@@ -42,7 +44,10 @@ public final class Event extends JavaPlugin {
         new GameSpectator(this);
         powerGUI = new PowerGUI(this);
         getServer().getPluginManager().registerEvents(new PointSystem(this), this);
+        getServer().getPluginManager().registerEvents(new PowerGUI(this), this);
     }
+
+
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
