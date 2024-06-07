@@ -145,7 +145,10 @@ public final class Event extends JavaPlugin {
                                     return true;
                             }
                             return true;
-                        } else powerGUI.openInventory(player);
+                        } else {
+                            PowerGUI.page = 0;
+                            powerGUI.openInventory(player);
+                        }
 
                     default:
                         player.sendMessage("Usage: /extractor <place|setSpectator> [args]");

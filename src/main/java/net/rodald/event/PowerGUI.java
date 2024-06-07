@@ -71,6 +71,8 @@ public class PowerGUI implements Listener {
                     invulnerable(player, event);
                 } else if (clickedItem.getType() == Material.COMMAND_BLOCK) {
                     op(player, event);
+                } else if (clickedItem.getType() == Material.REDSTONE_BLOCK) {
+                    openAnvilGui(player);
                 } else if (clickedItem.getItemMeta().getDisplayName().equals("Next Page")) {
                     page++;
                     loadPage(page, event.getInventory(), player);
@@ -159,8 +161,8 @@ public class PowerGUI implements Listener {
         paper.setItemMeta(meta);
 
         anvil.setItem(0, paper); // Setzt das Papier in den ersten Slot des Ambosses
-
-        player.openInventory(anvil); // Öffnet das Anvil GUI für den Spieler
+        player.openInventory(anvil);
+        player.sendMessage("opend anvil!");
     }
 
     public static ItemStack setName(ItemStack item, String name) {
