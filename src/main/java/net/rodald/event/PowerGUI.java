@@ -19,6 +19,9 @@ public class PowerGUI implements Listener {
 
     private final JavaPlugin plugin;
 
+    public static int page;
+    private static final int MAXPAGES = 1;
+
     public PowerGUI(JavaPlugin plugin) {
         this.plugin = plugin;
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -27,40 +30,17 @@ public class PowerGUI implements Listener {
     public void openInventory(Player player) {
         Inventory inventory = Bukkit.createInventory(null, 54, "Power GUI");
 
-        // Füge Items zum Inventar hinzu
-        ItemStack fly = new ItemStack(Material.ELYTRA);
-        setName(fly, "Fly: " + player.getAllowFlight());
-
-        ItemStack invisible = new ItemStack(Material.GLASS);
-        setName(invisible, "Invisible: " + player.isInvisible());
-
-        ItemStack invulnerable = new ItemStack(Material.END_CRYSTAL);
-        setName(invulnerable, "Invulnerable: " + player.isInvulnerable());
-
-        ItemStack op = new ItemStack(Material.COMMAND_BLOCK);
-        setName(op, "Operator: " + player.isOp());
-
         ItemStack backgroundItem = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
         setName(backgroundItem, " ");
-
-        ArrayList<ItemStack> powerItems = new ArrayList<>();
-        powerItems.add(fly);
-        powerItems.add(invisible);
-        powerItems.add(invulnerable);
-        powerItems.add(op);
 
         // Hintergrund-Items
         for (int i = 0; i < inventory.getSize() - 9; i++) {
             inventory.setItem(i, backgroundItem);
         }
 
+        loadPage(0, inventory, player);
+
         // Platziere die Power-Items in der Mitte des Inventars
-        int startingIndex = (inventory.getSize() - powerItems.size() * 2 - 9) / 2 + 1;
-        int skips = 0;
-        for (int i = 0; i < powerItems.size(); i++) {
-            inventory.setItem(startingIndex + i + skips, powerItems.get(i));
-            skips++;
-        }
 
         // Setze das Schließen-Item
         ItemStack close = new ItemStack(Material.BARRIER);
@@ -68,7 +48,7 @@ public class PowerGUI implements Listener {
         inventory.setItem(inventory.getSize() - 5, close);
 
         // Öffne das Inventar für den Spieler
-        player.openInventory(inventory);
+        // player.openInventory(inventory);
     }
 
     @EventHandler
@@ -80,16 +60,24 @@ public class PowerGUI implements Listener {
             ItemStack clickedItem = event.getCurrentItem();
 
             // Überprüfe, welches Item angeklickt wurde
-            if (clickedItem != null && clickedItem.getType() == Material.BARRIER) {
-                close(player);
-            } else if (clickedItem != null && clickedItem.getType() == Material.ELYTRA) {
-                fly(player, event);
-            } else if (clickedItem != null && clickedItem.getType() == Material.GLASS) {
-                invisible(player, event);
-            } else if (clickedItem != null && clickedItem.getType() == Material.END_CRYSTAL) {
-                invulnerable(player, event);
-            } else if (clickedItem != null && clickedItem.getType() == Material.COMMAND_BLOCK) {
-                op(player, event);
+            if (clickedItem != null) {
+                if (clickedItem.getType() == Material.BARRIER) {
+                    close(player);
+                } else if (clickedItem.getType() == Material.ELYTRA) {
+                    fly(player, event);
+                } else if (clickedItem.getType() == Material.GLASS) {
+                    invisible(player, event);
+                } else if (clickedItem.getType() == Material.END_CRYSTAL) {
+                    invulnerable(player, event);
+                } else if (clickedItem.getType() == Material.COMMAND_BLOCK) {
+                    op(player, event);
+                } else if (clickedItem.getItemMeta().getDisplayName().equals("Next Page")) {
+                    page++;
+                    loadPage(page, event.getInventory(), player);
+                } else if (clickedItem.getItemMeta().getDisplayName().equals("Previous Page")) {
+                    page--;
+                    loadPage(page, event.getInventory(), player);
+                }
             }
         }
     }
@@ -191,5 +179,77 @@ public class PowerGUI implements Listener {
 
         item.setItemMeta(meta);
         return item;
+    }
+
+
+    private void loadPage(int page, Inventory inventory, Player player) {
+        ItemStack air = new ItemStack(Material.AIR);
+        for (int i = 0; i < inventory.getSize(); i++) {
+            inventory.setItem(i, air);
+        }
+        ItemStack nextPage = new ItemStack(Material.ARROW);
+        setName(nextPage, "Next Page");
+        ItemStack previousPage = new ItemStack(Material.ARROW);
+        setName(previousPage, "Previous Page");
+        ItemStack backgroundItem = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
+        setName(backgroundItem, " ");
+
+        if (page == 0) {
+            ItemStack fly = new ItemStack(Material.ELYTRA);
+            setName(fly, "Fly: " + player.getAllowFlight());
+
+            ItemStack invisible = new ItemStack(Material.GLASS);
+            setName(invisible, "Invisible: " + player.isInvisible());
+
+            ItemStack invulnerable = new ItemStack(Material.END_CRYSTAL);
+            setName(invulnerable, "Invulnerable: " + player.isInvulnerable());
+
+            ItemStack op = new ItemStack(Material.COMMAND_BLOCK);
+            setName(op, "Operator: " + player.isOp());
+
+
+
+            ArrayList<ItemStack> powerItems = new ArrayList<>();
+            powerItems.add(fly);
+            powerItems.add(invisible);
+            powerItems.add(invulnerable);
+            powerItems.add(op);
+
+            // Platziere die Power-Items in der Mitte des Inventars
+            int startingIndex = (inventory.getSize() - powerItems.size() * 2 - 9) / 2 + 1;
+            for (int i = 0; i < powerItems.size(); i++) {
+                inventory.setItem(startingIndex + 2*i, powerItems.get(i));
+            }
+
+            player.openInventory(inventory);
+        } if (page == 1) {
+            ItemStack health = new ItemStack(Material.REDSTONE_BLOCK);
+            setName(health, ChatColor.RED + "Health: " + player.getHealthScale());
+
+
+
+            ArrayList<ItemStack> powerItems = new ArrayList<>();
+            powerItems.add(health);
+
+            // Platziere die Power-Items in der Mitte des Inventars
+            int startingIndex = (inventory.getSize() - powerItems.size() * 2 - 9) / 2 + 1;
+            for (int i = 0; i < powerItems.size(); i++) {
+                inventory.setItem(startingIndex + 2*i, powerItems.get(i));
+            }
+        }
+
+
+
+        ItemStack close = new ItemStack(Material.BARRIER);
+        setName(close, "Close");
+        inventory.setItem(inventory.getSize() - 5, close);
+
+        // Page System
+        if (page < MAXPAGES) {
+            inventory.setItem(inventory.getSize() - 1, nextPage);
+        }
+        if (page > 0) {
+            inventory.setItem(inventory.getSize() - 9, previousPage);
+        }
     }
 }
