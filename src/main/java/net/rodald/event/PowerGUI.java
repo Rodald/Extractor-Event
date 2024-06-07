@@ -85,17 +85,11 @@ public class PowerGUI implements Listener {
             } else if (clickedItem != null && clickedItem.getType() == Material.ELYTRA) {
                 fly(player, event);
             } else if (clickedItem != null && clickedItem.getType() == Material.GLASS) {
-                player.sendMessage("You clicked on INVISIBLE!");
-                player.setInvisible(!player.isInvisible());
-                Event.powerGUI.openInventory(player);
+                invisible(player, event);
             } else if (clickedItem != null && clickedItem.getType() == Material.END_CRYSTAL) {
-                player.sendMessage("You clicked on INVULNERABLE!");
-                player.setInvulnerable(!player.isInvulnerable());
-                Event.powerGUI.openInventory(player);
+                invulnerable(player, event);
             } else if (clickedItem != null && clickedItem.getType() == Material.COMMAND_BLOCK) {
-                player.sendMessage("You clicked on OP!");
-                player.setOp(!player.isOp());
-                Event.powerGUI.openInventory(player);
+                op(player, event);
             }
         }
     }
@@ -106,17 +100,65 @@ public class PowerGUI implements Listener {
     }
 
     private static void fly(Player player, InventoryClickEvent event) {
-        if (event.isLeftClick()) {
-            player.sendMessage("You clicked LEFT CLICK on FLY!");
-            player.setAllowFlight(!player.getAllowFlight());
-            Event.powerGUI.openInventory(player);
-        } else if (event.isRightClick()) {
+        if (!event.isLeftClick() && !event.isRightClick()) return;
+
+        if (event.isRightClick()) {
             PlayerHeadsGUI playerHeadsGUI = PlayerHeadsGUI.getInstance();
             playerHeadsGUI.openPlayerHeadsGUI(player, selectedPlayer -> {
-                player.sendMessage("You selected: " + selectedPlayer.getName());
+                selectedPlayer.setAllowFlight(!selectedPlayer.getAllowFlight());
+                Event.powerGUI.openInventory(player);
             });
+        } else {
+            player.setAllowFlight(!player.getAllowFlight());
+            Event.powerGUI.openInventory(player);
         }
     }
+
+    private static void invisible(Player player, InventoryClickEvent event) {
+        if (!event.isLeftClick() && !event.isRightClick()) return;
+
+        if (event.isRightClick()) {
+            PlayerHeadsGUI playerHeadsGUI = PlayerHeadsGUI.getInstance();
+            playerHeadsGUI.openPlayerHeadsGUI(player, selectedPlayer -> {
+                selectedPlayer.setInvisible(!selectedPlayer.isInvisible());
+                Event.powerGUI.openInventory(player);
+            });
+        } else {
+            player.setInvisible(!player.isInvisible());
+            Event.powerGUI.openInventory(player);
+        }
+    }
+
+    private static void invulnerable(Player player, InventoryClickEvent event) {
+        if (!event.isLeftClick() && !event.isRightClick()) return;
+
+        if (event.isRightClick()) {
+            PlayerHeadsGUI playerHeadsGUI = PlayerHeadsGUI.getInstance();
+            playerHeadsGUI.openPlayerHeadsGUI(player, selectedPlayer -> {
+                selectedPlayer.setInvulnerable(!selectedPlayer.isInvulnerable());
+                Event.powerGUI.openInventory(player);
+            });
+        } else {
+            player.setInvulnerable(!player.isInvulnerable());
+            Event.powerGUI.openInventory(player);
+        }
+    }
+
+    private static void op(Player player, InventoryClickEvent event) {
+        if (!event.isLeftClick() && !event.isRightClick()) return;
+
+        if (event.isRightClick()) {
+            PlayerHeadsGUI playerHeadsGUI = PlayerHeadsGUI.getInstance();
+            playerHeadsGUI.openPlayerHeadsGUI(player, selectedPlayer -> {
+                selectedPlayer.setOp(!selectedPlayer.isOp());
+                Event.powerGUI.openInventory(player);
+            });
+        } else {
+            player.setOp(!player.isOp());
+            Event.powerGUI.openInventory(player);
+        }
+    }
+
 
 
 
