@@ -1,5 +1,6 @@
 package net.rodald.event;
 
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -41,7 +42,7 @@ public class PlayerHeadsGUI implements Listener {
             SkullMeta meta = (SkullMeta) playerHead.getItemMeta();
             assert meta != null;
             meta.setOwningPlayer(onlinePlayer);
-            meta.setDisplayName(onlinePlayer.getName());
+            meta.setDisplayName(ChatColor.RESET + onlinePlayer.getName());
             playerHead.setItemMeta(meta);
             inventory.addItem(playerHead);
         }
