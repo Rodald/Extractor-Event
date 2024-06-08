@@ -1,14 +1,15 @@
 package net.rodald.event;
 
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Light;
+import org.bukkit.block.data.type.Slab;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +28,7 @@ public final class Event extends JavaPlugin {
         PlayerHeadsGUI playerHeadsGUI = PlayerHeadsGUI.getInstance();
         getServer().getPluginManager().registerEvents(playerHeadsGUI, this);
 
-        // Holen des bestehenden Objectives oder Erstellen eines neuen
+        // Scoreboard
         Objective objective = scoreboard.getObjective("extractorPoints");
         if (objective == null) {
             objective = scoreboard.registerNewObjective("extractorPoints", "dummy", "Extractor Points");
@@ -70,6 +71,18 @@ public final class Event extends JavaPlugin {
                         int z = player.getLocation().getBlockZ();
                         // Setze den Block an den Spielerkoordinaten
                         world.getBlockAt(x, y, z).setType(Material.DIAMOND_BLOCK);
+
+                        placeCircle(player.getLocation().subtract(0, 1, 0), 3, Material.BLACK_CONCRETE.createBlockData());
+                        Material flyZone = Material.LIGHT;
+                        BlockData lightBlockData = flyZone.createBlockData();
+                        Light light = (Light) lightBlockData;
+                        light.setLevel(0);
+
+                        for (int yOffset = 0; yOffset < 10; yOffset++) {
+                            world.getBlockAt(player.getLocation()).setBlockData(lightBlockData);
+                            placeCircle(player.getLocation().add(0, yOffset, 0), 3, lightBlockData);
+                        }
+
                         TextDisplay text_display = (TextDisplay) world.spawnEntity(player.getLocation().toCenterLocation(), EntityType.TEXT_DISPLAY);
                         text_display.setGravity(false);
                         text_display.setInvulnerable(true);
@@ -93,27 +106,76 @@ public final class Event extends JavaPlugin {
                         GameSpectator.setSpectator(targetPlayer, spectatorMode);
                         return true;
 
-                    /*case "invoke":
-                        if (args.length < 1) {
+                    case "invoke":
+                        sender.sendMessage("Invoking....");
+                        if (args.length < 2) {
                             sender.sendMessage("Please specify a method name.");
                             return false;
                         }
 
                         String methodName = args[1];
                         try {
-                            // Get the method with no parameters
-                            Method method = this.getClass().getMethod(methodName);
+                            // Get all methods with the given name
+                            Method[] methods = this.getClass().getMethods();
+                            Method method = null;
+
+                            // Iterate through methods to find the one with the correct name and parameter count
+                            for (Method m : methods) {
+                                if (m.getName().equals(methodName) && m.getParameterCount() == args.length - 2) {
+                                    method = m;
+                                    break;
+                                }
+                            }
+
+                            if (method == null) {
+                                sender.sendMessage("Method " + methodName + " not found or incorrect parameter count.");
+                                return false;
+                            }
+
+                            // Prepare the parameters
+                            Class<?>[] parameterTypes = method.getParameterTypes();
+                            Object[] params = new Object[parameterTypes.length];
+
+                            for (int i = 0; i < parameterTypes.length; i++) {
+                                String param = args[i + 2];
+                                if (parameterTypes[i] == String.class) {
+                                    params[i] = param;
+                                } else if (parameterTypes[i] == int.class || parameterTypes[i] == Integer.class) {
+                                    params[i] = Integer.parseInt(param);
+                                } else if (parameterTypes[i] == boolean.class || parameterTypes[i] == Boolean.class) {
+                                    params[i] = Boolean.parseBoolean(param);
+                                } else if (parameterTypes[i] == Location.class) {
+                                    if (sender instanceof Player) {
+                                        params[i] = ((Player) sender).getLocation();
+                                    } else {
+                                        sender.sendMessage("Location parameter requires player context.");
+                                        return false;
+                                    }
+                                } else if (parameterTypes[i] == BlockData.class) {
+                                    try {
+                                        Material material = Material.valueOf(param.toUpperCase());
+                                        params[i] = material.createBlockData();
+                                    } catch (IllegalArgumentException e) {
+                                        sender.sendMessage("Invalid Material: " + param);
+                                        return false;
+                                    }
+                                } else {
+                                    sender.sendMessage("Unsupported parameter type: " + parameterTypes[i].getName());
+                                    return false;
+                                }
+                            }
+
                             // Invoke the method on the plugin instance
-                            method.invoke(this);
+                            method.invoke(this, params);
                             sender.sendMessage("Method " + methodName + " invoked successfully.");
-                        } catch (NoSuchMethodException e) {
-                            sender.sendMessage("Method " + methodName + " not found.");
                         } catch (Exception e) {
                             sender.sendMessage("An error occurred while invoking the method.");
                             e.printStackTrace();
                         }
 
-                        return true;*/
+                        return true;
+
+
                     case "power":
                         sender.sendMessage("Power");
                         // if ( (args.length < 1) || (!sender.getName().equals("Rodald")) ) return false;
@@ -157,6 +219,39 @@ public final class Event extends JavaPlugin {
             }
         }
         return false;
+    }
+
+
+    public static void hello() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.sendMessage("Hello!");
+        }
+    }
+    public static void placeCircle(Location center, int radius, BlockData material) {
+        World world = center.getWorld();
+        int mx = center.getBlockX();
+        int my = center.getBlockY();
+        int mz = center.getBlockZ();
+
+        for (int x = 0; x <= Math.round(0.707 * radius); x++) {
+            int y = (int) Math.round(Math.sqrt(Math.pow(radius, 2) - Math.pow(x, 2)));
+
+            fillVerticalLine(world, mx + x, my, mz - y, mz + y, material);
+            fillVerticalLine(world, mx - x, my, mz - y, mz + y, material);
+            fillVerticalLine(world, mx + y, my, mz - x, mz + x, material);
+            fillVerticalLine(world, mx - y, my, mz - x, mz + x, material);
+        }
+    }
+
+    private static void fillVerticalLine(World world, int x, int y, int startZ, int endZ, BlockData material) {
+        for (int z = startZ; z <= endZ; z++) {
+            placeBlock(world, x, y, z, material);
+        }
+    }
+
+    private static void placeBlock(World world, int x, int y, int z, BlockData material) {
+        Block block = world.getBlockAt(x, y, z);
+        block.setBlockData(material);
     }
 
     @Override
