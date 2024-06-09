@@ -212,6 +212,8 @@ public class PowerGUI implements Listener {
             ItemStack op = new ItemStack(Material.COMMAND_BLOCK);
             setName(op, "Operator: " + player.isOp());
 
+            ItemStack customName = new ItemStack(Material.NAME_TAG);
+            setName(customName, "CustomNameVisible: " + player.isCustomNameVisible());
 
 
             ArrayList<ItemStack> powerItems = new ArrayList<>();
@@ -219,6 +221,7 @@ public class PowerGUI implements Listener {
             powerItems.add(invisible);
             powerItems.add(invulnerable);
             powerItems.add(op);
+            powerItems.add(customName);
 
             // Platziere die Power-Items in der Mitte des Inventars
             int startingIndex = (inventory.getSize() - powerItems.size() * 2 - 9) / 2 + 1;
@@ -232,9 +235,12 @@ public class PowerGUI implements Listener {
             setName(health, ChatColor.RED + "Health: " + player.getHealthScale());
 
 
+            ItemStack speed = new ItemStack(Material.SUGAR);
+            setName(health,  "Speed: " + player.getWalkSpeed());
 
             ArrayList<ItemStack> powerItems = new ArrayList<>();
             powerItems.add(health);
+            powerItems.add(speed);
 
             // Platziere die Power-Items in der Mitte des Inventars
             int startingIndex = (inventory.getSize() - powerItems.size() * 2 - 9) / 2 + 1;
