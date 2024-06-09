@@ -72,7 +72,7 @@ public class PowerGUI implements Listener {
                 } else if (clickedItem.getType() == Material.COMMAND_BLOCK) {
                     op(player, event);
                 } else if (clickedItem.getType() == Material.REDSTONE_BLOCK) {
-                    openAnvilGui(player);
+                    health(player, event);
                 } else if (clickedItem.getItemMeta().getDisplayName().equals("Next Page")) {
                     page++;
                     loadPage(page, event.getInventory(), player);
@@ -149,21 +149,24 @@ public class PowerGUI implements Listener {
         }
     }
 
+    private static void health(Player player, InventoryClickEvent event) {
+        if (!event.isLeftClick() && !event.isRightClick()) return;
 
-
-
-    public void openAnvilGui(Player player) {
-        Inventory anvil = Bukkit.createInventory(null, InventoryType.ANVIL, "Enter your text");
-
-        ItemStack paper = new ItemStack(Material.PAPER);
-        ItemMeta meta = paper.getItemMeta();
-        meta.setDisplayName("Type here");
-        paper.setItemMeta(meta);
-
-        anvil.setItem(0, paper); // Setzt das Papier in den ersten Slot des Ambosses
-        player.openInventory(anvil);
-        player.sendMessage("opend anvil!");
+        if (event.isRightClick()) {
+            PlayerHeadsGUI playerHeadsGUI = PlayerHeadsGUI.getInstance();
+            playerHeadsGUI.openPlayerHeadsGUI(player, selectedPlayer -> {
+                selectedPlayer.setOp(!selectedPlayer.isOp());
+                Event.powerGUI.openInventory(player);
+            });
+        } else {
+            AnvilGUI.getInstance().openAnvilGUI(player, renamedItemName -> {
+                player.sendMessage("The renamed item is now: " + renamedItemName);
+                // Weitere Aktionen mit dem umbenannten Namen
+            });
+            // Event.powerGUI.openInventory(player);
+        }
     }
+
 
     public static ItemStack setName(ItemStack item, String name) {
         if (item == null || name == null) {

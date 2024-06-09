@@ -9,6 +9,7 @@ import org.bukkit.block.data.type.Slab;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -18,15 +19,21 @@ import java.lang.reflect.Method;
 
 public final class Event extends JavaPlugin {
 
+    private static Event instance;
+
     public static PowerGUI powerGUI;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
+        instance = this;
+
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
         PlayerHeadsGUI playerHeadsGUI = PlayerHeadsGUI.getInstance();
+        AnvilGUI anvilGUI = AnvilGUI.getInstance();
         getServer().getPluginManager().registerEvents(playerHeadsGUI, this);
+        getServer().getPluginManager().registerEvents(anvilGUI, this);
 
         // Scoreboard
         Objective objective = scoreboard.getObjective("extractorPoints");
@@ -46,7 +53,9 @@ public final class Event extends JavaPlugin {
         powerGUI = new PowerGUI(this);
         getServer().getPluginManager().registerEvents(new PointSystem(this), this);
         getServer().getPluginManager().registerEvents(new PowerGUI(this), this);
+        getServer().getPluginManager().registerEvents(new AnvilOpener(), this);
     }
+
 
 
 
@@ -55,7 +64,6 @@ public final class Event extends JavaPlugin {
         if (command.getName().equalsIgnoreCase("extractor")) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-
                 if (args.length == 0) {
                     player.sendMessage("Usage: /extractor <place|setSpectator> [args]");
                     return false;
