@@ -237,19 +237,19 @@ public class PowerGUI implements Listener {
 
         if (page == 0) {
             ItemStack fly = new ItemStack(Material.ELYTRA);
-            setName(fly, "Fly: " + player.getAllowFlight());
+            setName(fly,"Fly: " + player.getAllowFlight());
 
             ItemStack invisible = new ItemStack(Material.GLASS);
-            setName(invisible, "Invisible: " + player.isInvisible());
+            setName(invisible, ChatColor.BLUE + "Invisible: " + player.isInvisible());
 
             ItemStack invulnerable = new ItemStack(Material.END_CRYSTAL);
-            setName(invulnerable, "Invulnerable: " + player.isInvulnerable());
+            setName(invulnerable, ChatColor.DARK_PURPLE + "Invulnerable: " + player.isInvulnerable());
 
             ItemStack op = new ItemStack(Material.COMMAND_BLOCK);
             setName(op, "Operator: " + player.isOp());
 
             ItemStack customName = new ItemStack(Material.NAME_TAG);
-            setName(customName, "CustomNameVisible: " + player.isCustomNameVisible());
+            setName(customName, ChatColor.AQUA + "CustomNameVisible: " + player.isCustomNameVisible());
 
 
             ArrayList<ItemStack> powerItems = new ArrayList<>();
