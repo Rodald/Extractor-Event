@@ -72,11 +72,11 @@ public class PowerGUI implements Listener {
                 } else if (clickedItem.getType() == Material.COMMAND_BLOCK) {
                     op(player, event);
                 } else if (clickedItem.getType() == Material.NAME_TAG) {
-                    (player, event);
+                    nameVisible(player, event);
                 } else if (clickedItem.getType() == Material.REDSTONE_BLOCK) {
                     health(player, event);
                 } else if (clickedItem.getType() == Material.SUGAR) {
-                    health(player, event);
+                    speed(player, event);
                 } else if (clickedItem.getItemMeta().getDisplayName().equals("Next Page")) {
                     page++;
                     loadPage(page, event.getInventory(), player);
@@ -168,6 +168,24 @@ public class PowerGUI implements Listener {
     }
 
     private static void health(Player player, InventoryClickEvent event) {
+        if (!event.isLeftClick() && !event.isRightClick()) return;
+
+        if (event.isRightClick()) {
+            PlayerHeadsGUI playerHeadsGUI = PlayerHeadsGUI.getInstance();
+            playerHeadsGUI.openPlayerHeadsGUI(player, selectedPlayer -> {
+                selectedPlayer.setOp(!selectedPlayer.isOp());
+                Event.powerGUI.openInventory(player);
+            });
+        } else {
+            AnvilGUI.getInstance().openAnvilGUI(player, renamedItemName -> {
+                player.sendMessage("The renamed item is now: " + renamedItemName);
+                // Weitere Aktionen mit dem umbenannten Namen
+            });
+            // Event.powerGUI.openInventory(player);
+        }
+    }
+
+    private static void speed(Player player, InventoryClickEvent event) {
         if (!event.isLeftClick() && !event.isRightClick()) return;
 
         if (event.isRightClick()) {
