@@ -73,12 +73,6 @@ public final class Event extends JavaPlugin {
                     case "place":
                         // Hole die Welt, in der sich der Spieler befindet
                         World world = player.getWorld();
-                        // Hole die Koordinaten des Spielers
-                        int x = player.getLocation().getBlockX();
-                        int y = player.getLocation().getBlockY();
-                        int z = player.getLocation().getBlockZ();
-                        // Setze den Block an den Spielerkoordinaten
-                        world.getBlockAt(x, y, z).setType(Material.DIAMOND_BLOCK);
 
                         placeCircle(player.getLocation().subtract(0, 1, 0), 3, Material.BLACK_CONCRETE.createBlockData());
                         Material flyZone = Material.LIGHT;
