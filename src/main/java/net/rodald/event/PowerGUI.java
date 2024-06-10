@@ -71,7 +71,11 @@ public class PowerGUI implements Listener {
                     invulnerable(player, event);
                 } else if (clickedItem.getType() == Material.COMMAND_BLOCK) {
                     op(player, event);
+                } else if (clickedItem.getType() == Material.NAME_TAG) {
+                    (player, event);
                 } else if (clickedItem.getType() == Material.REDSTONE_BLOCK) {
+                    health(player, event);
+                } else if (clickedItem.getType() == Material.SUGAR) {
                     health(player, event);
                 } else if (clickedItem.getItemMeta().getDisplayName().equals("Next Page")) {
                     page++;
@@ -145,6 +149,20 @@ public class PowerGUI implements Listener {
             });
         } else {
             player.setOp(!player.isOp());
+            Event.powerGUI.openInventory(player);
+        }
+    }
+    private static void nameVisible(Player player, InventoryClickEvent event) {
+        if (!event.isLeftClick() && !event.isRightClick()) return;
+
+        if (event.isRightClick()) {
+            PlayerHeadsGUI playerHeadsGUI = PlayerHeadsGUI.getInstance();
+            playerHeadsGUI.openPlayerHeadsGUI(player, selectedPlayer -> {
+                selectedPlayer.setCustomNameVisible(!selectedPlayer.isCustomNameVisible());
+                Event.powerGUI.openInventory(player);
+            });
+        } else {
+            player.setCustomNameVisible(!player.isCustomNameVisible());
             Event.powerGUI.openInventory(player);
         }
     }
