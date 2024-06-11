@@ -109,6 +109,7 @@ public final class Event extends JavaPlugin {
                         return true;
 
                     case "invoke":
+                        // extractor invoke placeCircle player.getLocation() 2 diamond_block
                         sender.sendMessage("Invoking....");
                         if (args.length < 2) {
                             sender.sendMessage("Please specify a method name.");
@@ -211,6 +212,7 @@ public final class Event extends JavaPlugin {
                         } else {
                             PowerGUI.page = 0;
                             powerGUI.openInventory(player);
+                            return true;
                         }
 
                     default:
