@@ -58,10 +58,11 @@ public class AnvilOpener implements Listener {
     public void AnvilTakeResultEvent(InventoryClickEvent event) {
         event.setCancelled(false);
         if (event.getInventory().getType() == InventoryType.ANVIL) {
-        Player player = (Player) event.getWhoClicked();
-        ItemStack resultItem = event.getCurrentItem();
-        assert resultItem != null;
-            if (debugMode) player.sendMessage("Du hast ein Item aus dem Amboss genommen: " + resultItem.getType());
+            Player player = (Player) event.getWhoClicked();
+            if (event.getCurrentItem() != null) {
+                ItemStack resultItem = event.getCurrentItem();
+                if (debugMode) player.sendMessage("Du hast ein Item aus dem Amboss genommen: " + resultItem.getType());
+            }
         }
     }
 
