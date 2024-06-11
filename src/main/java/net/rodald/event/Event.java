@@ -71,6 +71,7 @@ public final class Event extends JavaPlugin {
 
                 switch (args[0].toLowerCase()) {
                     case "place":
+                        // places the generator
                         // Hole die Welt, in der sich der Spieler befindet
                         World world = player.getWorld();
 
