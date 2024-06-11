@@ -17,6 +17,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class AnvilOpener implements Listener {
     private static JavaPlugin plugin;
 
+    private final Boolean debugMode = false;
+
     public static void setPlugin(JavaPlugin pl) {
         plugin = pl;
     }
@@ -41,7 +43,7 @@ public class AnvilOpener implements Listener {
         Player player = (Player) event.getWhoClicked();
         if (event.getRawSlot() == 0) {
             // Das Texteingabefeld wurde geklickt
-            player.sendMessage("You clicked the text input field.");
+            if (debugMode) player.sendMessage("You clicked the text input field.");
         }
     }
 
@@ -49,7 +51,7 @@ public class AnvilOpener implements Listener {
     public void onAnvilGUIClose(InventoryCloseEvent event) {
 
         Player player = (Player) event.getPlayer();
-        player.sendMessage("Anvil GUI closed.");
+        if (debugMode) player.sendMessage("Anvil GUI closed.");
     }
 
     @EventHandler
@@ -59,7 +61,7 @@ public class AnvilOpener implements Listener {
         Player player = (Player) event.getWhoClicked();
         ItemStack resultItem = event.getCurrentItem();
         assert resultItem != null;
-        player.sendMessage("Du hast ein Item aus dem Amboss genommen: " + resultItem.getType());
+            if (debugMode) player.sendMessage("Du hast ein Item aus dem Amboss genommen: " + resultItem.getType());
         }
     }
 
@@ -71,7 +73,7 @@ public class AnvilOpener implements Listener {
             ItemStack inputItem1 = event.getInventory().getItem(0); // Erster Eingabe-Slot
             ItemStack inputItem2 = event.getInventory().getItem(1); // Zweiter Eingabe-Slot
             if (inputItem1 != null && inputItem2 != null) {
-                player.sendMessage("Die Eingabe wurde aktualisiert. Neue Kombination: " + inputItem1.getType() + " + " + inputItem2.getType());
+                if (debugMode) player.sendMessage("Die Eingabe wurde aktualisiert. Neue Kombination: " + inputItem1.getType() + " + " + inputItem2.getType());
             }
         }
     }
@@ -80,6 +82,6 @@ public class AnvilOpener implements Listener {
     public void PrepareAnvilEvent(PrepareAnvilEvent event) {
 
         Player player = (Player) event.getInventory().getViewers().get(0);
-        player.sendMessage("PrepareAnvilEvent");
+        if (debugMode) player.sendMessage("PrepareAnvilEvent");
     }
 }
