@@ -272,7 +272,7 @@ public class PowerGUI implements Listener {
 
 
             ItemStack speed = new ItemStack(Material.SUGAR);
-            setName(health,  "Speed: " + player.getWalkSpeed());
+            setName(speed,  "Speed: " + player.getWalkSpeed());
 
             ArrayList<ItemStack> powerItems = new ArrayList<>();
             powerItems.add(health);
