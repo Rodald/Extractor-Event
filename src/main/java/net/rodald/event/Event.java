@@ -65,7 +65,7 @@ public final class Event extends JavaPlugin {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 if (args.length == 0) {
-                    player.sendMessage("Usage: /extractor <place|setSpectator> [args]");
+                    player.sendMessage("Usage: /extractor <place|setSpectator|invoke> [args]");
                     return false;
                 }
 
@@ -110,6 +110,7 @@ public final class Event extends JavaPlugin {
 
                     case "invoke":
                         // extractor invoke placeCircle player.getLocation() 2 diamond_block
+
                         sender.sendMessage("Invoking....");
                         if (args.length < 2) {
                             sender.sendMessage("Please specify a method name.");
