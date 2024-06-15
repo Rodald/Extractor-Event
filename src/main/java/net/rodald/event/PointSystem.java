@@ -32,11 +32,13 @@ public class PointSystem implements Listener {
             if (projectile instanceof Arrow && projectile.getShooter() instanceof Player) {
                 Player damager = (Player) projectile.getShooter();
                 Player target = (Player) event.getEntity();
-
-                damager.sendMessage("You shot a zombie");
-                addPoints("extractorPoints", damager, 1);
-                damager.playSound(damager, Sound.ENTITY_ARROW_HIT_PLAYER, 1, 1);
-                damager.sendMessage("Your current Score is: " + getPoints("extractorPoints", damager));
+                // test if player shots himself
+                if (target != damager) {
+                    damager.sendMessage("You shot a player");
+                    addPoints("extractorPoints", damager, 1);
+                    damager.playSound(damager, Sound.ENTITY_ARROW_HIT_PLAYER, 1, 1);
+                    damager.sendMessage("Your current Score is: " + getPoints("extractorPoints", damager));
+                }
             }
         }
     }
