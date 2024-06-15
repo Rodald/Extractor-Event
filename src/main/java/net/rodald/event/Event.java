@@ -32,8 +32,10 @@ public final class Event extends JavaPlugin {
 
         PlayerHeadsGUI playerHeadsGUI = PlayerHeadsGUI.getInstance();
         AnvilGUI anvilGUI = AnvilGUI.getInstance();
+        SignGUI signGUI = SignGUI.getInstance();
         getServer().getPluginManager().registerEvents(playerHeadsGUI, this);
         getServer().getPluginManager().registerEvents(anvilGUI, this);
+        getServer().getPluginManager().registerEvents(signGUI, this);
 
         // Scoreboard
         Objective objective = scoreboard.getObjective("extractorPoints");

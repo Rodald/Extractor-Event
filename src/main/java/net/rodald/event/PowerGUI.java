@@ -177,10 +177,8 @@ public class PowerGUI implements Listener {
                 Event.powerGUI.openInventory(player);
             });
         } else {
-            AnvilGUI.getInstance().openAnvilGUI(player, renamedItemName -> {
-                player.sendMessage("The renamed item is now: " + renamedItemName);
-                // Weitere Aktionen mit dem umbenannten Namen
-            });
+            SignGUI.openSignGUI(player);
+
             // Event.powerGUI.openInventory(player);
         }
     }
