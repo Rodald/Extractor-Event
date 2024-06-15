@@ -31,7 +31,7 @@ public class PointSystem implements Listener {
 
             if (projectile instanceof Arrow && projectile.getShooter() instanceof Player) {
                 Player damager = (Player) projectile.getShooter();
-                Zombie target = (Zombie) event.getEntity();
+                Player target = (Player) event.getEntity();
 
                 damager.sendMessage("You shot a zombie");
                 addPoints("extractorPoints", damager, 1);
