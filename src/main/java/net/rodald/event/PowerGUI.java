@@ -1,6 +1,7 @@
 package net.rodald.event;
 
 import net.md_5.bungee.api.ChatColor;
+import net.rodald.event.weapons.ForceField;
 import net.rodald.event.weapons.TNTBow;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -90,6 +91,9 @@ public class PowerGUI implements Listener {
                 } else if (clickedItem.getType() == Material.BOW) {
                     player.setItemOnCursor(null);
                     TNTBow.giveBow(player);
+                } else if (clickedItem.getType() == Material.DIAMOND_HORSE_ARMOR) {
+                    player.setItemOnCursor(null);
+                    // ForceField.giveForceField(player);
                 }
             }
             // loadPage(page, event.getInventory(), player);
@@ -231,7 +235,7 @@ public class PowerGUI implements Listener {
     }
 
 
-    private static Inventory loadPage(int page, Inventory inventory, Player player) {
+    private static void loadPage(int page, Inventory inventory, Player player) {
         inventory.close();
         player.openInventory(inventory);
         ItemStack air = new ItemStack(Material.AIR);
@@ -290,10 +294,14 @@ public class PowerGUI implements Listener {
             }
         } else if (page == 2) {
             ItemStack tntBow = new ItemStack(Material.BOW);
-            setName(tntBow,     "§CTNT Bow");
+            setName(tntBow, "§CTNT Bow");
+
+            ItemStack forceField = new ItemStack(Material.DIAMOND_HORSE_ARMOR);
+            setName(forceField, "§3Force Field");
 
             ArrayList<ItemStack> powerItems = new ArrayList<>();
             powerItems.add(tntBow);
+            powerItems.add(forceField);
 
             // Platziere die Power-Items in der Mitte des Inventars
             int startingIndex = (inventory.getSize() - powerItems.size() * 2 - 9) / 2 + 1;
@@ -307,7 +315,6 @@ public class PowerGUI implements Listener {
         ItemStack close = new ItemStack(Material.BARRIER);
         setName(close, "Close");
         inventory.setItem(inventory.getSize() - 5, close);
-        return inventory;
     }
 
     public static void placePages(Inventory inventory) {

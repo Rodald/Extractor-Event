@@ -1,5 +1,6 @@
 package net.rodald.event;
 
+import net.rodald.event.weapons.ForceField;
 import net.rodald.event.weapons.TNTBow;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -56,6 +57,7 @@ public final class Event extends JavaPlugin {
         powerGUI = new PowerGUI(this);
         getServer().getPluginManager().registerEvents(new PointSystem(this), this);
         getServer().getPluginManager().registerEvents(new TNTBow(), this);
+        getServer().getPluginManager().registerEvents(new ForceField(this), this);
         getServer().getPluginManager().registerEvents(new PowerGUI(this), this);
         getServer().getPluginManager().registerEvents(new AnvilOpener(), this);
     }
