@@ -3,6 +3,7 @@ package net.rodald.event;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,9 +19,8 @@ import java.util.ArrayList;
 public class PowerGUI implements Listener {
 
     private final JavaPlugin plugin;
-
-    public static int page;
-    private static final int MAXPAGES = 1;
+    public static int page = 0;
+    private static final int MAXPAGES = 112;
 
     public PowerGUI(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -28,7 +28,7 @@ public class PowerGUI implements Listener {
     }
 
     public void openInventory(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, 54, "Power GUI");
+        Inventory inventory = Bukkit.createInventory(player, 54, "Power GUI");
 
         ItemStack backgroundItem = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
         setName(backgroundItem, " ");
@@ -38,7 +38,7 @@ public class PowerGUI implements Listener {
             inventory.setItem(i, backgroundItem);
         }
 
-        loadPage(0, inventory, player);
+        loadPage(page, inventory, player);
 
         // Platziere die Power-Items in der Mitte des Inventars
 
@@ -63,6 +63,9 @@ public class PowerGUI implements Listener {
             if (clickedItem != null) {
                 if (clickedItem.getType() == Material.BARRIER) {
                     close(player);
+                } else if (clickedItem.getType() == Material.LEVER) {
+                    page = 0;
+                    loadPage(page, event.getInventory(), player);
                 } else if (clickedItem.getType() == Material.ELYTRA) {
                     fly(player, event);
                 } else if (clickedItem.getType() == Material.GLASS) {
@@ -73,18 +76,18 @@ public class PowerGUI implements Listener {
                     op(player, event);
                 } else if (clickedItem.getType() == Material.NAME_TAG) {
                     nameVisible(player, event);
+                } else if (clickedItem.getType() == Material.OAK_SIGN) {
+                    page = 1;
+                    loadPage(page, event.getInventory(), player);
                 } else if (clickedItem.getType() == Material.REDSTONE_BLOCK) {
                     health(player, event);
                 } else if (clickedItem.getType() == Material.SUGAR) {
                     speed(player, event);
-                } else if (clickedItem.getItemMeta().getDisplayName().equals("Next Page")) {
-                    page++;
-                    loadPage(page, event.getInventory(), player);
-                } else if (clickedItem.getItemMeta().getDisplayName().equals("Previous Page")) {
-                    page--;
-                    loadPage(page, event.getInventory(), player);
                 }
             }
+            // loadPage(page, event.getInventory(), player);
+            event.setCancelled(true);
+
         }
     }
 
@@ -119,6 +122,7 @@ public class PowerGUI implements Listener {
             });
         } else {
             player.setInvisible(!player.isInvisible());
+            player.setArrowsInBody(0);
             Event.powerGUI.openInventory(player);
         }
     }
@@ -221,15 +225,13 @@ public class PowerGUI implements Listener {
     }
 
 
-    private void loadPage(int page, Inventory inventory, Player player) {
+    private static Inventory loadPage(int page, Inventory inventory, Player player) {
+        inventory.close();
+        player.openInventory(inventory);
         ItemStack air = new ItemStack(Material.AIR);
         for (int i = 0; i < inventory.getSize(); i++) {
             inventory.setItem(i, air);
         }
-        ItemStack nextPage = new ItemStack(Material.ARROW);
-        setName(nextPage, "Next Page");
-        ItemStack previousPage = new ItemStack(Material.ARROW);
-        setName(previousPage, "Previous Page");
         ItemStack backgroundItem = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
         setName(backgroundItem, " ");
 
@@ -262,9 +264,8 @@ public class PowerGUI implements Listener {
             for (int i = 0; i < powerItems.size(); i++) {
                 inventory.setItem(startingIndex + 2*i, powerItems.get(i));
             }
-
             player.openInventory(inventory);
-        } if (page == 1) {
+        } else if (page == 1) {
             ItemStack health = new ItemStack(Material.REDSTONE_BLOCK);
             setName(health, ChatColor.RED + "Health: " + player.getHealthScale());
 
@@ -281,20 +282,51 @@ public class PowerGUI implements Listener {
             for (int i = 0; i < powerItems.size(); i++) {
                 inventory.setItem(startingIndex + 2*i, powerItems.get(i));
             }
+        } else if (page == 2) {
+            ItemStack tntBow = new ItemStack(Material.BOW);
+            setName(tntBow, ChatColor.RED + "TNT Bow" + player.getHealthScale());
+
+            ArrayList<ItemStack> powerItems = new ArrayList<>();
+            powerItems.add(tntBow);
+
+            // Platziere die Power-Items in der Mitte des Inventars
+            int startingIndex = (inventory.getSize() - powerItems.size() * 2 - 9) / 2 + 1;
+            for (int i = 0; i < powerItems.size(); i++) {
+                inventory.setItem(startingIndex + 2 * i, powerItems.get(i));
+            }
         }
 
-
+        placePages(inventory);
 
         ItemStack close = new ItemStack(Material.BARRIER);
         setName(close, "Close");
         inventory.setItem(inventory.getSize() - 5, close);
+        return inventory;
+    }
 
-        // Page System
-        if (page < MAXPAGES) {
-            inventory.setItem(inventory.getSize() - 1, nextPage);
+    public static void placePages(Inventory inventory) {
+        ArrayList<ItemStack> pages = new ArrayList<>();
+
+        ItemStack toggles = new ItemStack(Material.LEVER);
+        setName(toggles, "Toggles");
+
+        ItemStack fields = new ItemStack(Material.OAK_SIGN);
+        setName(fields, "Fields");
+
+        ItemStack weapons = new ItemStack(Material.BOW);
+        setName(weapons, "Weapons");
+
+        pages.add(toggles);
+        pages.add(fields);
+        pages.add(weapons);
+        Player player = (Player) inventory.getViewers().get(0);
+        int startingPos = inventory.getSize() - 9;
+        player.sendMessage("starts at: " + startingPos);
+        inventory.setItem(startingPos, new ItemStack(Material.BOW));
+        for (int i = 0; i < 9 && i < pages.size(); i++) {
+            player.sendMessage("is at: " + (i));
+            inventory.setItem(i + startingPos, pages.get(i));
         }
-        if (page > 0) {
-            inventory.setItem(inventory.getSize() - 9, previousPage);
-        }
+
     }
 }
