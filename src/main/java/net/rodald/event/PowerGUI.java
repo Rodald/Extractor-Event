@@ -1,6 +1,7 @@
 package net.rodald.event;
 
 import net.md_5.bungee.api.ChatColor;
+import net.rodald.event.weapons.TNTBow;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -83,11 +84,16 @@ public class PowerGUI implements Listener {
                     health(player, event);
                 } else if (clickedItem.getType() == Material.SUGAR) {
                     speed(player, event);
+                } else if (clickedItem.getType() == Material.TNT) {
+                    page = 2;
+                    loadPage(page, event.getInventory(), player);
+                } else if (clickedItem.getType() == Material.BOW) {
+                    player.setItemOnCursor(null);
+                    TNTBow.giveBow(player);
                 }
             }
             // loadPage(page, event.getInventory(), player);
             event.setCancelled(true);
-
         }
     }
 
@@ -284,7 +290,7 @@ public class PowerGUI implements Listener {
             }
         } else if (page == 2) {
             ItemStack tntBow = new ItemStack(Material.BOW);
-            setName(tntBow, ChatColor.RED + "TNT Bow" + player.getHealthScale());
+            setName(tntBow,     "§CTNT Bow");
 
             ArrayList<ItemStack> powerItems = new ArrayList<>();
             powerItems.add(tntBow);
@@ -313,19 +319,20 @@ public class PowerGUI implements Listener {
         ItemStack fields = new ItemStack(Material.OAK_SIGN);
         setName(fields, "Fields");
 
-        ItemStack weapons = new ItemStack(Material.BOW);
+        ItemStack weapons = new ItemStack(Material.TNT);
         setName(weapons, "Weapons");
 
         pages.add(toggles);
         pages.add(fields);
         pages.add(weapons);
+
         Player player = (Player) inventory.getViewers().get(0);
         int startingPos = inventory.getSize() - 9;
-        player.sendMessage("starts at: " + startingPos);
         inventory.setItem(startingPos, new ItemStack(Material.BOW));
-        for (int i = 0; i < 9 && i < pages.size(); i++) {
-            player.sendMessage("is at: " + (i));
-            inventory.setItem(i + startingPos, pages.get(i));
+        for (int i = 0; i < 9; i++) {
+            if (i < pages.size()) {
+                inventory.setItem(i + startingPos, pages.get(i));
+            } else inventory.setItem(i + startingPos, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
         }
 
     }
