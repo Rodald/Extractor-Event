@@ -25,7 +25,7 @@ public class ForceField implements Listener {
     private final Map<UUID, Long> cooldowns = new HashMap<>();
     private int frame = 0;
     private final Map<UUID, Boolean> forceFieldActive = new HashMap<>();
-    private final long COOLDOWN_DURATION = 500; // Cooldown-Dauer in Millisekunden (hier 500 Millisekunden)
+    private final long COOLDOWN_DURATION = 50; // Cooldown-Dauer in Millisekunden (hier 500 Millisekunden)
 
     public ForceField(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -86,6 +86,7 @@ public class ForceField implements Listener {
             Vector lastDirection = null;
             int radius = 7;
             double additionalY = -0.1; // Höhe hinzufügen
+            double maxYVelocity = 0.6; // Maximale Y-Geschwindigkeit festlegen
 
             @Override
             public void run() {
@@ -96,14 +97,20 @@ public class ForceField implements Listener {
                 }
 
                 Location newLoc = player.getLocation().clone();
-                Vector direction;
+                Vector direction = player.getLocation().getDirection().normalize(); // Richtung, in die der Spieler schaut
+                Vector currentVelocity = player.getVelocity();
 
-
-
-                // Bewege den Spieler in die Richtung, in die er sich bewegt
-                // player.setVelocity(player.getVelocity().add(direction));
                 // Füge dem Y-Vektor des Spielers Velocity hinzu
-                // player.setVelocity(player.getVelocity().setY(player.getVelocity().getY() + additionalY));
+                currentVelocity.setY(currentVelocity.getY() + additionalY);
+
+                // Begrenze die Y-Geschwindigkeit
+                if (currentVelocity.getY() < -maxYVelocity) {
+                    player.sendMessage("You are under the maxYVelocity");
+                    currentVelocity.setY(currentVelocity.getY() * 0.8);
+                } else if (currentVelocity.getY() > maxYVelocity*2) {
+                    player.sendMessage("You are over the maxYVelocity");
+                    currentVelocity.setY(currentVelocity.getY() * 0.85);
+                }
 
                 // Abstoßung von festen Blöcken im Radius
                 for (double x = -radius; x <= radius; x++) {
@@ -118,42 +125,32 @@ public class ForceField implements Listener {
                                 Vector blockDirection = playerLoc.toVector().subtract(blockLoc.toVector()).normalize();
 
                                 // Bewege den Spieler von den Blöcken weg
-                                double forceMultiplier = 0.0002; // Stärke der Abstoßung anpassen
-                                double forceHeightMultiplier = .9999999; // Stärke der Abstoßung anpassen
-                                player.setVelocity(player.getVelocity().add(blockDirection.multiply(forceMultiplier)));
-                                // dont delete its for bouncing
-                                Vector velocity = player.getVelocity();
-                                velocity.setY(velocity.getY() * forceHeightMultiplier);
-                                player.setVelocity(velocity);
-                                //player.setVelocity(player.getVelocity().setY(player.getVelocity().getY() * forceHeightMultiplier).normalize());
+                                double forceMultiplier = 0.0005; // Stärke der Abstoßung anpassen
+                                double forceHeightMultiplier = 1; // Stärke der Abstoßung anpassen
+                                currentVelocity.add(blockDirection.multiply(forceMultiplier));
+                                currentVelocity.setY(currentVelocity.getY() * forceHeightMultiplier);
                             }
+
                         }
                     }
                 }
-                double function = Math.pow(Math.sin(frame*.00001)*.0001, 2)-.5;
-                // player.setVelocity(player.getVelocity().setY(player.getVelocity().getY()*2 + function).normalize());
 
-
-                // Überprüfe, ob sich die Position des Spielers geändert hat
-                if (lastDirection == null || !newLoc.toVector().equals(playerLoc.toVector())) {
-                    // Berechne die Richtung, in die sich der Spieler bewegt
-                    direction = newLoc.toVector().subtract(playerLoc.toVector()).normalize();
-                    lastDirection = direction;
-                } else {
-                    direction = lastDirection;
-                    direction.setY(0);
+                if (playerLoc.getBlock().getType() == Material.WATER) {
+                    currentVelocity.setY(currentVelocity.getY() + 0.6);
                 }
-
-                double average = ((player.getVelocity().getX()*2 + player.getVelocity().getZ()*2) / 2)*100;
-                // Bewege den Spieler in die Richtung, in die er sich bewegt
-                // player.setVelocity(player.getVelocity().add(player.getVelocity().multiply(player.getVelocity())));
-                player.setVelocity(player.getVelocity().add(direction).multiply(2*player.getWalkSpeed()));
+                double walkSpeed;
+                if (player.isSprinting()) {
+                    walkSpeed = player.getWalkSpeed();
+                } else walkSpeed = player.getWalkSpeed()/2;
+                // Füge die Bewegungsrichtung hinzu
+                currentVelocity.add(direction.multiply(walkSpeed)); // Stärke der Richtung anpassen
+                player.setVelocity(currentVelocity);
 
                 // Aktualisiere die Spielerposition für die nächste Iteration
                 playerLoc = newLoc;
                 frame++;
             }
-        }.runTaskTimer(plugin, 0, 0); // Task alle 1 Tick ausführen
+        }.runTaskTimer(plugin, 0, 1); // Task alle 1 Tick ausführen
     }
 
     private void deactivateForceField(Player player) {
