@@ -1,9 +1,7 @@
 package net.rodald.event;
 
 import net.md_5.bungee.api.ChatColor;
-import net.rodald.event.weapons.ForceField;
-import net.rodald.event.weapons.GrapplingHook;
-import net.rodald.event.weapons.TNTBow;
+import net.rodald.event.weapons.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -17,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.sound.sampled.Port;
 import java.util.ArrayList;
 
 public class PowerGUI implements Listener {
@@ -98,6 +97,12 @@ public class PowerGUI implements Listener {
                 } else if (clickedItem.getType() == Material.FISHING_ROD) {
                     player.setItemOnCursor(null);
                     GrapplingHook.giveGrapplingHook(player);
+                } else if (clickedItem.getType() == Material.GOLDEN_HORSE_ARMOR) {
+                    player.setItemOnCursor(null);
+                    GravityGun.giveGravityGun(player);
+                } else if (clickedItem.getType() == Material.IRON_HORSE_ARMOR) {
+                    player.setItemOnCursor(null);
+                    PortalGun.givePortalGun(player);
                 }
             }
             // loadPage(page, event.getInventory(), player);
@@ -196,8 +201,6 @@ public class PowerGUI implements Listener {
             });
         } else {
             SignGUI.openSignGUI(player);
-
-            // Event.powerGUI.openInventory(player);
         }
     }
 
@@ -213,9 +216,7 @@ public class PowerGUI implements Listener {
         } else {
             AnvilGUI.getInstance().openAnvilGUI(player, renamedItemName -> {
                 player.sendMessage("The renamed item is now: " + renamedItemName);
-                // Weitere Aktionen mit dem umbenannten Namen
             });
-            // Event.powerGUI.openInventory(player);
         }
     }
 
@@ -306,10 +307,17 @@ public class PowerGUI implements Listener {
             ItemStack grapplingHook = new ItemStack(Material.FISHING_ROD);
             setName(grapplingHook, "§1Grappling Hook");
 
+            ItemStack portalGun = new ItemStack(Material.IRON_HORSE_ARMOR);
+            setName(portalGun, "§6Portal Gun");
+
+            ItemStack gravityGun = new ItemStack(Material.GOLDEN_HORSE_ARMOR);
+            setName(gravityGun, "§6Gravity Gun");
+
             ArrayList<ItemStack> powerItems = new ArrayList<>();
             powerItems.add(tntBow);
             powerItems.add(forceField);
             powerItems.add(grapplingHook);
+            powerItems.add(gravityGun);
 
             // Platziere die Power-Items in der Mitte des Inventars
             int startingIndex = (inventory.getSize() - powerItems.size() * 2 - 9) / 2 + 1;
