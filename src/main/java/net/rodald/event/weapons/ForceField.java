@@ -4,10 +4,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,23 +23,22 @@ import java.util.UUID;
 public class ForceField implements Listener {
 
     private final JavaPlugin plugin;
-    private static final String FORCE_FIELD_ITEM_NAME = ChatColor.AQUA + "Force Field";
+    private static final String FORCE_FIELD_ITEM_NAME = "§3Force Field";
     private final Map<UUID, Long> cooldowns = new HashMap<>();
-    private int frame = 0;
     private final Map<UUID, Boolean> forceFieldActive = new HashMap<>();
-    private final long COOLDOWN_DURATION = 50; // Cooldown-Dauer in Millisekunden (hier 500 Millisekunden)
+    private final long COOLDOWN_DURATION = 50; // Cooldown in ms
 
     public ForceField(JavaPlugin plugin) {
         this.plugin = plugin;
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    public static ItemStack createForceFieldItem() {
+    public static void giveForceField(Player player) {
         ItemStack forceFieldItem = new ItemStack(Material.DIAMOND_HORSE_ARMOR);
         ItemMeta meta = forceFieldItem.getItemMeta();
         meta.setDisplayName(FORCE_FIELD_ITEM_NAME);
         forceFieldItem.setItemMeta(meta);
-        return forceFieldItem;
+        player.setItemOnCursor(forceFieldItem);
     }
 
     @EventHandler
@@ -81,6 +82,14 @@ public class ForceField implements Listener {
         player.sendMessage(ChatColor.RED + "Activated Force Field");
         forceFieldActive.put(player.getUniqueId(), true);
 
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && item.getItemMeta().getDisplayName().equals(FORCE_FIELD_ITEM_NAME)) {
+                ItemMeta forceFieldMeta = item.getItemMeta();
+                forceFieldMeta.addEnchant(Enchantment.INFINITY, 1, true);
+                item.setItemMeta(forceFieldMeta);
+            }
+        }
+
         new BukkitRunnable() {
             Location playerLoc = player.getLocation().clone();
             Vector lastDirection = null;
@@ -98,6 +107,9 @@ public class ForceField implements Listener {
 
                 Location newLoc = player.getLocation().clone();
                 Vector direction = player.getLocation().getDirection().normalize(); // Richtung, in die der Spieler schaut
+                if (player.isSneaking()) {
+                    direction = new Vector(0, 0, 0);
+                }
                 Vector currentVelocity = player.getVelocity();
 
                 // Füge dem Y-Vektor des Spielers Velocity hinzu
@@ -105,10 +117,8 @@ public class ForceField implements Listener {
 
                 // Begrenze die Y-Geschwindigkeit
                 if (currentVelocity.getY() < -maxYVelocity) {
-                    player.sendMessage("You are under the maxYVelocity");
                     currentVelocity.setY(currentVelocity.getY() * 0.8);
-                } else if (currentVelocity.getY() > maxYVelocity*2) {
-                    player.sendMessage("You are over the maxYVelocity");
+                } else if (currentVelocity.getY() > maxYVelocity*5) {
                     currentVelocity.setY(currentVelocity.getY() * 0.85);
                 }
 
@@ -148,7 +158,6 @@ public class ForceField implements Listener {
 
                 // Aktualisiere die Spielerposition für die nächste Iteration
                 playerLoc = newLoc;
-                frame++;
             }
         }.runTaskTimer(plugin, 0, 1); // Task alle 1 Tick ausführen
     }
@@ -156,5 +165,12 @@ public class ForceField implements Listener {
     private void deactivateForceField(Player player) {
         player.sendMessage(ChatColor.RED + "Deactivated Force Field");
         forceFieldActive.put(player.getUniqueId(), false);
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && item.getItemMeta().getDisplayName().equals(FORCE_FIELD_ITEM_NAME)) {
+                ItemMeta forceFieldMeta = item.getItemMeta();
+                forceFieldMeta.removeEnchant(Enchantment.INFINITY);
+                item.setItemMeta(forceFieldMeta);
+            }
+        }
     }
 }

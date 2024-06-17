@@ -93,7 +93,7 @@ public class PowerGUI implements Listener {
                     TNTBow.giveBow(player);
                 } else if (clickedItem.getType() == Material.DIAMOND_HORSE_ARMOR) {
                     player.setItemOnCursor(null);
-                    // ForceField.giveForceField(player);
+                    ForceField.giveForceField(player);
                 }
             }
             // loadPage(page, event.getInventory(), player);
