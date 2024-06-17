@@ -92,7 +92,6 @@ public class ForceField implements Listener {
 
         new BukkitRunnable() {
             Location playerLoc = player.getLocation().clone();
-            Vector lastDirection = null;
             int radius = 7;
             double additionalY = -0.1; // Höhe hinzufügen
             double maxYVelocity = 0.6; // Maximale Y-Geschwindigkeit festlegen
@@ -106,21 +105,31 @@ public class ForceField implements Listener {
                 }
 
                 Location newLoc = player.getLocation().clone();
-                Vector direction = player.getLocation().getDirection().normalize(); // Richtung, in die der Spieler schaut
+
+
+                Vector currentVelocity = player.getVelocity();
+                Vector direction;
+                // slows player down when he is sneaking
                 if (player.isSneaking()) {
+                    direction = player.getLocation().getDirection().normalize().setY(0); // Richtung, in die der Spieler schaut
+                } else if (player.isSprinting()) {
+                    direction = player.getLocation().getDirection().normalize().multiply(2); // Richtung, in die der Spieler schaut
+                } else {
                     direction = new Vector(0, 0, 0);
                 }
-                Vector currentVelocity = player.getVelocity();
 
                 // Füge dem Y-Vektor des Spielers Velocity hinzu
                 currentVelocity.setY(currentVelocity.getY() + additionalY);
 
                 // Begrenze die Y-Geschwindigkeit
                 if (currentVelocity.getY() < -maxYVelocity) {
-                    currentVelocity.setY(currentVelocity.getY() * 0.8);
-                } else if (currentVelocity.getY() > maxYVelocity*5) {
                     currentVelocity.setY(currentVelocity.getY() * 0.85);
+                } else if (currentVelocity.getY() > maxYVelocity*100) {
+                    currentVelocity.setY(currentVelocity.getY() * 0.98);
                 }
+
+                double forceMultiplier = 0.0005; // Stärke der Abstoßung anpassen
+                double forceHeightMultiplier = 1; // Stärke der Abstoßung anpassen
 
                 // Abstoßung von festen Blöcken im Radius
                 for (double x = -radius; x <= radius; x++) {
@@ -130,30 +139,32 @@ public class ForceField implements Listener {
                             Block block = blockLoc.getBlock();
 
                             // Überprüfe, ob der Spieler in der Nähe von festen Blöcken ist
-                            if (!block.isEmpty() && block.getType().isSolid()) {
+                            if (!block.isEmpty() && (block.getType().isSolid())) {
                                 // Berechne die Richtung vom Block zum Spieler
                                 Vector blockDirection = playerLoc.toVector().subtract(blockLoc.toVector()).normalize();
 
                                 // Bewege den Spieler von den Blöcken weg
-                                double forceMultiplier = 0.0005; // Stärke der Abstoßung anpassen
-                                double forceHeightMultiplier = 1; // Stärke der Abstoßung anpassen
                                 currentVelocity.add(blockDirection.multiply(forceMultiplier));
                                 currentVelocity.setY(currentVelocity.getY() * forceHeightMultiplier);
                             }
 
+                            if (!block.isEmpty() && (block.isLiquid() && y <= radius)) {
+                                // Berechne die Richtung vom Block zum Spieler
+                                Vector blockDirection = playerLoc.toVector().subtract(blockLoc.toVector()).normalize();
+
+                                // Bewege den Spieler von den Blöcken weg
+                                currentVelocity.setY(currentVelocity.getY() + forceMultiplier);
+                                currentVelocity.setY(currentVelocity.getY() * forceHeightMultiplier);
+                            }
                         }
                     }
                 }
 
                 if (playerLoc.getBlock().getType() == Material.WATER) {
-                    currentVelocity.setY(currentVelocity.getY() + 0.6);
+                    currentVelocity.setY(currentVelocity.getY() + 1);
                 }
-                double walkSpeed;
-                if (player.isSprinting()) {
-                    walkSpeed = player.getWalkSpeed();
-                } else walkSpeed = player.getWalkSpeed()/2;
-                // Füge die Bewegungsrichtung hinzu
-                currentVelocity.add(direction.multiply(walkSpeed)); // Stärke der Richtung anpassen
+                double movementSpeed = player.getWalkSpeed() / 2;
+                currentVelocity.add(direction.multiply(movementSpeed)); // Stärke der Richtung anpassen
                 player.setVelocity(currentVelocity);
 
                 // Aktualisiere die Spielerposition für die nächste Iteration

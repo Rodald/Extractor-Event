@@ -2,6 +2,7 @@ package net.rodald.event;
 
 import net.md_5.bungee.api.ChatColor;
 import net.rodald.event.weapons.ForceField;
+import net.rodald.event.weapons.GrapplingHook;
 import net.rodald.event.weapons.TNTBow;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -94,6 +95,9 @@ public class PowerGUI implements Listener {
                 } else if (clickedItem.getType() == Material.DIAMOND_HORSE_ARMOR) {
                     player.setItemOnCursor(null);
                     ForceField.giveForceField(player);
+                } else if (clickedItem.getType() == Material.FISHING_ROD) {
+                    player.setItemOnCursor(null);
+                    GrapplingHook.giveGrapplingHook(player);
                 }
             }
             // loadPage(page, event.getInventory(), player);
@@ -299,9 +303,13 @@ public class PowerGUI implements Listener {
             ItemStack forceField = new ItemStack(Material.DIAMOND_HORSE_ARMOR);
             setName(forceField, "§3Force Field");
 
+            ItemStack grapplingHook = new ItemStack(Material.FISHING_ROD);
+            setName(grapplingHook, "§1Grappling Hook");
+
             ArrayList<ItemStack> powerItems = new ArrayList<>();
             powerItems.add(tntBow);
             powerItems.add(forceField);
+            powerItems.add(grapplingHook);
 
             // Platziere die Power-Items in der Mitte des Inventars
             int startingIndex = (inventory.getSize() - powerItems.size() * 2 - 9) / 2 + 1;
