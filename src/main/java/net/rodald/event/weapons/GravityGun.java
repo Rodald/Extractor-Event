@@ -1,10 +1,7 @@
 package net.rodald.event.weapons;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -18,19 +15,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public class GravityGun implements Listener {
 
     private final JavaPlugin plugin;
     private static final String GRAVITY_GUN_ITEM_NAME = "§6Gravity Gun";
+    private final double range = 6;
     private boolean mobRightClicked = false;
     private boolean rightClicking = false;
-    private final Map<UUID, Long> cooldowns = new HashMap<>();
-    private final Map<UUID, Boolean> forceFieldActive = new HashMap<>();
     private static Entity rightClickedMob;
+
 
     public GravityGun(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -86,7 +79,6 @@ public class GravityGun implements Listener {
                 rightClickedMob.setGravity(true);
             }
         } else {
-            player.sendMessage(ChatColor.RED + "You stopped rightclicking");
             if (!rightClicking) {
                 mobRightClicked = false;
             }
@@ -101,14 +93,13 @@ public class GravityGun implements Listener {
     private void gravityGunTick(Player player) {
         // Überprüfe, ob ein Mob rechtsgeklickt wurde
         if (mobRightClicked && rightClicking) {
-            player.sendMessage(ChatColor.GREEN + "You right-clicked a mob!");
 
         }
         Location playerPos = player.getLocation();
         playerPos.setY(playerPos.getY() + player.getEyeHeight());
 
         Vector direction = playerPos.getDirection(); // Richtung, in die der Spieler schaut.
-        Vector rangeVector = direction.multiply(6);
+        Vector rangeVector = direction.multiply(range);
         Location targetLocation = playerPos.add(rangeVector);
         if (rightClickedMob != null) {
             Location rightClickedMobPos = rightClickedMob.getLocation();
