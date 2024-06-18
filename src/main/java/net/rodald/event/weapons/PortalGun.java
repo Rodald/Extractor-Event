@@ -62,11 +62,16 @@ public class PortalGun implements Listener {
                 }
 
                 // Teleportiere den Spieler, wenn beide Portale existieren
+                float yaw = player.getYaw();
+                float pitch = player.getPitch();
                 if (portalA != null && portalB != null) {
                     if (player.getLocation().distance(portalA) < 2) {
                         player.teleport(portalB);
+
+                        player.setRotation(yaw, pitch);
                     } else if (player.getLocation().distance(portalB) < 2) {
                         player.teleport(portalA);
+                        player.setRotation(yaw, pitch);
                     }
                 }
 

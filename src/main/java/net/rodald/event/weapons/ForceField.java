@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+
+// TODO: x is not finite error in console whenever player is inside a block
 public class ForceField implements Listener {
 
     private final JavaPlugin plugin;
