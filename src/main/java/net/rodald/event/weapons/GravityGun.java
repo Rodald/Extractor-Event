@@ -73,8 +73,14 @@ public class GravityGun implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        // tests if player stops rightclicking to release mob
-        if (event.getAction().toString().contains("RIGHT")) {
+
+        ItemStack item = event.getItem();
+
+        if (item != null && item.getType() == Material.GOLDEN_HORSE_ARMOR &&
+                item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
+                item.getItemMeta().getDisplayName().equals(GRAVITY_GUN_ITEM_NAME) &&
+                event.getAction().toString().contains("RIGHT")) {
+
             gravityGunTick(player);
             if (rightClickedMob != null) {
                 rightClickedMob.setGravity(true);
@@ -85,6 +91,7 @@ public class GravityGun implements Listener {
                 mobRightClicked = false;
             }
             if (rightClickedMob != null) {
+                rightClickedMob.setVelocity(new Vector(0, 0, 0));
                 rightClickedMob.setGravity(false);
             }
             rightClickedMob = null;
@@ -103,7 +110,6 @@ public class GravityGun implements Listener {
         Vector direction = playerPos.getDirection(); // Richtung, in die der Spieler schaut.
         Vector rangeVector = direction.multiply(6);
         Location targetLocation = playerPos.add(rangeVector);
-
         if (rightClickedMob != null) {
             Location rightClickedMobPos = rightClickedMob.getLocation();
             Vector gravityPull = targetLocation.toVector().subtract(rightClickedMobPos.toVector()).divide(new Vector(5, 5, 5));
