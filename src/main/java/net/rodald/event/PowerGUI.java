@@ -100,6 +100,9 @@ public class PowerGUI implements Listener {
                 } else if (clickedItem.getType() == Material.GOLDEN_HORSE_ARMOR) {
                     player.setItemOnCursor(null);
                     GravityGun.giveGravityGun(player);
+                } else if (clickedItem.getType() == Material.NETHER_STAR) {
+                    player.setItemOnCursor(null);
+                    BlackHoleGenerator.giveBlackHoleGenerator(player);
                 } else if (clickedItem.getType() == Material.IRON_HORSE_ARMOR) {
                     player.setItemOnCursor(null);
                     PortalGun.givePortalGun(player);
@@ -313,11 +316,15 @@ public class PowerGUI implements Listener {
             ItemStack gravityGun = new ItemStack(Material.GOLDEN_HORSE_ARMOR);
             setName(gravityGun, "§6Gravity Gun");
 
+            ItemStack blackHoleGenerator = new ItemStack(Material.NETHER_STAR);
+            setName(blackHoleGenerator, "§0Black Hole Generator");
+
             ArrayList<ItemStack> powerItems = new ArrayList<>();
             powerItems.add(tntBow);
             powerItems.add(forceField);
             powerItems.add(grapplingHook);
             powerItems.add(gravityGun);
+            powerItems.add(blackHoleGenerator);
 
             // Platziere die Power-Items in der Mitte des Inventars
             int startingIndex = (inventory.getSize() - powerItems.size() * 2 - 9) / 2 + 1;

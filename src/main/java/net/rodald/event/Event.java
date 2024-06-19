@@ -60,6 +60,7 @@ public final class Event extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GrapplingHook(), this);
         getServer().getPluginManager().registerEvents(new PortalGun(this), this);
         getServer().getPluginManager().registerEvents(new GravityGun(this), this);
+        getServer().getPluginManager().registerEvents(new BlackHoleGenerator(this), this);
         getServer().getPluginManager().registerEvents(new PowerGUI(this), this);
         getServer().getPluginManager().registerEvents(new AnvilOpener(), this);
     }
