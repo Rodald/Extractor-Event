@@ -28,13 +28,11 @@ public class GrapplingHook implements Listener {
     @EventHandler
     public void onPlayerFish(PlayerFishEvent event) {
         Player player = event.getPlayer();
-        player.sendMessage("fishing hook");
         ItemStack item = player.getInventory().getItemInMainHand();
 
         if (item != null && item.getType() == Material.FISHING_ROD &&
                 item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
                 item.getItemMeta().getDisplayName().equals(GRAPPLING_HOOK_NAME)) {
-                player.sendMessage("grappling hook");
 
             if (event.getState() == PlayerFishEvent.State.REEL_IN || event.getState() == PlayerFishEvent.State.IN_GROUND) {
                 FishHook hook = event.getHook();
