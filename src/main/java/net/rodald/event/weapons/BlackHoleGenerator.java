@@ -3,12 +3,16 @@ package net.rodald.event.weapons;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -19,7 +23,7 @@ import java.util.UUID;
 public class BlackHoleGenerator implements Listener {
 
     private final JavaPlugin plugin;
-    private static final String BLACK_HOLE_ITEM_NAME = "§0Black Hole Generator";
+    private static final String BLACK_HOLE_ITEM_NAME = ChatColor.BLACK + "Black Hole Generator";
     private final Map<UUID, Long> cooldowns = new HashMap<>();
     private final long COOLDOWN_DURATION = 10000; // 10 seconds cooldown
 
@@ -42,8 +46,7 @@ public class BlackHoleGenerator implements Listener {
         ItemStack item = event.getItem();
 
         if (item != null && item.getType() == Material.NETHER_STAR &&
-                item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
-                item.getItemMeta().getDisplayName().equals(BLACK_HOLE_ITEM_NAME) &&
+                item.hasItemMeta() && item.getItemMeta().getDisplayName().equals(BLACK_HOLE_ITEM_NAME) &&
                 event.getAction().toString().contains("RIGHT_CLICK")) {
 
             UUID playerId = player.getUniqueId();
@@ -51,13 +54,25 @@ public class BlackHoleGenerator implements Listener {
             long lastUseTime = cooldowns.getOrDefault(playerId, 0L);
 
             if (currentTime >= lastUseTime + COOLDOWN_DURATION) {
-                createBlackHole(player.getLocation());
+                // Shoot a snowball as a placeholder for the black hole
+                Snowball snowball = player.launchProjectile(Snowball.class);
+                snowball.setCustomName("BlackHole");
                 cooldowns.put(playerId, currentTime);
             } else {
                 player.sendMessage(ChatColor.RED + "Black Hole Generator is on cooldown. Please wait.");
             }
 
-            event.setCancelled(true); // Verhindert, dass das Item in die Hand genommen wird
+            event.setCancelled(true); // Prevents the item from being used
+        }
+    }
+
+    @EventHandler
+    public void onProjectileHit(ProjectileHitEvent event) {
+        if (event.getEntity() instanceof Snowball) {
+            Snowball snowball = (Snowball) event.getEntity();
+            if ("BlackHole".equals(snowball.getCustomName())) {
+                createBlackHole(snowball.getLocation());
+            }
         }
     }
 
@@ -66,8 +81,8 @@ public class BlackHoleGenerator implements Listener {
         world.playSound(location, Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
 
         new BukkitRunnable() {
-            int duration = 100; // Duration of the black hole in ticks (5 seconds)
-            double radius = 10.0; // Radius of the black hole effect
+            int duration = 400; // Duration of the black hole in ticks (20 seconds)
+            double radius = 7.5; // Radius of the black hole effect
 
             @Override
             public void run() {
@@ -77,17 +92,18 @@ public class BlackHoleGenerator implements Listener {
                 }
 
                 // Display particle effects
-                world.spawnParticle(Particle.PORTAL, location, 100, radius / 2, radius / 2, radius / 2, 0.1);
+                world.spawnParticle(Particle.DUST, location, 500, radius / 3, radius / 3, radius / 3, 0, new Particle.DustOptions(Color.BLACK, 3));
 
                 // Attract nearby entities
                 for (Entity entity : world.getNearbyEntities(location, radius, radius, radius)) {
-                    if (entity instanceof Player && ((Player) entity).getUniqueId().equals(location.getWorld().getSpawnLocation().getBlock().getLocation().getWorld().getName())) {
-                        continue;
+                    if (entity instanceof Player) {
+                        Player player = (Player) entity;
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 1, true, false));
                     }
                     Vector direction = location.toVector().subtract(entity.getLocation().toVector()).normalize();
-                    entity.setVelocity(direction.multiply(0.2)); // Adjust the strength of the attraction
+                    entity.setVelocity(direction.multiply(0.1)); // Adjust the strength of the attraction
                 }
             }
-        }.runTaskTimer(plugin, 0, 1); // Task alle 1 Tick ausführen
+        }.runTaskTimer(plugin, 0, 1); // Task every tick
     }
 }
