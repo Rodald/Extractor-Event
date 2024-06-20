@@ -1,5 +1,7 @@
 package net.rodald.event.weapons;
 
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -19,7 +21,7 @@ public class GravityGun implements Listener {
 
     private final JavaPlugin plugin;
     private static final String GRAVITY_GUN_ITEM_NAME = "§6Gravity Gun";
-    private final double range = 6;
+    private double range = 6;
     private boolean mobRightClicked = false;
     private boolean rightClicking = false;
     private static Entity rightClickedMob;
@@ -32,10 +34,13 @@ public class GravityGun implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (rightClicking) {
+                if (rightClicking || mobRightClicked) {
                     rightClicking = false; // Reset the right-click status
-                } else {
                     mobRightClicked = false; // No right-click detected, reset mobRightClicked
+
+                    if (rightClickedMob != null) {
+                        rightClickedMob.setGravity(true);
+                    }
                 }
             }
         }.runTaskTimer(plugin, 0, 1); // Run every tick
@@ -58,8 +63,8 @@ public class GravityGun implements Listener {
 
         if (entity.getType() instanceof EntityType) {
             mobRightClicked = true;
-            rightClickedMob = entity;
             rightClicking = true;
+            rightClickedMob = entity;
         }
     }
 
@@ -69,43 +74,36 @@ public class GravityGun implements Listener {
 
         ItemStack item = event.getItem();
 
+        rightClicking = true;
         if (item != null && item.getType() == Material.GOLDEN_HORSE_ARMOR &&
                 item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
                 item.getItemMeta().getDisplayName().equals(GRAVITY_GUN_ITEM_NAME) &&
                 event.getAction().toString().contains("RIGHT")) {
-
+            player.sendMessage(ChatColor.GREEN + "You are right clicking");
             gravityGunTick(player);
-            if (rightClickedMob != null) {
-                rightClickedMob.setGravity(true);
-            }
+            player.sendMessage("Target has gravity: " + rightClickedMob.hasGravity());
         } else {
             if (!rightClicking) {
                 mobRightClicked = false;
             }
-            if (rightClickedMob != null) {
-                rightClickedMob.setVelocity(new Vector(0, 0, 0));
-                rightClickedMob.setGravity(false);
-            }
-            rightClickedMob = null;
         }
     }
 
     private void gravityGunTick(Player player) {
-        // Überprüfe, ob ein Mob rechtsgeklickt wurde
-        if (mobRightClicked && rightClicking) {
-
-        }
         Location playerPos = player.getLocation();
         playerPos.setY(playerPos.getY() + player.getEyeHeight());
 
-        Vector direction = playerPos.getDirection(); // Richtung, in die der Spieler schaut.
+        Vector direction = playerPos.getDirection();
         Vector rangeVector = direction.multiply(range);
         Location targetLocation = playerPos.add(rangeVector);
+
+
         if (rightClickedMob != null) {
             Location rightClickedMobPos = rightClickedMob.getLocation();
+            rightClickedMob.setGravity(false);
+            rightClickedMob.setFallDistance(0); // Ensures that entity takes no fall damage after release
             Vector gravityPull = targetLocation.toVector().subtract(rightClickedMobPos.toVector()).divide(new Vector(5, 5, 5));
             rightClickedMob.setVelocity(gravityPull);
         }
-
     }
 }
