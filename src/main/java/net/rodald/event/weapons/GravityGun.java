@@ -4,6 +4,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -16,12 +17,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class GravityGun implements Listener {
 
     private final JavaPlugin plugin;
     private static final String GRAVITY_GUN_ITEM_NAME = "§6Gravity Gun";
-    private double range = 6;
+    private final double range = 6;
     private boolean mobRightClicked = false;
     private boolean rightClicking = false;
     private static Entity rightClickedMob;
@@ -79,9 +81,7 @@ public class GravityGun implements Listener {
                 item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
                 item.getItemMeta().getDisplayName().equals(GRAVITY_GUN_ITEM_NAME) &&
                 event.getAction().toString().contains("RIGHT")) {
-            player.sendMessage(ChatColor.GREEN + "You are right clicking");
             gravityGunTick(player);
-            player.sendMessage("Target has gravity: " + rightClickedMob.hasGravity());
         } else {
             if (!rightClicking) {
                 mobRightClicked = false;
@@ -90,19 +90,30 @@ public class GravityGun implements Listener {
     }
 
     private void gravityGunTick(Player player) {
-        Location playerPos = player.getLocation();
-        playerPos.setY(playerPos.getY() + player.getEyeHeight());
-
-        Vector direction = playerPos.getDirection();
-        Vector rangeVector = direction.multiply(range);
-        Location targetLocation = playerPos.add(rangeVector);
-
-
         if (rightClickedMob != null) {
+            Location playerPos = player.getLocation();
+            playerPos.setY(playerPos.getY() + player.getEyeHeight());
+
+            Vector direction = playerPos.getDirection();
+
+            Location targetLocation;
+            Vector gravityPull;
+            Block targetBlock = player.getTargetBlockExact(100);
             Location rightClickedMobPos = rightClickedMob.getLocation();
+
+            if (player.isSneaking() && targetBlock != null) {
+                targetLocation = targetBlock.getLocation();
+                gravityPull = targetLocation.toVector().subtract(rightClickedMobPos.toVector()).divide(new Vector(7, 7, 7));
+            } else {
+                Vector rangeVector = direction.multiply(range);
+                targetLocation = playerPos.add(rangeVector);
+                gravityPull = targetLocation.toVector().subtract(rightClickedMobPos.toVector()).divide(new Vector(5, 5, 5));
+            }
+
+
+
             rightClickedMob.setGravity(false);
             rightClickedMob.setFallDistance(0); // Ensures that entity takes no fall damage after release
-            Vector gravityPull = targetLocation.toVector().subtract(rightClickedMobPos.toVector()).divide(new Vector(5, 5, 5));
             rightClickedMob.setVelocity(gravityPull);
         }
     }
