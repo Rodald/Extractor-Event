@@ -2,6 +2,7 @@ package net.rodald.event.weapons;
 
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
@@ -25,7 +26,8 @@ public class BlackHoleGenerator implements Listener {
     private final JavaPlugin plugin;
     private static final String BLACK_HOLE_ITEM_NAME = ChatColor.BLACK + "Black Hole Generator";
     private final Map<UUID, Long> cooldowns = new HashMap<>();
-    private final long COOLDOWN_DURATION = 10000; // 10 seconds cooldown
+    private final long COOLDOWN_DURATION = 1000;
+    private Player shooter;
 
     public BlackHoleGenerator(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -56,6 +58,7 @@ public class BlackHoleGenerator implements Listener {
             if (currentTime >= lastUseTime + COOLDOWN_DURATION) {
                 // Shoot a snowball as a placeholder for the black hole
                 Snowball snowball = player.launchProjectile(Snowball.class);
+                shooter = player;
                 snowball.setCustomName("BlackHole");
                 cooldowns.put(playerId, currentTime);
             } else {
@@ -97,11 +100,16 @@ public class BlackHoleGenerator implements Listener {
                 // Attract nearby entities
                 for (Entity entity : world.getNearbyEntities(location, radius, radius, radius)) {
                     if (entity instanceof Player) {
+                        if (entity == shooter) continue;  // makes sure that shooter doesnt take damage
                         Player player = (Player) entity;
                         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 1, true, false));
                     }
+                    if (entity instanceof LivingEntity) {
+                        LivingEntity livingEntity = (LivingEntity) entity;
+                        livingEntity.damage(1.25, shooter);
+                    }
                     Vector direction = location.toVector().subtract(entity.getLocation().toVector()).normalize();
-                    entity.setVelocity(direction.multiply(0.1)); // Adjust the strength of the attraction
+                    entity.setVelocity(entity.getVelocity().add(direction.multiply(0.1))); // Adjust the strength of the attraction
                 }
             }
         }.runTaskTimer(plugin, 0, 1); // Task every tick
