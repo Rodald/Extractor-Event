@@ -1,5 +1,7 @@
 package net.rodald.event;
 
+import net.rodald.event.gui.HostGUI;
+import net.rodald.event.gui.TeamSelector;
 import net.rodald.event.weapons.*;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -7,10 +9,12 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Light;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Display;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TextDisplay;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -23,6 +27,9 @@ public final class Event extends JavaPlugin {
     private static Event instance;
 
     public static PowerGUI powerGUI;
+    public static StartGame startGame;
+    public static HostGUI hostGUI;
+    private final TeamSelector teamSelector = new TeamSelector(this);
 
     @Override
     public void onEnable() {
@@ -54,6 +61,8 @@ public final class Event extends JavaPlugin {
         Extractor checker = new Extractor(this, radius);
         new GameSpectator(this);
         powerGUI = new PowerGUI(this);
+        startGame = new StartGame(this);
+        hostGUI = new HostGUI(this);
         getServer().getPluginManager().registerEvents(new PointSystem(this), this);
         getServer().getPluginManager().registerEvents(new TNTBow(), this);
         getServer().getPluginManager().registerEvents(new ForceField(this), this);
@@ -62,6 +71,8 @@ public final class Event extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GravityGun(this), this);
         getServer().getPluginManager().registerEvents(new BlackHoleGenerator(this), this);
         getServer().getPluginManager().registerEvents(new PowerGUI(this), this);
+        getServer().getPluginManager().registerEvents(new HostGUI(this), this);
+        getServer().getPluginManager().registerEvents(new TeamSelector(this), this);
         getServer().getPluginManager().registerEvents(new AnvilOpener(), this);
     }
 
@@ -73,6 +84,7 @@ public final class Event extends JavaPlugin {
         if (command.getName().equalsIgnoreCase("extractor")) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
+                World world = player.getWorld();
                 if (args.length == 0) {
                     player.sendMessage("Usage: /extractor <place|setSpectator|invoke> [args]");
                     return false;
@@ -82,7 +94,6 @@ public final class Event extends JavaPlugin {
                     case "place":
                         // places the generator
                         // Hole die Welt, in der sich der Spieler befindet
-                        World world = player.getWorld();
 
                         placeCircle(player.getLocation().subtract(0, 1, 0), 3, Material.BLACK_CONCRETE.createBlockData());
                         Material flyZone = Material.LIGHT;
@@ -117,7 +128,15 @@ public final class Event extends JavaPlugin {
                         boolean spectatorMode = Boolean.parseBoolean(args[2]);
                         GameSpectator.setSpectator(targetPlayer, spectatorMode);
                         return true;
-
+                    case "start":
+                        StartGame.startCountdown();
+                        return true;
+                    case "host":
+                        hostGUI.openInventory(player);
+                        return true;
+                    case "jointeam":
+                        teamSelector.openInventory(player);
+                        return true;
                     case "invoke":
                         // extractor invoke placeCircle player.getLocation() 2 diamond_block
 

@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="event:jar">
-    <output-path>$PROJECT_DIR$/../../../Server/LocalHost/1.20.6 Spigot/plugins</output-path>
+    <output-path>$PROJECT_DIR$/../../../Server/LocalHost/1.20.6 Paper/plugins</output-path>
     <root id="archive" name="event.jar">
       <element id="module-output" name="event" />
     </root>

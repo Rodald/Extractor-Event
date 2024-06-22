@@ -29,6 +29,7 @@ public class PowerGUI implements Listener {
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
+
     public void openInventory(Player player) {
         Inventory inventory = Bukkit.createInventory(player, 54, "Power GUI");
 
