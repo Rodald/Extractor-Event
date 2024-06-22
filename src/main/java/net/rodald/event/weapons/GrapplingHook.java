@@ -21,6 +21,7 @@ public class GrapplingHook implements Listener {
         ItemStack grapplingHook = new ItemStack(Material.FISHING_ROD);
         ItemMeta meta = grapplingHook.getItemMeta();
         meta.setDisplayName(GRAPPLING_HOOK_NAME);
+        meta.setUnbreakable(true);
         grapplingHook.setItemMeta(meta);
         player.setItemOnCursor(grapplingHook);
     }
@@ -29,10 +30,15 @@ public class GrapplingHook implements Listener {
     public void onPlayerFish(PlayerFishEvent event) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
+        ItemStack itemOffHand = player.getInventory().getItemInOffHand();
 
         if (item != null && item.getType() == Material.FISHING_ROD &&
                 item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
-                item.getItemMeta().getDisplayName().equals(GRAPPLING_HOOK_NAME)) {
+                item.getItemMeta().getDisplayName().equals(GRAPPLING_HOOK_NAME) || (
+                itemOffHand.getType() == Material.FISHING_ROD &&
+                        itemOffHand.hasItemMeta() && itemOffHand.getItemMeta().hasDisplayName() &&
+                        itemOffHand.getItemMeta().getDisplayName().equals(GRAPPLING_HOOK_NAME)
+                )) {
 
             if (event.getState() == PlayerFishEvent.State.REEL_IN || event.getState() == PlayerFishEvent.State.IN_GROUND) {
                 FishHook hook = event.getHook();

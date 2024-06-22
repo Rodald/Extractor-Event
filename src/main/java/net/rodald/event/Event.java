@@ -1,7 +1,10 @@
 package net.rodald.event;
 
+import net.rodald.event.gui.ExtractionScoreboard;
 import net.rodald.event.gui.HostGUI;
 import net.rodald.event.gui.TeamSelector;
+import net.rodald.event.scores.PlayerStatsScoreboard;
+import net.rodald.event.scores.PointSystem;
 import net.rodald.event.weapons.*;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -10,11 +13,6 @@ import org.bukkit.block.data.type.Light;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -29,6 +27,8 @@ public final class Event extends JavaPlugin {
     public static PowerGUI powerGUI;
     public static StartGame startGame;
     public static HostGUI hostGUI;
+    private static ExtractionScoreboard extractionScoreboard;
+    private PlayerStatsScoreboard playerStatsScoreboard;
     private final TeamSelector teamSelector = new TeamSelector(this);
 
     @Override
@@ -37,7 +37,6 @@ public final class Event extends JavaPlugin {
         instance = this;
 
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-
         PlayerHeadsGUI playerHeadsGUI = PlayerHeadsGUI.getInstance();
         AnvilGUI anvilGUI = AnvilGUI.getInstance();
         SignGUI signGUI = SignGUI.getInstance();
@@ -63,6 +62,9 @@ public final class Event extends JavaPlugin {
         powerGUI = new PowerGUI(this);
         startGame = new StartGame(this);
         hostGUI = new HostGUI(this);
+        playerStatsScoreboard = new PlayerStatsScoreboard(this);
+        extractionScoreboard = new ExtractionScoreboard(this, playerStatsScoreboard);
+        getServer().getPluginManager().registerEvents(playerStatsScoreboard, this);
         getServer().getPluginManager().registerEvents(new PointSystem(this), this);
         getServer().getPluginManager().registerEvents(new TNTBow(), this);
         getServer().getPluginManager().registerEvents(new ForceField(this), this);
@@ -75,9 +77,6 @@ public final class Event extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TeamSelector(this), this);
         getServer().getPluginManager().registerEvents(new AnvilOpener(), this);
     }
-
-
-
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

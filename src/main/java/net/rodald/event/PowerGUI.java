@@ -309,6 +309,7 @@ public class PowerGUI implements Listener {
             setName(forceField, "§3Force Field");
 
             ItemStack grapplingHook = new ItemStack(Material.FISHING_ROD);
+            grapplingHook.getItemMeta().setUnbreakable(true);
             setName(grapplingHook, "§1Grappling Hook");
 
             ItemStack portalGun = new ItemStack(Material.IRON_HORSE_ARMOR);

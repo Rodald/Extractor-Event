@@ -5,9 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -110,8 +108,10 @@ public class GravityGun implements Listener {
                 gravityPull = targetLocation.toVector().subtract(rightClickedMobPos.toVector()).divide(new Vector(5, 5, 5));
             }
 
-
-
+            if (rightClickedMob instanceof LivingEntity) {
+                LivingEntity living = (LivingEntity) rightClickedMob;
+                living.setKiller(player);
+            }
             rightClickedMob.setGravity(false);
             rightClickedMob.setFallDistance(0); // Ensures that entity takes no fall damage after release
             rightClickedMob.setVelocity(gravityPull);

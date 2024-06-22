@@ -1,5 +1,6 @@
 package net.rodald.event;
 
+import net.rodald.event.scores.PlayerExtractionEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -35,6 +36,7 @@ public class Extractor extends BukkitRunnable {
             }
             if (player.hasMetadata("able_to_extract")) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 10, 1, true, false, false));
+                Bukkit.getPluginManager().callEvent(new PlayerExtractionEvent(player)); // Auslösen des Events
             }
         }
     }

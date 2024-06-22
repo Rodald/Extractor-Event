@@ -1,5 +1,6 @@
-package net.rodald.event;
+package net.rodald.event.scores;
 
+import net.rodald.event.Event;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;

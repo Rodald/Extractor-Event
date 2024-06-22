@@ -34,12 +34,21 @@ public class TeamSelector implements Listener {
             Team redTeam = scoreboard.registerNewTeam("Red");
             redTeam.setDisplayName(ChatColor.RED + "Red Team");
             redTeam.setColor(ChatColor.RED);
+            redTeam.setAllowFriendlyFire(false);
         }
 
         if (scoreboard.getTeam("Blue") == null) {
             Team blueTeam = scoreboard.registerNewTeam("Blue");
             blueTeam.setDisplayName(ChatColor.BLUE + "Blue Team");
             blueTeam.setColor(ChatColor.BLUE);
+            blueTeam.setAllowFriendlyFire(false);
+        }
+
+        if (scoreboard.getTeam("Green") == null) {
+            Team greenTeam = scoreboard.registerNewTeam("Green");
+            greenTeam.setDisplayName(ChatColor.DARK_GREEN + "Green Team");
+            greenTeam.setColor(ChatColor.DARK_GREEN);
+            greenTeam.setAllowFriendlyFire(false);
         }
     }
 
@@ -61,10 +70,17 @@ public class TeamSelector implements Listener {
         blueMeta.setLore(getTeamMembersLore("Blue"));
         blueTeamItem.setItemMeta(blueMeta);
 
+        // Green Team Item
+        ItemStack greenTeamItem = setName(new ItemStack(Material.GREEN_CONCRETE), ChatColor.DARK_GREEN + "Green Team");
+        ItemMeta greenMeta = greenTeamItem.getItemMeta();
+        greenMeta.setLore(getTeamMembersLore("Green"));
+        greenTeamItem.setItemMeta(greenMeta);
+
         // Set items in the inventory
         gui.setItem(49, closeItem); // Bottom center
         gui.setItem(20, redTeamItem); // Left middle
-        gui.setItem(24, blueTeamItem); // Right middle
+        gui.setItem(22, blueTeamItem); // Right middle
+        gui.setItem(24, greenTeamItem); // Left middle
 
         // Open the inventory for the player
         player.openInventory(gui);
@@ -120,9 +136,11 @@ public class TeamSelector implements Listener {
             if (itemName.equals(ChatColor.RED + "Close")) {
                 player.closeInventory();
             } else if (itemName.equals(ChatColor.RED + "Red Team")) {
-                joinTeam(player, "Red", "Red Team");
+                joinTeam(player, "Red", ChatColor.RED + "Red Team");
             } else if (itemName.equals(ChatColor.BLUE + "Blue Team")) {
-                joinTeam(player, "Blue", "Blue Team");
+                joinTeam(player, "Blue", ChatColor.BLUE + "Blue Team");
+            } else if (itemName.equals(ChatColor.DARK_GREEN + "Green Team")) {
+                joinTeam(player, "Green", ChatColor.DARK_GREEN + "Green Team");
             }
         }
     }
@@ -145,7 +163,8 @@ public class TeamSelector implements Listener {
 
         // Add player to the new team
         newTeam.addEntry(player.getName());
-        player.sendMessage(ChatColor.GREEN + "You joined the " + teamDisplayName + ".");
+        player.sendMessage(ChatColor.GOLD + "You joined the " + teamDisplayName + ChatColor.GOLD + ".");
+        player.setMaxHealth(8);
 
         // Update the inventory to show the new team member
         openInventory(player);

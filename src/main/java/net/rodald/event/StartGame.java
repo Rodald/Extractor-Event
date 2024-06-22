@@ -11,6 +11,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class StartGame {
     private static JavaPlugin plugin = null;
 
+    public static int getRound() {
+        return round;
+    }
+
     private static int round = 1;
     public StartGame(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -19,6 +23,7 @@ public class StartGame {
     public void startTeamSelectorPhase() {
         Bukkit.getOnlinePlayers().forEach(this::sendClickableMessage);
     }
+
 
     public static void startCountdown() {
         placeCages();
@@ -117,6 +122,7 @@ public class StartGame {
 
     public void sendClickableMessage(Player player) {
         // Erstelle die Nachricht
+        player.sendMessage(ChatColor.RED + "You have 60 seconds to select your team!");
         TextComponent message = new TextComponent("Click here to open the Team GUI!");
         message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
         message.setBold(true);
@@ -126,6 +132,8 @@ public class StartGame {
 
         // Sende die Nachricht an den Spieler
         player.spigot().sendMessage(message);
+
     }
+
 
 }
