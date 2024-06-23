@@ -1,5 +1,6 @@
 package net.rodald.event;
 
+import net.rodald.event.arrow.ArrowDamage;
 import net.rodald.event.gui.ExtractionScoreboard;
 import net.rodald.event.gui.HostGUI;
 import net.rodald.event.gui.TeamSelector;
@@ -69,6 +70,7 @@ public final class Event extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TNTBow(), this);
         getServer().getPluginManager().registerEvents(new ForceField(this), this);
         getServer().getPluginManager().registerEvents(new GrapplingHook(), this);
+        getServer().getPluginManager().registerEvents(new ArrowDamage(this), this);
         getServer().getPluginManager().registerEvents(new PortalGun(this), this);
         getServer().getPluginManager().registerEvents(new GravityGun(this), this);
         getServer().getPluginManager().registerEvents(new BlackHoleGenerator(this), this);

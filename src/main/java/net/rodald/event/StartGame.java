@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 // TODO: Disable minecrafts death msgs on start
+// TODO: Turn keepinventory on.
 public class StartGame {
     private static JavaPlugin plugin = null;
 
@@ -15,7 +16,9 @@ public class StartGame {
         return round;
     }
 
+    public static Boolean gameIsRunning = true;
     private static int round = 1;
+
     public StartGame(JavaPlugin plugin) {
         this.plugin = plugin;
     }

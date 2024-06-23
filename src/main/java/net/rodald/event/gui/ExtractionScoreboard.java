@@ -47,17 +47,17 @@ public class ExtractionScoreboard {
                             Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
                             TextColor color = scoreboard.getTeam(entry.getKey().getName()).color();
-                            leaderboard[i] = ChatColor.YELLOW + String.valueOf(i + 1) + "." + ChatColor.WHITE + " - " + convertTextColorToChatColor(color) + entry.getKey().getName();
+                            leaderboard[i] = ChatColor.YELLOW + String.valueOf(i + 1) + "." + ChatColor.WHITE + " - " + convertTextColorToChatColor(color) + entry.getKey().getDisplayName();
 
                             switch (entry.getKey().getName()) {
                                 case "Red":
-                                    leaderboard[i] = leaderboard[i] + "               ";
+                                    leaderboard[i] = leaderboard[i] + "          ";
                                     break;
                                 case "Green":
-                                    leaderboard[i] = leaderboard[i] + "            ";
+                                    leaderboard[i] = leaderboard[i] + "       ";
                                     break;
                                 case "Blue":
-                                    leaderboard[i] = leaderboard[i] + "             " + ChatColor.BOLD + " ";
+                                    leaderboard[i] = leaderboard[i] + "        " + ChatColor.BOLD + " ";
                                     break;
                             }
                             leaderboard[i] = leaderboard[i] + ChatColor.GRAY + "(" + entry.getValue() + "pts)";

@@ -42,10 +42,10 @@ public class PlayerStatsScoreboard implements Listener {
     }
 
     public void addDamage(Player player, int damage) {
-        playerDamage.put(player, getDamage(player) + damage);
+        playerDamage.put(player, getDamage(player) + 1);
         Team team = getTeam(player);
         if (team != null) {
-            addTeamPoints(team, damage * 2);
+            addTeamPoints(team, 4);
         }
     }
 
@@ -142,7 +142,7 @@ public class PlayerStatsScoreboard implements Listener {
 
                 ChatColor killerChatColor = convertTextColorToChatColor(killersTeam.color());
                 ChatColor targetChatColor = convertTextColorToChatColor(targetColor);
-                killer.sendTitle("", "\uD83C\uDFF9 " + targetChatColor + target.getName(), 0, 40, 10);
+                killer.sendTitle("", ChatColor.RED + "\uD83C\uDFF9 " + targetChatColor + target.getName(), 0, 40, 10);
                 Bukkit.broadcastMessage(ChatColor.RED + "[\uD83C\uDFF9] " + ChatColor.BOLD + targetChatColor + target.getName() + ChatColor.GRAY + " has been killed by " + killerChatColor + killer.getName());
                 killer.sendMessage(ChatColor.GREEN + "+8 points " + ChatColor.DARK_GREEN + "(kill)");
 

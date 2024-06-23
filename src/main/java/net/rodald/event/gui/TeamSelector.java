@@ -2,14 +2,17 @@ package net.rodald.event.gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
@@ -156,6 +159,13 @@ public class TeamSelector implements Listener {
             }
         }
 
+        // give player armor
+        Color color = Color.fromRGB(newTeam.color().value());
+
+        player.getInventory().setChestplate(colorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), color));
+        player.getInventory().setLeggings(colorArmor(new ItemStack(Material.LEATHER_LEGGINGS), color));
+        player.getInventory().setBoots(colorArmor(new ItemStack(Material.LEATHER_BOOTS), color));
+
         newTeam.addEntry(player.getName());
         player.sendMessage(ChatColor.GREEN + "You have joined " + newTeam.getDisplayName() + ChatColor.GREEN + ".");
         player.closeInventory();
@@ -163,5 +173,13 @@ public class TeamSelector implements Listener {
         // Debug: Verify the settings are applied
         player.sendMessage(ChatColor.GREEN + "Friendly Fire: " + newTeam.allowFriendlyFire());
         player.sendMessage(ChatColor.GREEN + "NameTagVisibility: " + newTeam.getNameTagVisibility());
+    }
+
+    private ItemStack colorArmor(ItemStack armor, Color color) {
+        LeatherArmorMeta armorMeta = (LeatherArmorMeta) armor.getItemMeta();
+        armorMeta.setColor(color);
+        armorMeta.setUnbreakable(true);
+        armor.setItemMeta(armorMeta);
+        return armor;
     }
 }
