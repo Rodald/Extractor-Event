@@ -58,9 +58,11 @@ public class Extractor extends BukkitRunnable {
                 if (player.getLocation().distance(nearestTextDisplay.getLocation()) >= 9) {
                     player.sendMessage(String.valueOf(player.getLocation().distance(nearestTextDisplay.getLocation())));
                     GameSpectator.setSpectator(player, true);
+
                     Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
                     TextColor color = scoreboard.getEntityTeam(player).displayName().children().get(0).style().color();
+                    player.sendMessage(ChatColor.GREEN + "+12 points " + ChatColor.DARK_GREEN + "(Extraction)");
                     Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[↑] " + convertTextColorToChatColor(color) + player.getName()  + ChatColor.GRAY + " extracted!");
                     playerStatsScoreboard.addExtraction(player);
 

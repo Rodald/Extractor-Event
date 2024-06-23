@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -27,6 +28,7 @@ public class PlayerStatsScoreboard implements Listener {
     private final Map<Player, Integer> playerDamage = new HashMap<>();
     private final Map<Player, Integer> playerExtractions = new HashMap<>();
     private final Map<Team, Integer> teamPoints = new HashMap<>();
+    private final String FIREWORK_TAG = "no_damage_firework";
 
     public PlayerStatsScoreboard(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -131,6 +133,7 @@ public class PlayerStatsScoreboard implements Listener {
                         .with(FireworkEffect.Type.BALL_LARGE) // Firework type
                         .build());
 
+                meta.getPersistentDataContainer().set(new NamespacedKey(plugin, FIREWORK_TAG), PersistentDataType.BYTE, (byte) 1);
                 firework.setFireworkMeta(meta);
                 firework.detonate();
 
@@ -154,6 +157,7 @@ public class PlayerStatsScoreboard implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        // Handle arrow damage and health display
         if (event.getEntity() instanceof Player && event.getDamager() instanceof Projectile) {
             Projectile projectile = (Projectile) event.getDamager();
 
@@ -164,8 +168,31 @@ public class PlayerStatsScoreboard implements Listener {
                 if (target == damager) {
                     return; // tests if player shoots himself
                 }
+
+                // Set damage to 1 heart (2 health points)
+                event.setDamage(2);
+
+                TextColor targetColor = getTeam(target).color();
+                ChatColor targetChatColor = convertTextColorToChatColor(targetColor);
+
+                // displays enemy health above action bar
+                if (target.getHealth() > 2) {
+                    damager.sendActionBar(targetChatColor + target.getName() + ChatColor.WHITE + " - " + ChatColor.RED + (int) ((target.getHealth() - 2) / 2) + "❤");
+                } else {
+                    damager.sendActionBar(targetChatColor + target.getName() + ChatColor.WHITE + " - " + ChatColor.DARK_RED + "☠");
+                }
+
                 addDamage(damager, (int) event.getDamage());
                 damager.playSound(damager, Sound.ENTITY_ARROW_HIT_PLAYER, 1, 1);
+            }
+        }
+
+        // Handle firework damage prevention
+        if (event.getDamager() instanceof Firework) {
+            Firework firework = (Firework) event.getDamager();
+            FireworkMeta meta = firework.getFireworkMeta();
+            if (meta.getPersistentDataContainer().has(new NamespacedKey(plugin, FIREWORK_TAG), PersistentDataType.BYTE)) {
+                event.setCancelled(true); // Prevent the marked firework from causing damage
             }
         }
     }

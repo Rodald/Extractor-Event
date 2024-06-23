@@ -23,6 +23,7 @@ public class GameSpectator {
             player.setAllowFlight(mode);
             player.setInvisible(mode);
             player.setInvulnerable(mode);
+            player.setFlying(mode);
 ;
         }
 
