@@ -25,24 +25,7 @@ public class PointSystem implements Listener {
     public PointSystem(Event gamePoints) {
         this.gamePoints = gamePoints;
     }
-    @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (event.getEntity() instanceof Zombie && event.getDamager() instanceof Projectile) {
-            Projectile projectile = (Projectile) event.getDamager();
 
-            if (projectile instanceof Arrow && projectile.getShooter() instanceof Player) {
-                Player damager = (Player) projectile.getShooter();
-                Player target = (Player) event.getEntity();
-                // test if player shots himself
-                if (target != damager) {
-                    damager.sendMessage("You shot a player");
-                    addPoints("extractorPoints", damager, 1);
-                    damager.playSound(damager, Sound.ENTITY_ARROW_HIT_PLAYER, 1, 1);
-                    damager.sendMessage("Your current Score is: " + getPoints("extractorPoints", damager));
-                }
-            }
-        }
-    }
 
     public void addPoints(String objectiveName, Player player, int points) {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();

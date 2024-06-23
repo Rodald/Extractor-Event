@@ -7,7 +7,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-
+// TODO: Disable minecrafts death msgs on start
 public class StartGame {
     private static JavaPlugin plugin = null;
 

@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.Nullable;
@@ -35,6 +36,7 @@ public class TeamSelector implements Listener {
             redTeam.setDisplayName(ChatColor.RED + "Red Team");
             redTeam.setColor(ChatColor.RED);
             redTeam.setAllowFriendlyFire(false);
+            redTeam.setNameTagVisibility(NameTagVisibility.HIDE_FOR_OTHER_TEAMS);
         }
 
         if (scoreboard.getTeam("Blue") == null) {
@@ -42,6 +44,7 @@ public class TeamSelector implements Listener {
             blueTeam.setDisplayName(ChatColor.BLUE + "Blue Team");
             blueTeam.setColor(ChatColor.BLUE);
             blueTeam.setAllowFriendlyFire(false);
+            blueTeam.setNameTagVisibility(NameTagVisibility.HIDE_FOR_OTHER_TEAMS);
         }
 
         if (scoreboard.getTeam("Green") == null) {
@@ -49,40 +52,35 @@ public class TeamSelector implements Listener {
             greenTeam.setDisplayName(ChatColor.DARK_GREEN + "Green Team");
             greenTeam.setColor(ChatColor.DARK_GREEN);
             greenTeam.setAllowFriendlyFire(false);
+            greenTeam.setNameTagVisibility(NameTagVisibility.HIDE_FOR_OTHER_TEAMS);
         }
     }
 
     public void openInventory(Player player) {
         Inventory gui = Bukkit.createInventory(null, 54, ChatColor.DARK_GRAY + "Select a Team");
 
-        // Close Item
         ItemStack closeItem = setName(new ItemStack(Material.BARRIER), ChatColor.RED + "Close");
 
-        // Red Team Item
         ItemStack redTeamItem = setName(new ItemStack(Material.RED_CONCRETE), ChatColor.RED + "Red Team");
         ItemMeta redMeta = redTeamItem.getItemMeta();
         redMeta.setLore(getTeamMembersLore("Red"));
         redTeamItem.setItemMeta(redMeta);
 
-        // Blue Team Item
         ItemStack blueTeamItem = setName(new ItemStack(Material.BLUE_CONCRETE), ChatColor.BLUE + "Blue Team");
         ItemMeta blueMeta = blueTeamItem.getItemMeta();
         blueMeta.setLore(getTeamMembersLore("Blue"));
         blueTeamItem.setItemMeta(blueMeta);
 
-        // Green Team Item
         ItemStack greenTeamItem = setName(new ItemStack(Material.GREEN_CONCRETE), ChatColor.DARK_GREEN + "Green Team");
         ItemMeta greenMeta = greenTeamItem.getItemMeta();
         greenMeta.setLore(getTeamMembersLore("Green"));
         greenTeamItem.setItemMeta(greenMeta);
 
-        // Set items in the inventory
-        gui.setItem(49, closeItem); // Bottom center
-        gui.setItem(20, redTeamItem); // Left middle
-        gui.setItem(22, blueTeamItem); // Right middle
-        gui.setItem(24, greenTeamItem); // Left middle
+        gui.setItem(49, closeItem);
+        gui.setItem(20, redTeamItem);
+        gui.setItem(22, blueTeamItem);
+        gui.setItem(24, greenTeamItem);
 
-        // Open the inventory for the player
         player.openInventory(gui);
     }
 
@@ -106,15 +104,12 @@ public class TeamSelector implements Listener {
             return null;
         }
 
-        // Get the ItemMeta of the item
         ItemMeta meta = item.getItemMeta();
         if (meta == null) {
             return item;
         }
 
-        // Make the name non-italic
         meta.setDisplayName(ChatColor.RESET + name);
-
         item.setItemMeta(meta);
         return item;
     }
@@ -122,7 +117,7 @@ public class TeamSelector implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getView().getTitle().equals(ChatColor.DARK_GRAY + "Select a Team")) {
-            event.setCancelled(true); // Prevent taking the items
+            event.setCancelled(true);
 
             Player player = (Player) event.getWhoClicked();
             ItemStack clickedItem = event.getCurrentItem();
@@ -136,37 +131,37 @@ public class TeamSelector implements Listener {
             if (itemName.equals(ChatColor.RED + "Close")) {
                 player.closeInventory();
             } else if (itemName.equals(ChatColor.RED + "Red Team")) {
-                joinTeam(player, "Red", ChatColor.RED + "Red Team");
+                joinTeam(player, "Red");
             } else if (itemName.equals(ChatColor.BLUE + "Blue Team")) {
-                joinTeam(player, "Blue", ChatColor.BLUE + "Blue Team");
+                joinTeam(player, "Blue");
             } else if (itemName.equals(ChatColor.DARK_GREEN + "Green Team")) {
-                joinTeam(player, "Green", ChatColor.DARK_GREEN + "Green Team");
+                joinTeam(player, "Green");
             }
         }
     }
 
-    private void joinTeam(Player player, String teamName, String teamDisplayName) {
+    private void joinTeam(Player player, String teamName) {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         Team newTeam = scoreboard.getTeam(teamName);
 
         if (newTeam == null) {
-            player.sendMessage(ChatColor.RED + "Team does not exist.");
+            player.sendMessage(ChatColor.RED + "Error: Team not found.");
             return;
         }
 
-        // Remove player from any other team
         for (Team team : scoreboard.getTeams()) {
             if (team.hasEntry(player.getName())) {
                 team.removeEntry(player.getName());
+                player.sendMessage(ChatColor.YELLOW + "You have left " + team.getDisplayName() + ChatColor.YELLOW + ".");
             }
         }
 
-        // Add player to the new team
         newTeam.addEntry(player.getName());
-        player.sendMessage(ChatColor.GOLD + "You joined the " + teamDisplayName + ChatColor.GOLD + ".");
-        player.setMaxHealth(8);
+        player.sendMessage(ChatColor.GREEN + "You have joined " + newTeam.getDisplayName() + ChatColor.GREEN + ".");
+        player.closeInventory();
 
-        // Update the inventory to show the new team member
-        openInventory(player);
+        // Debug: Verify the settings are applied
+        player.sendMessage(ChatColor.GREEN + "Friendly Fire: " + newTeam.allowFriendlyFire());
+        player.sendMessage(ChatColor.GREEN + "NameTagVisibility: " + newTeam.getNameTagVisibility());
     }
 }
