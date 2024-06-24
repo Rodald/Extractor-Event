@@ -32,11 +32,15 @@ public class HostGUI implements Listener {
 
         ItemStack startTeamSelectorPhase = setName(new ItemStack(Material.RED_CONCRETE), "startTeamSelectorPhase");
         ItemStack startCountdown = setName(new ItemStack(Material.SCAFFOLDING), "startCountdown");
+        ItemStack teleportPlayers = setName(new ItemStack(Material.ENDER_PEARL), "teleportPlayers");
+        ItemStack startRound = setName(new ItemStack(Material.STONE_BUTTON), "startRound");
 
 
         // Set items in the inventory
         gui.setItem(1, startTeamSelectorPhase);
         gui.setItem(2, startCountdown);
+        gui.setItem(3, teleportPlayers);
+        gui.setItem(4, startRound);
         gui.setItem(26, closeItem); // Bottom right
 
         // Open the inventory for the player
@@ -83,6 +87,10 @@ public class HostGUI implements Listener {
                 startGame.startTeamSelectorPhase();
             } else if (itemName.equals("startCountdown")) {
                 StartGame.startCountdown();
+            } else if (itemName.equals("teleportPlayers")) {
+                StartGame.teleportPlayers(StartGame.getRound());
+            } else if (itemName.equals("startRound")) {
+                StartGame.startRound(StartGame.getRound());
             }
         }
     }

@@ -24,6 +24,12 @@ import java.util.List;
 
 public class TeamSelector implements Listener {
 
+    public static final Team[] validTeams = {
+            Bukkit.getScoreboardManager().getMainScoreboard().getTeam("Red"),
+            Bukkit.getScoreboardManager().getMainScoreboard().getTeam("Green"),
+            Bukkit.getScoreboardManager().getMainScoreboard().getTeam("Blue")
+    };
+
     private final JavaPlugin plugin;
 
     public TeamSelector(JavaPlugin plugin) {
@@ -181,5 +187,17 @@ public class TeamSelector implements Listener {
         armorMeta.setUnbreakable(true);
         armor.setItemMeta(armorMeta);
         return armor;
+    }
+
+    public static Team getTeam(Player player) {
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        if (scoreboard.getTeam("Red").hasEntity(player)) {
+            return Bukkit.getScoreboardManager().getMainScoreboard().getTeam("Red");
+        } else if (scoreboard.getTeam("Green").hasEntity(player)) {
+            return Bukkit.getScoreboardManager().getMainScoreboard().getTeam("Green");
+        } else if (scoreboard.getTeam("Blue").hasEntity(player)) {
+            return Bukkit.getScoreboardManager().getMainScoreboard().getTeam("Blue");
+        }
+        return null;
     }
 }
