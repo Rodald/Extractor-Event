@@ -3,6 +3,7 @@ package net.rodald.event;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.rodald.event.gui.TeamSelector;
+import net.rodald.event.scores.PlayerStatsScoreboard;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -11,11 +12,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 // TODO: Disable minecrafts death msgs on start
 // TODO: Turn keepinventory on.
 
@@ -61,9 +60,11 @@ public class StartGame {
 
     public static Boolean gameIsRunning = true;
     private static int round = 1;
+    private static PlayerStatsScoreboard playerStatsScoreboard;
 
     public StartGame(JavaPlugin plugin) {
         this.plugin = plugin;
+        this.playerStatsScoreboard = playerStatsScoreboard;
     }
 
 
@@ -194,10 +195,19 @@ public class StartGame {
 
     private static Team getTeamByLetter(char team) {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        // Sortiere die Teams nach Punkten in absteigender Reihenfolge
+        List<Map.Entry<Team, Integer>> sortedTeams = playerStatsScoreboard.getTeamPoints().entrySet().stream()
+                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
+                .collect(Collectors.toList());
+
+        // Erstelle das Leaderboard
+        String[] leaderboard = new String[sortedTeams.size()];
         switch (team) {
             case 'R': return scoreboard.getTeam("Red");
             case 'G': return scoreboard.getTeam("Green");
             case 'B': return scoreboard.getTeam("Blue");
+            case '1': return scoreboard.getTeam(leaderboard[0]);
+            case '2': return scoreboard.getTeam(leaderboard[1]);
             default: return null;
         }
     }
