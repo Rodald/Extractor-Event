@@ -31,6 +31,7 @@ public class TeamSelector implements Listener {
     };
 
     private final JavaPlugin plugin;
+    public static Boolean teamSelectorPhase = false;
 
     public TeamSelector(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -66,31 +67,38 @@ public class TeamSelector implements Listener {
     }
 
     public void openInventory(Player player) {
-        Inventory gui = Bukkit.createInventory(null, 54, ChatColor.DARK_GRAY + "Select a Team");
+        if (teamSelectorPhase) {
 
-        ItemStack closeItem = setName(new ItemStack(Material.BARRIER), ChatColor.RED + "Close");
 
-        ItemStack redTeamItem = setName(new ItemStack(Material.RED_CONCRETE), ChatColor.RED + "Red Team");
-        ItemMeta redMeta = redTeamItem.getItemMeta();
-        redMeta.setLore(getTeamMembersLore("Red"));
-        redTeamItem.setItemMeta(redMeta);
+            Inventory gui = Bukkit.createInventory(null, 54, ChatColor.DARK_GRAY + "Select a Team");
 
-        ItemStack blueTeamItem = setName(new ItemStack(Material.BLUE_CONCRETE), ChatColor.BLUE + "Blue Team");
-        ItemMeta blueMeta = blueTeamItem.getItemMeta();
-        blueMeta.setLore(getTeamMembersLore("Blue"));
-        blueTeamItem.setItemMeta(blueMeta);
+            ItemStack closeItem = setName(new ItemStack(Material.BARRIER), ChatColor.RED + "Close");
 
-        ItemStack greenTeamItem = setName(new ItemStack(Material.GREEN_CONCRETE), ChatColor.DARK_GREEN + "Green Team");
-        ItemMeta greenMeta = greenTeamItem.getItemMeta();
-        greenMeta.setLore(getTeamMembersLore("Green"));
-        greenTeamItem.setItemMeta(greenMeta);
+            ItemStack redTeamItem = setName(new ItemStack(Material.RED_CONCRETE), ChatColor.RED + "Red Team");
+            ItemMeta redMeta = redTeamItem.getItemMeta();
+            redMeta.setLore(getTeamMembersLore("Red"));
+            redTeamItem.setItemMeta(redMeta);
 
-        gui.setItem(49, closeItem);
-        gui.setItem(20, redTeamItem);
-        gui.setItem(22, blueTeamItem);
-        gui.setItem(24, greenTeamItem);
+            ItemStack blueTeamItem = setName(new ItemStack(Material.BLUE_CONCRETE), ChatColor.BLUE + "Blue Team");
+            ItemMeta blueMeta = blueTeamItem.getItemMeta();
+            blueMeta.setLore(getTeamMembersLore("Blue"));
+            blueTeamItem.setItemMeta(blueMeta);
 
-        player.openInventory(gui);
+            ItemStack greenTeamItem = setName(new ItemStack(Material.GREEN_CONCRETE), ChatColor.DARK_GREEN + "Green Team");
+            ItemMeta greenMeta = greenTeamItem.getItemMeta();
+            greenMeta.setLore(getTeamMembersLore("Green"));
+            greenTeamItem.setItemMeta(greenMeta);
+
+            gui.setItem(49, closeItem);
+            gui.setItem(20, redTeamItem);
+            gui.setItem(22, blueTeamItem);
+            gui.setItem(24, greenTeamItem);
+
+            player.openInventory(gui);
+        } else {
+            player.sendMessage(ChatColor.RED + "Sorry, the team selection phase is already over :(");
+            player.sendMessage(ChatColor.RED + "Please contact an admin if you think that this is an error");
+        }
     }
 
     private @Nullable List<String> getTeamMembersLore(String teamName) {

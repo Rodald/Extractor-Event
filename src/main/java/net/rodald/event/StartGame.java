@@ -66,12 +66,30 @@ public class StartGame {
         this.plugin = plugin;
     }
 
-    public void startTeamSelectorPhase() {
-        Bukkit.getOnlinePlayers().forEach(this::sendClickableMessage);
-    }
+
 
 
     public static void startExtractionGame() {
+        startTeamSelectorPhase();
+        waitTicks(1200);
+        Bukkit.broadcastMessage(ChatColor.GRAY + "The team selection phase is now over");
+        TeamSelector.teamSelectorPhase = false;
+
+        for (int i = getRound(); i <= 7; i++) {
+            startRound(getRound());
+            do {
+            } while (gameIsRunning);
+
+            waitTicks(100);
+            Bukkit.broadcastMessage(ChatColor.GRAY + "Waiting for next round to start...");
+            Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + "starts in: 10");
+            waitTicks(100);
+            for (int j = 5; j > 0; j--) {
+                Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + "starts in: " + j);
+                waitTicks(20);
+            }
+            round++;
+        }
 
     }
 
@@ -84,6 +102,10 @@ public class StartGame {
                 Bukkit.broadcastMessage("Is round over: " + isRoundOver());
             }
         }.runTaskTimer(plugin, 0, 10);
+    }
+
+    public static void startTeamSelectorPhase() {
+        Bukkit.getOnlinePlayers().forEach(StartGame::sendClickableMessage);
     }
 
 
@@ -140,9 +162,9 @@ public class StartGame {
     }
 
     public static void teleportPlayers(int round) {
-        Bukkit.broadcastMessage(String.valueOf(rounds[round].charAt(0)));
-        Team team1 = getTeamByLetter(rounds[round].charAt(0));
-        Team team2 = getTeamByLetter(rounds[round].charAt(2));
+        Bukkit.broadcastMessage(String.valueOf(rounds[round - 1].charAt(0)));
+        Team team1 = getTeamByLetter(rounds[round - 1].charAt(0));
+        Team team2 = getTeamByLetter(rounds[round - 1].charAt(2));
 
         Location team1Spawn1 = getSpawnLocation("team1", "spawn1");
         Location team1Spawn2 = getSpawnLocation("team1", "spawn2");
@@ -239,8 +261,9 @@ public class StartGame {
                 });
     }
 
-    public void sendClickableMessage(Player player) {
+    public static void sendClickableMessage(Player player) {
         // Erstelle die Nachricht
+        TeamSelector.teamSelectorPhase = true;
         player.sendMessage(ChatColor.RED + "You have 60 seconds to select your team!");
         TextComponent message = new TextComponent("Click here to open the Team GUI!");
         message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
@@ -282,6 +305,16 @@ public class StartGame {
             player.teleport(location2.subtract(.5, 0, .5));
             player.setRotation(yaw, pitch);
         }
+    }
+
+    private static void waitTicks(int ticks) {
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+
+            }
+        }.runTaskLater(plugin, ticks);
     }
 
 }
