@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 // TODO: Disable minecrafts death msgs on start
 // TODO: Turn keepinventory on.
+// TODO: Make ingame timer work
 
 /*
     Games:
@@ -59,6 +60,7 @@ public class StartGame {
     }
 
     public static Boolean gameIsRunning = true;
+    public  static Boolean intermission = false;
     private static int round = 1;
     private static PlayerStatsScoreboard playerStatsScoreboard;
 
@@ -72,45 +74,57 @@ public class StartGame {
         waitTicks(1200/100, () -> {
             Bukkit.broadcastMessage(ChatColor.GRAY + "The team selection phase is now over");
             TeamSelector.teamSelectorPhase = false;
-
-            for (int i = getRound(); i <= 7; i++) {
-                Bukkit.broadcastMessage("methode!");
-                startRound(getRound());
-
-                Bukkit.broadcastMessage("starting loop");
-                Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(ChatColor.RED + "Spectator: " + GameSpectator.getSpectator(player)));
-                new BukkitRunnable() {
-
-                    @Override
-                    public void run() {
-                        if (!isRoundOver().get()) {
-                            Bukkit.broadcastMessage("ended Loop");
-                            Bukkit.broadcastMessage("Round is over: " + !isRoundOver().get());
+            startRound(getRound());
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (round >= 7) {
+                        cancel();
+                    }
+                    if (isRoundOver().get() && !intermission) {
+                        Bukkit.broadcastMessage("starting loop");
+                        Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(ChatColor.RED + "Spectator: " + GameSpectator.getSpectator(player)));
+                        //
+                        if (isRoundOver().get()) {
+                            intermission = true;
+                            Bukkit.broadcastMessage("Round is over: " + isRoundOver().get());
                             Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(ChatColor.GREEN + "Spectator: " + GameSpectator.getSpectator(player)));
-                            if (!isRoundOver().get()) {
+                            waitTicks(100, () -> {
+                                Bukkit.broadcastMessage(ChatColor.GRAY + "Waiting for next round to start...");
+                                Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + (getRound() + 1) + " starts in: 10");
                                 waitTicks(100, () -> {
-                                    Bukkit.broadcastMessage(ChatColor.GRAY + "Waiting for next round to start...");
-                                    Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: 10");
-                                    waitTicks(100, () -> {
-                                        for (int j = 5; j > 0; j--) {
-                                            Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: " + j);
-                                            waitTicks(20, () -> {});
-                                        }
-                                        round++;
+                                    waitTicks(20, () -> {
+                                        Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: " + 5);
+                                        waitTicks(20, () -> {
+                                            Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: " + 4);
+                                            waitTicks(20, () -> {
+                                                Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: " + 3);
+                                                waitTicks(20, () -> {
+                                                    Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: " + 2);
+                                                    waitTicks(20, () -> {
+                                                        Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: " + 1);
+                                                        waitTicks(20, () -> {
+                                                            round++;
+                                                            startRound(getRound());
+                                                        });
+                                                    });
+                                                });
+                                            });
+                                        });
+
                                     });
+
                                 });
-                            }
-                            cancel();
+                            });
                         }
                     }
-                }.runTaskTimer(plugin, 0, 2);
-
-
-            }
+                }
+            }.runTaskTimer(plugin, 0, 1);
         });
     }
 
     public static void startRound(int round) {
+        intermission = false;
         Bukkit.getOnlinePlayers().forEach(player -> {
             GameSpectator.setSpectator(player, false);
             player.sendMessage(ChatColor.BLUE + "Spectator: " + GameSpectator.getSpectator(player));
@@ -340,8 +354,10 @@ public class StartGame {
         new BukkitRunnable() {
             @Override
             public void run() {
+                cancel();
                 Bukkit.getScheduler().runTask(plugin, task);
+                Bukkit.broadcastMessage(ChatColor.RED + "STOP");
             }
-        }.runTaskLater(plugin, ticks);
+        }.runTaskTimer(plugin, ticks, 1);
     }
 }

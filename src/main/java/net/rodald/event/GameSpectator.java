@@ -13,10 +13,11 @@ public class GameSpectator {
         this.plugin = plugin;
     }
         public static void setSpectator(Player player, Boolean mode) {
-            if (!player.hasMetadata("game_spectator")) {
+            if (mode) {
                 player.setMetadata("game_spectator", new FixedMetadataValue(plugin, true));
                 player.setGameMode(GameMode.ADVENTURE);
                 player.getInventory().clear();
+
             } else {
                 player.removeMetadata("game_spectator", plugin);
                 player.setGameMode(GameMode.SURVIVAL);
@@ -25,7 +26,6 @@ public class GameSpectator {
             player.setInvisible(mode);
             player.setInvulnerable(mode);
             player.setFlying(mode);
-;
         }
 
         public static boolean getSpectator(Player player) {
