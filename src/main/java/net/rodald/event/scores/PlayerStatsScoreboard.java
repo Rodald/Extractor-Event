@@ -1,7 +1,5 @@
 package net.rodald.event.scores;
 
-import com.destroystokyo.paper.ParticleBuilder;
-import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.TextColor;
 import net.rodald.event.GameSpectator;
 import net.rodald.event.gui.TeamSelector;
@@ -20,6 +18,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PlayerStatsScoreboard implements Listener {
 
@@ -246,6 +245,17 @@ public class PlayerStatsScoreboard implements Listener {
 
             if (Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(playerTeam))) {
                 addDeath(player);
+                final String[] msg = {" "};
+                getTeam(player).getEntries().forEach(entity -> {
+                    if (Bukkit.getPlayer(entity) != null) {
+                        if (Bukkit.getPlayer(entity) != player) {
+                            msg[0] = Bukkit.getPlayer(entity).getName() + " is very disappointed in you.";
+                        }
+                    }
+                });
+                if (msg[0].equals(" ")) {
+                    msg[0] = "RIP no team mates lmao";
+                }
                 String[] deathMessages = {
                         "Oops! That must have hurt.",
                         "Don't worry, everyone makes mistakes!",
@@ -262,6 +272,9 @@ public class PlayerStatsScoreboard implements Listener {
                         "A quick respawn will fix that glitch.",
                         "System update: Life v" + (getDeaths(player) + 1) + ".0 starting now.",
 
+                        "At least you already have " + getKills(player) + " kills. :P",
+                        "Team " + getTeam(player).getName() + "! Team " + getTeam(player).getName() + "!!",
+                        msg[0],
 
                         "Maybe next time, try running away.",
                         "F for respect.",
@@ -281,7 +294,7 @@ public class PlayerStatsScoreboard implements Listener {
                         "Did you forget to catch that exception?"
                 };
                 int randomDeathMsg = random.nextInt(deathMessages.length);
-
+                randomDeathMsg = 16;
                 player.sendMessage(ChatColor.RED + deathMessages[randomDeathMsg]);
                 GameSpectator.setSpectator(player, true);
             };
