@@ -19,10 +19,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class PlayerStatsScoreboard implements Listener {
 
@@ -30,6 +27,7 @@ public class PlayerStatsScoreboard implements Listener {
     private final Map<Player, Integer> playerKills = new HashMap<>();
     private final Map<Player, Integer> playerDamage = new HashMap<>();
     private final Map<Player, Integer> playerExtractions = new HashMap<>();
+    private final Map<Player, Integer> playerDeaths = new HashMap<>();
     private final Map<Team, Integer> teamPoints = new HashMap<>();
     private final String FIREWORK_TAG = "no_damage_firework";
 
@@ -62,10 +60,13 @@ public class PlayerStatsScoreboard implements Listener {
         }
     }
 
+    public void addDeath(Player player) {
+        playerDeaths.put(player, getDeaths(player) + 1);
+    }
+
     public void addTeamPoints(Team team) {
         teamPoints.put(team, getTeamPoints(team) + 1);
     }
-
     public void addTeamPoints(Team team, int amount) {
         teamPoints.put(team, getTeamPoints(team) + amount);
     }
@@ -80,6 +81,9 @@ public class PlayerStatsScoreboard implements Listener {
 
     public int getExtractions(Player player) {
         return playerExtractions.getOrDefault(player, 0);
+    }
+    public int getDeaths(Player player) {
+        return playerDeaths.getOrDefault(player, 0);
     }
 
     public int getTeamPoints(Team team) {
@@ -235,11 +239,50 @@ public class PlayerStatsScoreboard implements Listener {
     @EventHandler
     private void PlayerDeathEvent(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        player.sendMessage("You died :(");
+
         if (getTeam(player) != null) {
             Team playerTeam = getTeam(player);
+            Random random = new Random();
 
             if (Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(playerTeam))) {
+                addDeath(player);
+                String[] deathMessages = {
+                        "Oops! That must have hurt.",
+                        "Don't worry, everyone makes mistakes!",
+                        "Keep your head up, warrior!",
+                        "You fought bravely!",
+                        "Death is just a temporary setback.",
+                        "Even heroes need a break sometimes.",
+                        "Your adventure isn't over yet!",
+                        "Fallen, but not defeated.",
+                        "It was a valiant effort!",
+                        "You'll come back stronger!",
+                        "Oops, a little bug in your survival code.",
+                        "Just a glitch in the matrix. Try again!",
+                        "A quick respawn will fix that glitch.",
+                        "System update: Life v" + (getDeaths(player) + 1) + ".0 starting now.",
+
+
+                        "Maybe next time, try running away.",
+                        "F for respect.",
+                        "Do you need a tutorial?",
+                        "Epic fail!",
+                        "Pro tip: Avoid dying.",
+                        "You could write a book: '101 Ways to Die in Minecraft.'",
+                        "You make dying look easy!",
+                        "Next time, try not to die.",
+                        "Infinite loop of dying detected.",
+                        "Error 404: Skills not found.",
+                        "Compile error: Method 'survive()' not found.",
+                        "Stack overflow: too many mistakes.",
+                        "NullPointerException: Your life was null.",
+                        "Your survival method returned false.",
+                        "Undefined behavior detected: Player dead.",
+                        "Did you forget to catch that exception?"
+                };
+                int randomDeathMsg = random.nextInt(deathMessages.length);
+
+                player.sendMessage(ChatColor.RED + deathMessages[randomDeathMsg]);
                 GameSpectator.setSpectator(player, true);
             };
         }

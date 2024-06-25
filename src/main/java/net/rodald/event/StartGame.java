@@ -17,8 +17,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 // TODO: Disable minecrafts death msgs on start
-// TODO: Turn keepinventory on.
-// TODO: Make ingame timer work
+// TODO: Turn keepInventory on.
+// TODO: Make in game timer work
 
 /*
     Games:
@@ -39,8 +39,6 @@ import java.util.stream.Collectors;
     correct players get teleported to game.
     1st round countdown
     Player cages get removed.
-
-    // TODO: win/lose detection + round timer
  */
 public class StartGame {
 
