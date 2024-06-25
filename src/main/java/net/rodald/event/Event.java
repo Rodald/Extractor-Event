@@ -62,9 +62,9 @@ public final class Event extends JavaPlugin {
         double radius = 2;
         new GameSpectator(this);
         powerGUI = new PowerGUI(this);
-        startGame = new StartGame(this);
         hostGUI = new HostGUI(this);
         playerStatsScoreboard = new PlayerStatsScoreboard(this);
+        startGame = new StartGame(this, playerStatsScoreboard);
         extractionScoreboard = new ExtractionScoreboard(this, playerStatsScoreboard);
         Extractor checker = new Extractor(this, radius, playerStatsScoreboard);
         getServer().getPluginManager().registerEvents(playerStatsScoreboard, this);

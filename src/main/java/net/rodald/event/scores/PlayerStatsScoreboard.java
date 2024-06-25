@@ -3,12 +3,15 @@ package net.rodald.event.scores;
 import com.destroystokyo.paper.ParticleBuilder;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.TextColor;
+import net.rodald.event.GameSpectator;
+import net.rodald.event.gui.TeamSelector;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -95,11 +98,6 @@ public class PlayerStatsScoreboard implements Listener {
 
     @EventHandler
     public void onPlayerKill(EntityDeathEvent event) {
-        Team[] validTeams = {
-                Bukkit.getScoreboardManager().getMainScoreboard().getTeam("Red"),
-                Bukkit.getScoreboardManager().getMainScoreboard().getTeam("Green"),
-                Bukkit.getScoreboardManager().getMainScoreboard().getTeam("Blue")
-        };
 
 // Tests if killer and target are both a player
         if (event.getEntity().getKiller() instanceof Player && event.getEntity() instanceof Player) {
@@ -108,10 +106,10 @@ public class PlayerStatsScoreboard implements Listener {
             Team killerTeam = getTeam(killer);
             Team targetTeam = getTeam(target);
 
-            killer.sendMessage(String.valueOf(Arrays.stream(validTeams).anyMatch(i -> i.equals(killerTeam))));
-            killer.sendMessage(String.valueOf(Arrays.stream(validTeams).anyMatch(i -> i.equals(targetTeam))));
+            killer.sendMessage(String.valueOf(Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(killerTeam))));
+            killer.sendMessage(String.valueOf(Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(targetTeam))));
 
-            if (Arrays.stream(validTeams).anyMatch(i -> i.equals(killerTeam)) && Arrays.stream(validTeams).anyMatch(i -> i.equals(targetTeam))) {
+            if (Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(killerTeam)) && Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(targetTeam))) {
                 World world = killer.getWorld();
                 Location location = killer.getLocation();
                 Location targetLocation = target.getLocation();
@@ -232,5 +230,18 @@ public class PlayerStatsScoreboard implements Listener {
             return ChatColor.GREEN;
         }
         return ChatColor.WHITE; // Standardfallback, wenn die Farbe nicht übereinstimmt
+    }
+
+    @EventHandler
+    private void PlayerDeathEvent(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        player.sendMessage("You died :(");
+        if (getTeam(player) != null) {
+            Team playerTeam = getTeam(player);
+
+            if (Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(playerTeam))) {
+                GameSpectator.setSpectator(player, true);
+            };
+        }
     }
 }

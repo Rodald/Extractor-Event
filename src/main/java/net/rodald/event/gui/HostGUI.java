@@ -1,6 +1,7 @@
 package net.rodald.event.gui;
 
 import net.rodald.event.StartGame;
+import net.rodald.event.scores.PlayerStatsScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -34,9 +35,11 @@ public class HostGUI implements Listener {
         ItemStack startCountdown = setName(new ItemStack(Material.SCAFFOLDING), "startCountdown");
         ItemStack teleportPlayers = setName(new ItemStack(Material.ENDER_PEARL), "teleportPlayers");
         ItemStack startRound = setName(new ItemStack(Material.STONE_BUTTON), "startRound");
+        ItemStack startExtractionGame = setName(new ItemStack(Material.CROSSBOW), "startExtractionGame");
 
 
         // Set items in the inventory
+        gui.setItem(0, startExtractionGame);
         gui.setItem(1, startTeamSelectorPhase);
         gui.setItem(2, startCountdown);
         gui.setItem(3, teleportPlayers);
@@ -79,18 +82,19 @@ public class HostGUI implements Listener {
             }
 
             String itemName = clickedItem.getItemMeta().getDisplayName();
-            StartGame startGame = new StartGame(plugin);
 
             if (itemName.equals(ChatColor.RED + "Close")) {
                 player.closeInventory();
             } else if (itemName.equals("startTeamSelectorPhase")) {
-                startGame.startTeamSelectorPhase();
+                StartGame.startTeamSelectorPhase();
             } else if (itemName.equals("startCountdown")) {
                 StartGame.startCountdown();
             } else if (itemName.equals("teleportPlayers")) {
                 StartGame.teleportPlayers(StartGame.getRound());
             } else if (itemName.equals("startRound")) {
                 StartGame.startRound(StartGame.getRound());
+            } else if (itemName.equals("startExtractionGame")) {
+                StartGame.startExtractionGame();
             }
         }
     }

@@ -173,20 +173,27 @@ public class TeamSelector implements Listener {
             }
         }
 
-        // give player armor
-        Color color = Color.fromRGB(newTeam.color().value());
-
-        player.getInventory().setChestplate(colorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), color));
-        player.getInventory().setLeggings(colorArmor(new ItemStack(Material.LEATHER_LEGGINGS), color));
-        player.getInventory().setBoots(colorArmor(new ItemStack(Material.LEATHER_BOOTS), color));
 
         newTeam.addEntry(player.getName());
         player.sendMessage(ChatColor.GREEN + "You have joined " + newTeam.getDisplayName() + ChatColor.GREEN + ".");
         player.closeInventory();
 
+        // give player armor
+        setPlayerArmor(player);
+
         // Debug: Verify the settings are applied
         player.sendMessage(ChatColor.GREEN + "Friendly Fire: " + newTeam.allowFriendlyFire());
         player.sendMessage(ChatColor.GREEN + "NameTagVisibility: " + newTeam.getNameTagVisibility());
+    }
+
+    public void setPlayerArmor(Player player) {
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        Team playersTeam = scoreboard.getTeam(getTeam(player).getName());
+        Color color = Color.fromRGB(playersTeam.color().value());
+
+        player.getInventory().setChestplate(colorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), color));
+        player.getInventory().setLeggings(colorArmor(new ItemStack(Material.LEATHER_LEGGINGS), color));
+        player.getInventory().setBoots(colorArmor(new ItemStack(Material.LEATHER_BOOTS), color));
     }
 
     private ItemStack colorArmor(ItemStack armor, Color color) {

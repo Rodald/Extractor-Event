@@ -7,6 +7,7 @@ import net.rodald.event.scores.PlayerStatsScoreboard;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
@@ -40,7 +41,6 @@ import java.util.stream.Collectors;
 
     // TODO: win/lose detection + round timer
  */
-
 public class StartGame {
 
     private static String[] rounds = {
@@ -62,53 +62,75 @@ public class StartGame {
     private static int round = 1;
     private static PlayerStatsScoreboard playerStatsScoreboard;
 
-    public StartGame(JavaPlugin plugin) {
+    public StartGame(JavaPlugin plugin, PlayerStatsScoreboard playerStatsScoreboard) {
         this.plugin = plugin;
         this.playerStatsScoreboard = playerStatsScoreboard;
     }
 
-
-
-
     public static void startExtractionGame() {
         startTeamSelectorPhase();
-        waitTicks(1200);
-        Bukkit.broadcastMessage(ChatColor.GRAY + "The team selection phase is now over");
-        TeamSelector.teamSelectorPhase = false;
+        waitTicks(1200/100, () -> {
+            Bukkit.broadcastMessage(ChatColor.GRAY + "The team selection phase is now over");
+            TeamSelector.teamSelectorPhase = false;
 
-        for (int i = getRound(); i <= 7; i++) {
-            startRound(getRound());
-            do {
-            } while (gameIsRunning);
+            for (int i = getRound(); i <= 7; i++) {
+                Bukkit.broadcastMessage("methode!");
+                startRound(getRound());
 
-            waitTicks(100);
-            Bukkit.broadcastMessage(ChatColor.GRAY + "Waiting for next round to start...");
-            Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + "starts in: 10");
-            waitTicks(100);
-            for (int j = 5; j > 0; j--) {
-                Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + "starts in: " + j);
-                waitTicks(20);
+                Bukkit.broadcastMessage("starting loop");
+                Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(ChatColor.RED + "Spectator: " + GameSpectator.getSpectator(player)));
+                new BukkitRunnable() {
+
+                    @Override
+                    public void run() {
+                        if (!isRoundOver().get()) {
+                            Bukkit.broadcastMessage("ended Loop");
+                            Bukkit.broadcastMessage("Round is over: " + !isRoundOver().get());
+                            Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(ChatColor.GREEN + "Spectator: " + GameSpectator.getSpectator(player)));
+                            if (!isRoundOver().get()) {
+                                waitTicks(100, () -> {
+                                    Bukkit.broadcastMessage(ChatColor.GRAY + "Waiting for next round to start...");
+                                    Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: 10");
+                                    waitTicks(100, () -> {
+                                        for (int j = 5; j > 0; j--) {
+                                            Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: " + j);
+                                            waitTicks(20, () -> {});
+                                        }
+                                        round++;
+                                    });
+                                });
+                            }
+                            cancel();
+                        }
+                    }
+                }.runTaskTimer(plugin, 0, 2);
+
+
             }
-            round++;
-        }
-
+        });
     }
 
     public static void startRound(int round) {
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            GameSpectator.setSpectator(player, false);
+            player.sendMessage(ChatColor.BLUE + "Spectator: " + GameSpectator.getSpectator(player));
+
+            if (TeamSelector.getTeam(player) != null) {
+                Team playerTeam = TeamSelector.getTeam(player);
+                if (Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(playerTeam))) {
+                    player.getInventory().clear();
+                    player.getInventory().setItem(0, new ItemStack(Material.CROSSBOW));
+                    player.getInventory().setItem(8, new ItemStack(Material.ARROW, 64));
+                }
+            }
+        });
         teleportPlayers(round);
         startCountdown();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.broadcastMessage("Is round over: " + isRoundOver());
-            }
-        }.runTaskTimer(plugin, 0, 10);
     }
 
     public static void startTeamSelectorPhase() {
         Bukkit.getOnlinePlayers().forEach(StartGame::sendClickableMessage);
     }
-
 
     private static AtomicReference<Boolean> isRoundOver() {
         AtomicReference<Boolean> roundOver = new AtomicReference<>(true);
@@ -116,11 +138,10 @@ public class StartGame {
             Team playerTeam = TeamSelector.getTeam(player);
             if (Arrays.asList(TeamSelector.validTeams).contains(playerTeam) && !player.hasMetadata("game_spectator")) {
                 roundOver.set(false);
-            };
+            }
         });
         return roundOver;
     }
-
 
     public static void startCountdown() {
         placeCages();
@@ -163,7 +184,7 @@ public class StartGame {
     }
 
     public static void teleportPlayers(int round) {
-        Bukkit.broadcastMessage(String.valueOf(rounds[round - 1].charAt(0)));
+        Bukkit.broadcastMessage(rounds[round - 1].charAt(0) + " vs " + rounds[round - 1].charAt(2));
         Team team1 = getTeamByLetter(rounds[round - 1].charAt(0));
         Team team2 = getTeamByLetter(rounds[round - 1].charAt(2));
 
@@ -173,14 +194,19 @@ public class StartGame {
         Location team2Spawn2 = getSpawnLocation("team2", "spawn2");
 
         if (team1Spawn1 == null || team1Spawn2 == null) {
+            Bukkit.broadcastMessage(ChatColor.RED + "Team1 spawns are null!");
             Bukkit.getLogger().severe("Team1 spawns are null!");
             return;
         }
 
         if (team2Spawn1 == null || team2Spawn2 == null) {
+            Bukkit.broadcastMessage(ChatColor.RED + "Team2 spawns are null!");
             Bukkit.getLogger().severe("Team2 spawns are null!");
             return;
         }
+
+        Bukkit.broadcastMessage("Team1: " + team1.getPlayers());
+        Bukkit.broadcastMessage("Team2: " + team2.getPlayers());
 
         balanceTeamPlayers(team1, team1Spawn1, team1Spawn2);
         balanceTeamPlayers(team2, team2Spawn1, team2Spawn2);
@@ -195,22 +221,27 @@ public class StartGame {
 
     private static Team getTeamByLetter(char team) {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-        // Sortiere die Teams nach Punkten in absteigender Reihenfolge
         List<Map.Entry<Team, Integer>> sortedTeams = playerStatsScoreboard.getTeamPoints().entrySet().stream()
                 .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
                 .collect(Collectors.toList());
 
-        // Erstelle das Leaderboard
         String[] leaderboard = new String[sortedTeams.size()];
         switch (team) {
-            case 'R': return scoreboard.getTeam("Red");
-            case 'G': return scoreboard.getTeam("Green");
-            case 'B': return scoreboard.getTeam("Blue");
-            case '1': return scoreboard.getTeam(leaderboard[0]);
-            case '2': return scoreboard.getTeam(leaderboard[1]);
-            default: return null;
+            case 'R':
+                return scoreboard.getTeam("Red");
+            case 'G':
+                return scoreboard.getTeam("Green");
+            case 'B':
+                return scoreboard.getTeam("Blue");
+            case '1':
+                return scoreboard.getTeam(leaderboard[0]);
+            case '2':
+                return scoreboard.getTeam(leaderboard[1]);
+            default:
+                return null;
         }
     }
+
     public static void removeCages() {
         World world = Bukkit.getWorld("world");
         Bukkit.getWorld("world").getEntitiesByClass(ArmorStand.class).stream().filter(as -> as.getScoreboardTags().contains("spawn_tag")).forEach(armorStand -> {
@@ -218,8 +249,7 @@ public class StartGame {
             int x = loc.getBlockX();
             int y = loc.getBlockY();
             int z = loc.getBlockZ();
-            // Place gold blocks
-            for (int dy = 0; dy <= 3; dy++) { // Only for y and y+4
+            for (int dy = 0; dy <= 3; dy++) {
                 for (int dx = -2; dx <= 1; dx++) {
                     for (int dz = -1; dz <= 0; dz++) {
                         world.getBlockAt(x + dx, y + dy, z + dz).setType(Material.AIR);
@@ -235,7 +265,6 @@ public class StartGame {
 
     public static void placeCages() {
         World world = Bukkit.getWorld("world");
-
         world.getEntitiesByClass(ArmorStand.class).stream()
                 .filter(as -> as.getScoreboardTags().contains("spawn_tag"))
                 .forEach(armorStand -> {
@@ -243,21 +272,16 @@ public class StartGame {
                     int x = loc.getBlockX();
                     int y = loc.getBlockY() - 1;
                     int z = loc.getBlockZ();
-
-                    // Place glass blocks
                     int[][] glassOffsets = {
                             {0, 0, 1}, {-1, 0, 1}, {-2, 0, 0}, {-2, 0, -1},
                             {-1, 0, -2}, {0, 0, -2}, {1, 0, -1}, {1, 0, 0}
                     };
-
-                    for (int i = 0; i < 5; i++) { // Iterate from y to y+4
+                    for (int i = 0; i < 5; i++) {
                         for (int[] offset : glassOffsets) {
                             world.getBlockAt(x + offset[0], y + i, z + offset[2]).setType(Material.GLASS);
                         }
                     }
-
-                    // Place gold blocks
-                    for (int i = 0; i <= 4; i += 4) { // Only for y and y+4
+                    for (int i = 0; i <= 4; i += 4) {
                         for (int dx = -2; dx <= 1; dx++) {
                             for (int dz = -1; dz <= 0; dz++) {
                                 world.getBlockAt(x + dx, y + i, z + dz).setType(Material.RAW_GOLD_BLOCK);
@@ -272,19 +296,14 @@ public class StartGame {
     }
 
     public static void sendClickableMessage(Player player) {
-        // Erstelle die Nachricht
         TeamSelector.teamSelectorPhase = true;
         player.sendMessage(ChatColor.RED + "You have 60 seconds to select your team!");
         TextComponent message = new TextComponent("Click here to open the Team GUI!");
+        player.sendMessage(ChatColor.GRAY + "Or try \"/extractor jointeam\" if you are on Bedrock");
         message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
         message.setBold(true);
-
-        // Füge die Klick-Aktion hinzu
         message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/extractor jointeam"));
-
-        // Sende die Nachricht an den Spieler
         player.spigot().sendMessage(message);
-
     }
 
     private static void balanceTeamPlayers(Team team, Location location1, Location location2) {
@@ -295,13 +314,13 @@ public class StartGame {
                 players.add(player);
             }
         }
-
-        Collections.shuffle(players); // Zufällige Reihenfolge der Spieler
-
+        Collections.shuffle(players);
         int mid = players.size() / 2;
         List<Player> group1 = players.subList(0, mid);
         List<Player> group2 = players.subList(mid, players.size());
 
+        Bukkit.broadcastMessage(group1.toString());
+        Bukkit.broadcastMessage(group2.toString());
         for (Player player : group1) {
             float yaw = player.getYaw();
             float pitch = player.getPitch();
@@ -317,14 +336,12 @@ public class StartGame {
         }
     }
 
-    private static void waitTicks(int ticks) {
+    private static void waitTicks(int ticks, Runnable task) {
         new BukkitRunnable() {
-
             @Override
             public void run() {
-
+                Bukkit.getScheduler().runTask(plugin, task);
             }
         }.runTaskLater(plugin, ticks);
     }
-
 }
