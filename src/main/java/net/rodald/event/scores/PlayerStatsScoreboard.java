@@ -294,7 +294,7 @@ public class PlayerStatsScoreboard implements Listener {
                 };
                 int randomDeathMsg = random.nextInt(deathMessages.length);
                 player.sendMessage(ChatColor.RED + deathMessages[randomDeathMsg]);
-                player.sendTitle(ChatColor.BOLD + (ChatColor.RED + "You Died"), "", 0 , 40, 20);
+                player.sendTitle(ChatColor.BOLD + (ChatColor.RED + "You Died"), "", 0 , 60, 20);
                 GameSpectator.setSpectator(player, true);
             };
         }

@@ -2,6 +2,7 @@ package net.rodald.event.gui;
 
 import net.kyori.adventure.text.format.TextColor;
 import net.rodald.event.StartGame;
+import net.rodald.event.gameplay.Timer;
 import net.rodald.event.scores.PlayerStatsScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,7 +11,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,7 +70,8 @@ public class ExtractionScoreboard {
                         int kills = playerStatsScoreboard.getKills(player);
                         int damage = playerStatsScoreboard.getDamage(player);
                         int extractions = playerStatsScoreboard.getExtractions(player);
-                        showScoreboard(player, "00:00", StartGame.getRound(), leaderboard, kills, damage, extractions);
+
+                        showScoreboard(player, Timer.getTime(), StartGame.getRound(), leaderboard, kills, damage, extractions);
                     }
                 }
             }.runTaskTimer(plugin, 0, 10); // Aktualisiere jede Sekunde (20 Ticks)
