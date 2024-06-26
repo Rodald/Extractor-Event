@@ -293,8 +293,8 @@ public class PlayerStatsScoreboard implements Listener {
                         "Did you forget to catch that exception?"
                 };
                 int randomDeathMsg = random.nextInt(deathMessages.length);
-                randomDeathMsg = 16;
                 player.sendMessage(ChatColor.RED + deathMessages[randomDeathMsg]);
+                player.sendTitle(ChatColor.BOLD + (ChatColor.RED + "You Died"), "", 0 , 40, 20);
                 GameSpectator.setSpectator(player, true);
             };
         }

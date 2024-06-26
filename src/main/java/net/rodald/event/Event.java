@@ -1,5 +1,6 @@
 package net.rodald.event;
 
+import net.rodald.event.gameplay.Timer;
 import net.rodald.event.gameplay.arrow.ArrowDamage;
 import net.rodald.event.gui.ExtractionScoreboard;
 import net.rodald.event.gui.HostGUI;
@@ -66,6 +67,7 @@ public final class Event extends JavaPlugin {
         extractionScoreboard = new ExtractionScoreboard(this, playerStatsScoreboard);
         Extractor checker = new Extractor(this, radius, playerStatsScoreboard);
         teamSelector = new TeamSelector(this);
+        Timer timer = new Timer(this);
         getServer().getPluginManager().registerEvents(playerStatsScoreboard, this);
         getServer().getPluginManager().registerEvents(new PointSystem(this), this);
         getServer().getPluginManager().registerEvents(new TNTBow(), this);

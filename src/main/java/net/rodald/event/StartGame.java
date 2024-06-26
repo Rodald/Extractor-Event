@@ -2,6 +2,7 @@ package net.rodald.event;
 
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.rodald.event.gameplay.Timer;
 import net.rodald.event.gui.TeamSelector;
 import net.rodald.event.scores.PlayerStatsScoreboard;
 import org.bukkit.*;
@@ -53,15 +54,11 @@ public class StartGame {
     };
     private static JavaPlugin plugin = null;
 
-    public static int getRound() {
-        return round;
-    }
-
     public static Boolean gameIsRunning = true;
+
     public  static Boolean intermission = false;
     private static int round = 1;
     private static PlayerStatsScoreboard playerStatsScoreboard;
-
     public StartGame(JavaPlugin plugin, PlayerStatsScoreboard playerStatsScoreboard) {
         this.plugin = plugin;
         this.playerStatsScoreboard = playerStatsScoreboard;
@@ -123,6 +120,7 @@ public class StartGame {
 
     public static void startRound(int round) {
         intermission = false;
+        Timer.resetTimer();
         Bukkit.getOnlinePlayers().forEach(player -> {
             GameSpectator.setSpectator(player, false);
             player.sendMessage(ChatColor.BLUE + "Spectator: " + GameSpectator.getSpectator(player));
@@ -131,14 +129,22 @@ public class StartGame {
                 Team playerTeam = TeamSelector.getTeam(player);
                 if (Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(playerTeam))) {
                     player.getInventory().clear();
+
+                    // TODO make crossbow unbreakable
                     player.getInventory().setItem(0, new ItemStack(Material.CROSSBOW));
                     player.getInventory().setItem(8, new ItemStack(Material.ARROW, 64));
+
+                    // TODO: make player not able to take off armor
                     TeamSelector.setPlayerArmor(player);
                 }
             }
         });
         teleportPlayers(round);
         startCountdown();
+    }
+
+    public static int getRound() {
+        return round;
     }
 
     public static void startTeamSelectorPhase() {
@@ -169,6 +175,7 @@ public class StartGame {
                     if (countdown <= 0) {
                         Bukkit.getOnlinePlayers().forEach(player -> player.sendTitle(ChatColor.AQUA + "" + ChatColor.BOLD + "GO!!", "", 0, 20, 10));
                         removeCages();
+                        Timer.startTimer();
                         cancel();
                         return;
                     }
