@@ -32,7 +32,7 @@ public final class Event extends JavaPlugin {
     public static HostGUI hostGUI;
     private static ExtractionScoreboard extractionScoreboard;
     private PlayerStatsScoreboard playerStatsScoreboard;
-    private final TeamSelector teamSelector = new TeamSelector(this);
+    private TeamSelector teamSelector;
 
     @Override
     public void onEnable() {
@@ -67,6 +67,7 @@ public final class Event extends JavaPlugin {
         startGame = new StartGame(this, playerStatsScoreboard);
         extractionScoreboard = new ExtractionScoreboard(this, playerStatsScoreboard);
         Extractor checker = new Extractor(this, radius, playerStatsScoreboard);
+        teamSelector = new TeamSelector(this);
         getServer().getPluginManager().registerEvents(playerStatsScoreboard, this);
         getServer().getPluginManager().registerEvents(new PointSystem(this), this);
         getServer().getPluginManager().registerEvents(new TNTBow(), this);

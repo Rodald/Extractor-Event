@@ -254,7 +254,7 @@ public class PlayerStatsScoreboard implements Listener {
                     }
                 });
                 if (msg[0].equals(" ")) {
-                    msg[0] = "RIP no team mates lmao";
+                    msg[0] = "RIP no team mates LMAO";
                 }
                 String[] deathMessages = {
                         "Oops! That must have hurt.",
@@ -271,11 +271,10 @@ public class PlayerStatsScoreboard implements Listener {
                         "Just a glitch in the matrix. Try again!",
                         "A quick respawn will fix that glitch.",
                         "System update: Life v" + (getDeaths(player) + 1) + ".0 starting now.",
-
                         "At least you already have " + getKills(player) + " kills. :P",
                         "Team " + getTeam(player).getName() + "! Team " + getTeam(player).getName() + "!!",
-                        msg[0],
 
+                        msg[0],
                         "Maybe next time, try running away.",
                         "F for respect.",
                         "Do you need a tutorial?",
