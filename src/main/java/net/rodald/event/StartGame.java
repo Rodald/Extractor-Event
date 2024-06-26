@@ -9,7 +9,9 @@ import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -19,7 +21,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 // TODO: Disable minecrafts death msgs on start
 // TODO: Turn keepInventory on.
-// TODO: Make in game timer work
 
 /*
     Games:
@@ -73,15 +74,15 @@ public class StartGame {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (round >= 7) {
+                    if (round >= 6) {
                         cancel();
                     }
                     if (isRoundOver().get() && !intermission) {
                         Bukkit.broadcastMessage("starting loop");
                         Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(ChatColor.RED + "Spectator: " + GameSpectator.getSpectator(player)));
-                        //
                         if (isRoundOver().get()) {
                             intermission = true;
+                            Timer.resetTimer(); // Makes it so timer stops counting down when round is over
                             Bukkit.broadcastMessage("Round is over: " + isRoundOver().get());
                             Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(ChatColor.GREEN + "Spectator: " + GameSpectator.getSpectator(player)));
                             waitTicks(100, () -> {
@@ -89,15 +90,15 @@ public class StartGame {
                                 Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + (getRound() + 1) + " starts in: 10");
                                 waitTicks(100, () -> {
                                     waitTicks(20, () -> {
-                                        Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: " + 5);
+                                        Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + (getRound() + 1) + " starts in: " + 5);
                                         waitTicks(20, () -> {
-                                            Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: " + 4);
+                                            Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + (getRound() + 1) + " starts in: " + 4);
                                             waitTicks(20, () -> {
-                                                Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: " + 3);
+                                                Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + (getRound() + 1) + " starts in: " + 3);
                                                 waitTicks(20, () -> {
-                                                    Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: " + 2);
+                                                    Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + (getRound() + 1) + " starts in: " + 2);
                                                     waitTicks(20, () -> {
-                                                        Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + getRound() + " starts in: " + 1);
+                                                        Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + (getRound() + 1) + " starts in: " + 1);
                                                         waitTicks(20, () -> {
                                                             round++;
                                                             startRound(getRound());
@@ -122,20 +123,15 @@ public class StartGame {
         intermission = false;
         Timer.resetTimer();
         Bukkit.getOnlinePlayers().forEach(player -> {
-            GameSpectator.setSpectator(player, false);
+            GameSpectator.setSpectator(player, true); // Makes it so not playing team is in spectator. Playing teams will be set to false in balanceTeamPlayers
             player.sendMessage(ChatColor.BLUE + "Spectator: " + GameSpectator.getSpectator(player));
 
             if (TeamSelector.getTeam(player) != null) {
+                player.heal(player.getMaxHealth());
+                player.removePotionEffect(PotionEffectType.GLOWING);
                 Team playerTeam = TeamSelector.getTeam(player);
                 if (Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(playerTeam))) {
                     player.getInventory().clear();
-
-                    // TODO make crossbow unbreakable
-                    player.getInventory().setItem(0, new ItemStack(Material.CROSSBOW));
-                    player.getInventory().setItem(8, new ItemStack(Material.ARROW, 64));
-
-                    // TODO: make player not able to take off armor
-                    TeamSelector.setPlayerArmor(player);
                 }
             }
         });
@@ -331,6 +327,22 @@ public class StartGame {
         for (String entry : team.getEntries()) {
             Player player = Bukkit.getPlayer(entry);
             if (player != null) {
+                GameSpectator.setSpectator(player, false);
+
+                // TODO make give arrow system
+                if (!player.hasMetadata("game_spectator")) {
+                    ItemStack crossbow = new ItemStack(Material.CROSSBOW);
+                    ItemMeta crossbowMeta = crossbow.getItemMeta();
+                    crossbowMeta.setUnbreakable(true);
+                    crossbow.setItemMeta(crossbowMeta);
+                    player.getInventory().setItem(0, crossbow);
+                    player.getInventory().setItem(8, new ItemStack(Material.ARROW, 64));
+
+                    // TODO: make player not able to take off armor
+                    TeamSelector.setPlayerArmor(player);
+                }
+
+                // Makes playing team spectator to false
                 players.add(player);
             }
         }

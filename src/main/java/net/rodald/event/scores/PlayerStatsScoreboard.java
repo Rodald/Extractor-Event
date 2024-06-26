@@ -198,18 +198,6 @@ public class PlayerStatsScoreboard implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        if (isExtractionConditionMet(player)) {
-            addExtraction(player);
-            Bukkit.getServer().getPluginManager().callEvent(new PlayerExtractionEvent(player));
-        }
-    }
-
-    private boolean isExtractionConditionMet(Player player) {
-        return player.isSneaking() && player.getLocation().getBlock().getType() == Material.LIGHT;
-    }
 
     private Team getTeam(Player player) {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
@@ -294,8 +282,9 @@ public class PlayerStatsScoreboard implements Listener {
                 };
                 int randomDeathMsg = random.nextInt(deathMessages.length);
                 player.sendMessage(ChatColor.RED + deathMessages[randomDeathMsg]);
-                player.sendTitle(ChatColor.BOLD + (ChatColor.RED + "You Died"), "", 0 , 60, 20);
+                player.sendTitle(ChatColor.BOLD + (ChatColor.RED + "You Died"), "", 0 , 80, 20);
                 GameSpectator.setSpectator(player, true);
+                event.setCancelled(true);
             };
         }
     }
