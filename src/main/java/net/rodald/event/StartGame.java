@@ -69,7 +69,7 @@ public class StartGame {
 
     public static void startExtractionGame() {
         startTeamSelectorPhase();
-        waitTicks(1200/100, () -> {
+        waitTicks(1200, () -> {
             Bukkit.broadcastMessage(ChatColor.GRAY + "The team selection phase is now over");
             TeamSelector.teamSelectorPhase = false;
             startRound(getRound());
@@ -133,6 +133,7 @@ public class StartGame {
                     player.getInventory().clear();
                     player.getInventory().setItem(0, new ItemStack(Material.CROSSBOW));
                     player.getInventory().setItem(8, new ItemStack(Material.ARROW, 64));
+                    TeamSelector.setPlayerArmor(player);
                 }
             }
         });

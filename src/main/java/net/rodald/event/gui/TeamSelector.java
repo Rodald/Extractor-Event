@@ -186,7 +186,7 @@ public class TeamSelector implements Listener {
         player.sendMessage(ChatColor.GREEN + "NameTagVisibility: " + newTeam.getNameTagVisibility());
     }
 
-    public void setPlayerArmor(Player player) {
+    public static void setPlayerArmor(Player player) {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         Team playersTeam = scoreboard.getTeam(getTeam(player).getName());
         Color color = Color.fromRGB(playersTeam.color().value());
@@ -196,7 +196,7 @@ public class TeamSelector implements Listener {
         player.getInventory().setBoots(colorArmor(new ItemStack(Material.LEATHER_BOOTS), color));
     }
 
-    private ItemStack colorArmor(ItemStack armor, Color color) {
+    private static ItemStack colorArmor(ItemStack armor, Color color) {
         LeatherArmorMeta armorMeta = (LeatherArmorMeta) armor.getItemMeta();
         armorMeta.setColor(color);
         armorMeta.setUnbreakable(true);

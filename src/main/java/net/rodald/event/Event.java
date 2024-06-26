@@ -1,6 +1,6 @@
 package net.rodald.event;
 
-import net.rodald.event.arrow.ArrowDamage;
+import net.rodald.event.gameplay.arrow.ArrowDamage;
 import net.rodald.event.gui.ExtractionScoreboard;
 import net.rodald.event.gui.HostGUI;
 import net.rodald.event.gui.TeamSelector;
@@ -15,13 +15,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
-import java.util.UUID;
 
 public final class Event extends JavaPlugin {
 

@@ -26,7 +26,7 @@ public class HostGUI implements Listener {
     }
 
     public void openInventory(Player player) {
-        Inventory gui = Bukkit.createInventory(null, 27, ChatColor.DARK_GRAY + "Select a Team");
+        Inventory gui = Bukkit.createInventory(null, 27, ChatColor.DARK_GRAY + "Host GUI");
 
         // Close Item
         ItemStack closeItem = setName(new ItemStack(Material.BARRIER), ChatColor.RED + "Close");
@@ -48,6 +48,7 @@ public class HostGUI implements Listener {
 
         // Open the inventory for the player
         player.openInventory(gui);
+
     }
 
     public static ItemStack setName(ItemStack item, String name) {
@@ -71,7 +72,7 @@ public class HostGUI implements Listener {
     // Method to handle InventoryClickEvent
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getView().getTitle().equals(ChatColor.DARK_GRAY + "Select a Team")) {
+        if (event.getView().getTitle().equals(ChatColor.DARK_GRAY + "Host GUI")) {
             event.setCancelled(true); // Prevent taking the items
 
             Player player = (Player) event.getWhoClicked();
