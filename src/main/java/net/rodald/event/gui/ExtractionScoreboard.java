@@ -74,7 +74,7 @@ public class ExtractionScoreboard {
                         showScoreboard(player, Timer.getTime(), StartGame.getRound(), leaderboard, kills, damage, extractions);
                     }
                 }
-            }.runTaskTimer(plugin, 0, 10); // Aktualisiere jede Sekunde (20 Ticks)
+            }.runTaskTimer(plugin, 0, 2); // Aktualisiere jede Sekunde (20 Ticks)
         }
     }
 
