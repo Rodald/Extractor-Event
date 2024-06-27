@@ -3,6 +3,9 @@ package net.rodald.event.gameplay;
 import net.rodald.event.GameSpectator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -86,5 +89,9 @@ public class Timer {
     public static void resetTimer() {
         setTime(gameLength);
         timerReset = true;
+    }
+
+    private static void giveArrow(Player player) {
+        player.getInventory().addItem(new ItemStack(Material.ARROW));
     }
 }

@@ -84,7 +84,7 @@ public class StartGame {
                             intermission = true;
                             Timer.resetTimer(); // Makes it so timer stops counting down when round is over
                             Bukkit.broadcastMessage("Round is over: " + isRoundOver().get());
-                            Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(ChatColor.GREEN + "Spectator: " + GameSpectator.getSpectator(player)));
+                            Bukkit.getOnlinePlayers().forEach(player -> player.sendTitle(ChatColor.RED + "Round Over", "", 0, 80, 20));
                             waitTicks(100, () -> {
                                 Bukkit.broadcastMessage(ChatColor.GRAY + "Waiting for next round to start...");
                                 Bukkit.broadcastMessage(ChatColor.GRAY + "Round " + (getRound() + 1) + " starts in: 10");
