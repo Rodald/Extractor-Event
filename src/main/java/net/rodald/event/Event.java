@@ -144,6 +144,12 @@ public final class Event extends JavaPlugin {
                     case "jointeam":
                         teamSelector.openInventory(player);
                         return true;
+                    case "round":
+                        if (args.length == 1) {
+                            StartGame.startRound(Integer.parseInt(args[0]));
+                        } else {
+                            player.sendMessage("Usage: /extractor round <round>");
+                        }
                     case "invoke":
                         // extractor invoke placeCircle player.getLocation() 2 diamond_block
 
