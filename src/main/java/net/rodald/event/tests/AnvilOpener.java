@@ -1,4 +1,4 @@
-package net.rodald.event;
+package net.rodald.event.tests;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

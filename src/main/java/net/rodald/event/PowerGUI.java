@@ -1,21 +1,20 @@
 package net.rodald.event;
 
 import net.md_5.bungee.api.ChatColor;
+import net.rodald.event.tests.AnvilGUI;
+import net.rodald.event.tests.SignGUI;
 import net.rodald.event.weapons.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.sound.sampled.Port;
 import java.util.ArrayList;
 
 public class PowerGUI implements Listener {
