@@ -147,9 +147,14 @@ public final class Event extends JavaPlugin {
                     case "round":
                         if (args.length == 1) {
                             StartGame.startRound(Integer.parseInt(args[0]));
+                            return true;
                         } else {
                             player.sendMessage("Usage: /extractor round <round>");
+                            return false;
                         }
+                    case "stop":
+                        StartGame.gameIsRunning = false;
+                        Timer.resetTimer();
                     case "invoke":
                         // extractor invoke placeCircle player.getLocation() 2 diamond_block
 
