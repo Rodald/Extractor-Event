@@ -1,18 +1,17 @@
 package net.rodald.event.gui;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
@@ -20,6 +19,7 @@ import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TeamSelector implements Listener {
@@ -30,11 +30,11 @@ public class TeamSelector implements Listener {
             Bukkit.getScoreboardManager().getMainScoreboard().getTeam("Blue")
     };
 
-    private final JavaPlugin plugin;
+    private static JavaPlugin plugin;
     public static Boolean teamSelectorPhase = false;
 
     public TeamSelector(JavaPlugin plugin) {
-        this.plugin = plugin;
+        TeamSelector.plugin = plugin;
         initializeTeams();
     }
 
@@ -133,6 +133,25 @@ public class TeamSelector implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+
+        // makes it so player cant take off armor
+        if (event.getWhoClicked() instanceof Player) {
+            Player player = (Player) event.getWhoClicked();
+            ItemStack currentItem = event.getCurrentItem();
+            if (currentItem != null && currentItem.hasItemMeta() &&
+                    currentItem.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "unremovable"), PersistentDataType.BYTE)) {
+                player.setItemOnCursor(null);
+                for (ItemStack item : player.getInventory().getContents()) {
+                    if (item != null && item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "unremovable"), PersistentDataType.BYTE)) {
+                        player.getInventory().remove(item);
+                    }
+                }
+                setPlayerArmor(player);
+                player.sendMessage(ChatColor.RED + "You cannot remove your armor!");
+            }
+        }
+
+
         if (event.getView().getTitle().equals(ChatColor.DARK_GRAY + "Select a Team")) {
             event.setCancelled(true);
 
@@ -200,6 +219,7 @@ public class TeamSelector implements Listener {
         LeatherArmorMeta armorMeta = (LeatherArmorMeta) armor.getItemMeta();
         armorMeta.setColor(color);
         armorMeta.setUnbreakable(true);
+        armorMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "unremovable"), PersistentDataType.BYTE, (byte) 1);
         armor.setItemMeta(armorMeta);
         return armor;
     }
