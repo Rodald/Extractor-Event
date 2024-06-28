@@ -283,6 +283,10 @@ public class PlayerStatsScoreboard implements Listener {
                 int randomDeathMsg = random.nextInt(deathMessages.length);
                 player.sendMessage(ChatColor.RED + deathMessages[randomDeathMsg]);
                 player.sendTitle(ChatColor.BOLD + (ChatColor.RED + "You Died"), "", 0 , 80, 20);
+
+                Location location = player.getLocation();
+                World world = location.getWorld();
+                world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1);
                 GameSpectator.setSpectator(player, true);
                 event.setCancelled(true);
             };

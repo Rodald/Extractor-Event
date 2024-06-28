@@ -1,9 +1,7 @@
 package net.rodald.event.gameplay;
 
 import net.rodald.event.GameSpectator;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -45,7 +43,12 @@ public class Timer {
                     // Custom msg if only one minute remains
                     Bukkit.getOnlinePlayers().forEach(player -> {
                         player.sendTitle("", ChatColor.YELLOW + "Round ends in 1 minute!", 0, 60, 20);
+                        Location location = player.getLocation();
+                        World world = location.getWorld();
+
+                        world.playSound(location, Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
                     });
+
                 }
 
                 if (time == 15) {
@@ -71,6 +74,10 @@ public class Timer {
                 if (time <= 5 && time != 0) {
                     Bukkit.getOnlinePlayers().forEach(player -> {
                         player.sendTitle("", ChatColor.YELLOW + "Round ends in " + (time) + " seconds", 0, 20, 10);
+                        Location location = player.getLocation();
+                        World world = location.getWorld();
+
+                        world.playSound(location, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1.0f, 1.0f);
                     });
                 }
             }

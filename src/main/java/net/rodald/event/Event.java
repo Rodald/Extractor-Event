@@ -145,8 +145,8 @@ public final class Event extends JavaPlugin {
                         teamSelector.openInventory(player);
                         return true;
                     case "round":
-                        if (args.length == 1) {
-                            StartGame.startRound(Integer.parseInt(args[0]));
+                        if (args.length == 2) {
+                            StartGame.startRound(Integer.parseInt(args[1]));
                             return true;
                         } else {
                             player.sendMessage("Usage: /extractor round <round>");
@@ -155,6 +155,7 @@ public final class Event extends JavaPlugin {
                     case "stop":
                         StartGame.gameIsRunning = false;
                         Timer.resetTimer();
+                        return true;
                     case "invoke":
                         // extractor invoke placeCircle player.getLocation() 2 diamond_block
 

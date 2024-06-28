@@ -169,30 +169,54 @@ public class StartGame {
                     Bukkit.getOnlinePlayers().forEach(player -> player.sendTitle("Round " + round, "", 0, 20, 10));
                 } else {
                     if (countdown <= 0) {
-                        Bukkit.getOnlinePlayers().forEach(player -> player.sendTitle(ChatColor.AQUA + "" + ChatColor.BOLD + "GO!!", "", 0, 20, 10));
+                        Bukkit.getOnlinePlayers().forEach(player -> {
+                            player.sendTitle(ChatColor.AQUA + "" + ChatColor.BOLD + "GO!!", "", 0, 20, 10);
+                            Location location = player.getLocation();
+                            World world = location.getWorld();
+
+                            //plays sound 20 times so it sounds better
+                            for (int i = 0; i <= 20; i++) {
+                                world.playSound(location, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 100.0f, 1.7f);
+                            }
+                        });
+
+
                         removeCages();
                         Timer.startTimer();
                         cancel();
                         return;
                     }
-
+                    float pitch;
                     ChatColor color;
                     switch (countdown) {
                         case 3:
                             color = ChatColor.RED;
+                            pitch = .9f;
                             break;
                         case 2:
                             color = ChatColor.YELLOW;
+                            pitch = 1.2f;
                             break;
                         case 1:
                             color = ChatColor.GREEN;
+                            pitch = 1.5f;
                             break;
                         default:
                             color = ChatColor.WHITE;
+                            pitch = .7f;
                             break;
                     }
                     String message = String.valueOf(ChatColor.BOLD) + color + countdown;
-                    Bukkit.getOnlinePlayers().forEach(player -> player.sendTitle(message, "", 0, 20, 10));
+                    Bukkit.getOnlinePlayers().forEach(player -> {
+                        player.sendTitle(message, "", 0, 20, 10);
+
+                        Location location = player.getLocation();
+                        World world = location.getWorld();
+                        player.sendMessage(String.valueOf(pitch));
+                        world.playSound(location, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1.0f, pitch);
+                    });
+
+
                 }
                 countdown--;
             }
