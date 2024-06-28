@@ -146,7 +146,8 @@ public final class Event extends JavaPlugin {
                         return true;
                     case "round":
                         if (args.length == 2) {
-                            StartGame.startRound(Integer.parseInt(args[1]));
+                            StartGame.setRound(Integer.parseInt(args[1]));
+                            StartGame.startRound(StartGame.getRound());
                             return true;
                         } else {
                             player.sendMessage("Usage: /extractor round <round>");

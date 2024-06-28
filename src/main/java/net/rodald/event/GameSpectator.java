@@ -20,7 +20,11 @@ public class GameSpectator {
 
             } else {
                 player.removeMetadata("game_spectator", plugin);
-                player.setGameMode(GameMode.SURVIVAL);
+                if (StartGame.gameIsRunning) {
+                    player.setGameMode(GameMode.ADVENTURE);
+                } else {
+                    player.setGameMode(GameMode.SURVIVAL);
+                }
             }
             player.setAllowFlight(mode);
             player.setInvisible(mode);

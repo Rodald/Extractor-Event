@@ -58,11 +58,18 @@ public class StartGame {
     public static Boolean gameIsRunning = true;
 
     public  static Boolean intermission = false;
+
+
+
     private static int round = 1;
     private static PlayerStatsScoreboard playerStatsScoreboard;
     public StartGame(JavaPlugin plugin, PlayerStatsScoreboard playerStatsScoreboard) {
         this.plugin = plugin;
         this.playerStatsScoreboard = playerStatsScoreboard;
+    }
+
+    public static void setRound(int round) {
+        StartGame.round = round;
     }
 
     public static void startExtractionGame() {
@@ -176,7 +183,7 @@ public class StartGame {
 
                             //plays sound 20 times so it sounds better
                             for (int i = 0; i <= 20; i++) {
-                                world.playSound(location, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 100.0f, 1.7f);
+                                world.playSound(location, Sound.BLOCK_NOTE_BLOCK_BIT, 100.0f, 1.7f);
                             }
                         });
 
@@ -208,12 +215,12 @@ public class StartGame {
                     }
                     String message = String.valueOf(ChatColor.BOLD) + color + countdown;
                     Bukkit.getOnlinePlayers().forEach(player -> {
-                        player.sendTitle(message, "", 0, 20, 10);
+                        player.sendTitle(ChatColor.YELLOW + "Round starts in", color + "▸" + ChatColor.BOLD + message + ChatColor.RESET + color + "◂", 0, 20, 10);
 
                         Location location = player.getLocation();
                         World world = location.getWorld();
                         player.sendMessage(String.valueOf(pitch));
-                        world.playSound(location, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1.0f, pitch);
+                        world.playSound(location, Sound.BLOCK_NOTE_BLOCK_BIT, 2.0f, pitch);
                     });
 
 
