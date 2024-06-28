@@ -91,6 +91,8 @@ public class StartGame {
                             intermission = true;
                             Timer.resetTimer(); // Makes it so timer stops counting down when round is over
                             Bukkit.broadcastMessage("Round is over: " + isRoundOver().get());
+                            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute as @a at @s run function extractor:extractor2/stop");
+
                             Bukkit.getOnlinePlayers().forEach(player -> player.sendTitle(ChatColor.RED + "Round Over", "", 0, 80, 20));
                             waitTicks(100, () -> {
                                 Bukkit.broadcastMessage(ChatColor.GRAY + "Waiting for next round to start...");
@@ -180,6 +182,9 @@ public class StartGame {
                     if (countdown <= 0) {
                         Bukkit.getOnlinePlayers().forEach(player -> {
                             player.sendTitle(ChatColor.AQUA + "" + ChatColor.BOLD + "GO!!", "", 0, 20, 10);
+
+                            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute as @a at @s run function extractor:extractor2/play");
+
                             Location location = player.getLocation();
                             World world = location.getWorld();
 
