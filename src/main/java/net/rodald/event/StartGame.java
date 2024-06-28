@@ -173,7 +173,9 @@ public class StartGame {
             @Override
             public void run() {
                 if (countdown >= 11) {
-                    Bukkit.getOnlinePlayers().forEach(player -> player.sendTitle("Round " + round, "", 0, 20, 10));
+                    Team team1 = getTeamByLetter(rounds[round - 1].charAt(0));
+                    Team team2 = getTeamByLetter(rounds[round - 1].charAt(2));
+                    Bukkit.getOnlinePlayers().forEach(player -> player.sendTitle("Round " + round, team1.getDisplayName() + ChatColor.YELLOW + " vs " + team2.getDisplayName(), 0, 20, 10));
                 } else {
                     if (countdown <= 0) {
                         Bukkit.getOnlinePlayers().forEach(player -> {
@@ -182,7 +184,7 @@ public class StartGame {
                             World world = location.getWorld();
 
                             //plays sound 20 times so it sounds better
-                            for (int i = 0; i <= 20; i++) {
+                            for (int i = 0; i <= 10; i++) {
                                 world.playSound(location, Sound.BLOCK_NOTE_BLOCK_BIT, 100.0f, 1.7f);
                             }
                         });
@@ -219,7 +221,6 @@ public class StartGame {
 
                         Location location = player.getLocation();
                         World world = location.getWorld();
-                        player.sendMessage(String.valueOf(pitch));
                         world.playSound(location, Sound.BLOCK_NOTE_BLOCK_BIT, 2.0f, pitch);
                     });
 

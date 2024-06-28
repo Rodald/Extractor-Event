@@ -53,7 +53,7 @@ public class Timer {
 
                 if (time == 15) {
                     Bukkit.getOnlinePlayers().forEach(player -> {
-                        player.sendTitle("", ChatColor.AQUA + "All players are now glowing", 0, 20, 10);
+                        player.sendTitle("", ChatColor.AQUA + "All players are now glowing", 0, 60, 10);
                         if (!GameSpectator.getSpectator(player)) {
                             player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, -1, 1));
                         }
