@@ -3,15 +3,15 @@ package net.rodald.event;
 import net.kyori.adventure.text.format.TextColor;
 import net.rodald.event.scores.PlayerExtractionEvent;
 import net.rodald.event.scores.PlayerStatsScoreboard;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -25,6 +25,7 @@ public class Extractor extends BukkitRunnable {
     private final Plugin plugin;
     private final double radius;
     private PlayerStatsScoreboard playerStatsScoreboard;
+    private final String FIREWORK_TAG = "no_damage_firework";
 
     public Extractor(Plugin plugin, double radius, PlayerStatsScoreboard playerStatsScoreboard) {
         this.plugin = plugin;
@@ -62,6 +63,22 @@ public class Extractor extends BukkitRunnable {
                     Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
                     TextColor color = scoreboard.getEntityTeam(player).displayName().children().get(0).style().color();
+                    Location playerLocation = player.getLocation();
+
+                    // Create and configure firework particle
+                    Firework firework = (Firework) playerLocation.getWorld().spawn(playerLocation.add(0, 1, 0), Firework.class);
+                    FireworkMeta meta = firework.getFireworkMeta();
+
+                    // Set the color of the firework based on the target's team
+                    meta.addEffect(FireworkEffect.builder()
+                            .withColor(Color.fromRGB(color.red(), color.green(), color.blue())) // Set the firework color
+                            .with(FireworkEffect.Type.BALL_LARGE) // Firework type
+                            .build());
+
+                    meta.getPersistentDataContainer().set(new NamespacedKey(plugin, FIREWORK_TAG), PersistentDataType.BYTE, (byte) 1);
+                    firework.setFireworkMeta(meta);
+                    firework.detonate();
+
                     player.sendMessage(ChatColor.GREEN + "+12 points " + ChatColor.DARK_GREEN + "(Extraction)");
                     Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[↑] " + convertTextColorToChatColor(color) + player.getName()  + ChatColor.GRAY + " extracted!");
                     playerStatsScoreboard.addExtraction(player);
