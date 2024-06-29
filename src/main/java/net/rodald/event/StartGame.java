@@ -81,7 +81,7 @@ public class StartGame {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (round >= 6) {
+                    if (round >= 7) {
                         cancel();
                     }
                     if (isRoundOver().get() && !intermission) {
@@ -130,10 +130,11 @@ public class StartGame {
 
     public static void startRound(int round) {
         intermission = false;
+
+        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute as @a at @s run function extractor:extractor2/stop");
         Timer.resetTimer();
         Bukkit.getOnlinePlayers().forEach(player -> {
             GameSpectator.setSpectator(player, true); // Makes it so not playing team is in spectator. Playing teams will be set to false in balanceTeamPlayers
-            player.sendMessage(ChatColor.BLUE + "Spectator: " + GameSpectator.getSpectator(player));
 
             if (TeamSelector.getTeam(player) != null) {
                 player.heal(player.getMaxHealth());
@@ -278,7 +279,8 @@ public class StartGame {
                 .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
                 .collect(Collectors.toList());
 
-        String[] leaderboard = new String[sortedTeams.size()];
+        Map.Entry<Team, Integer> firstPlace = sortedTeams.get(0);
+        Map.Entry<Team, Integer> secondPlace = sortedTeams.get(1);
         switch (team) {
             case 'R':
                 return scoreboard.getTeam("Red");
@@ -287,9 +289,11 @@ public class StartGame {
             case 'B':
                 return scoreboard.getTeam("Blue");
             case '1':
-                return scoreboard.getTeam(leaderboard[0]);
+                Bukkit.broadcastMessage(firstPlace.getKey().getDisplayName());
+                return scoreboard.getTeam(firstPlace.getKey().getName());
             case '2':
-                return scoreboard.getTeam(leaderboard[1]);
+                Bukkit.broadcastMessage(secondPlace.getKey().getDisplayName());
+                return scoreboard.getTeam(firstPlace.getKey().getName());
             default:
                 return null;
         }
