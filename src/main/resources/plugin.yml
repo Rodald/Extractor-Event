@@ -1,7 +1,7 @@
 name: Event
 version: '${project.version}'
 main: net.rodald.event.Event
-api-version: '1.20'
+api-version: '1.21'
 
 commands:
   extractor:

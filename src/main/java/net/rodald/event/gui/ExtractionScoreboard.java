@@ -48,20 +48,20 @@ public class ExtractionScoreboard {
                             Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
                             TextColor color = scoreboard.getTeam(entry.getKey().getName()).color();
-                            leaderboard[i] = ChatColor.YELLOW + String.valueOf(i + 1) + "." + ChatColor.WHITE + " - " + convertTextColorToChatColor(color) + entry.getKey().getDisplayName();
+                            leaderboard[i] = ChatColor.YELLOW + String.valueOf(i + 1) + "." + ChatColor.WHITE + " - " + convertTextColorToChatColor(color) + entry.getKey().getName();
 
                             switch (entry.getKey().getName()) {
                                 case "Red":
-                                    leaderboard[i] = leaderboard[i] + "          ";
+                                    leaderboard[i] = leaderboard[i] + "      ";
                                     break;
                                 case "Green":
-                                    leaderboard[i] = leaderboard[i] + "       ";
+                                    leaderboard[i] = leaderboard[i] + "   ";
                                     break;
                                 case "Blue":
-                                    leaderboard[i] = leaderboard[i] + "        " + ChatColor.BOLD + " ";
+                                    leaderboard[i] = leaderboard[i] + "    " + ChatColor.BOLD + " ";
                                     break;
                             }
-                            leaderboard[i] = leaderboard[i] + ChatColor.GRAY + "(" + entry.getValue() + "pts)";
+                            leaderboard[i] = leaderboard[i]  + ChatColor.RESET + ChatColor.GRAY + "(" + entry.getValue() + "pts)";
                         }
                     }
 
@@ -74,7 +74,7 @@ public class ExtractionScoreboard {
                         showScoreboard(player, Timer.getTime(), StartGame.getRound(), leaderboard, kills, damage, extractions);
                     }
                 }
-            }.runTaskTimer(plugin, 0, 2); // Aktualisiere jede Sekunde (20 Ticks)
+            }.runTaskTimer(plugin, 0, 10); // Aktualisiere jede Sekunde (20 Ticks)
         }
     }
 
@@ -94,7 +94,7 @@ public class ExtractionScoreboard {
         Score spacer1 = objective.getScore(" ");
         spacer1.setScore(8);
 
-        Score teamLeaderboard = objective.getScore(ChatColor.BOLD + "Team Leaderboard:");
+        Score teamLeaderboard = objective.getScore(ChatColor.BOLD + "Leaderboard:");
         teamLeaderboard.setScore(7);
 
         for (int i = 0; i < leaderboard.length; i++) {

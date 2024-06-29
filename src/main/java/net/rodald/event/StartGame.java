@@ -85,8 +85,6 @@ public class StartGame {
                         cancel();
                     }
                     if (isRoundOver().get() && !intermission) {
-                        Bukkit.broadcastMessage("starting loop");
-                        Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(ChatColor.RED + "Spectator: " + GameSpectator.getSpectator(player)));
                         if (isRoundOver().get()) {
                             intermission = true;
                             Timer.resetTimer(); // Makes it so timer stops counting down when round is over
@@ -259,9 +257,6 @@ public class StartGame {
             return;
         }
 
-        Bukkit.broadcastMessage("Team1: " + team1.getPlayers());
-        Bukkit.broadcastMessage("Team2: " + team2.getPlayers());
-
         balanceTeamPlayers(team1, team1Spawn1, team1Spawn2);
         balanceTeamPlayers(team2, team2Spawn1, team2Spawn2);
     }
@@ -289,11 +284,9 @@ public class StartGame {
             case 'B':
                 return scoreboard.getTeam("Blue");
             case '1':
-                Bukkit.broadcastMessage(firstPlace.getKey().getDisplayName());
                 return scoreboard.getTeam(firstPlace.getKey().getName());
             case '2':
-                Bukkit.broadcastMessage(secondPlace.getKey().getDisplayName());
-                return scoreboard.getTeam(firstPlace.getKey().getName());
+                return scoreboard.getTeam(secondPlace.getKey().getName());
             default:
                 return null;
         }
@@ -378,8 +371,6 @@ public class StartGame {
                     crossbow.setItemMeta(crossbowMeta);
                     player.getInventory().setItem(0, crossbow);
                     player.getInventory().setItem(8, new ItemStack(Material.ARROW, 64));
-
-                    // TODO: make player not able to take off armor
                     TeamSelector.setPlayerArmor(player);
                 }
 
@@ -392,8 +383,6 @@ public class StartGame {
         List<Player> group1 = players.subList(0, mid);
         List<Player> group2 = players.subList(mid, players.size());
 
-        Bukkit.broadcastMessage(group1.toString());
-        Bukkit.broadcastMessage(group2.toString());
         for (Player player : group1) {
             float yaw = player.getYaw();
             float pitch = player.getPitch();
@@ -415,7 +404,6 @@ public class StartGame {
             public void run() {
                 cancel();
                 Bukkit.getScheduler().runTask(plugin, task);
-                Bukkit.broadcastMessage(ChatColor.RED + "STOP");
             }
         }.runTaskTimer(plugin, ticks, 1);
     }
