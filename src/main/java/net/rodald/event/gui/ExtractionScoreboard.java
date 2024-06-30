@@ -52,13 +52,13 @@ public class ExtractionScoreboard {
 
                             switch (entry.getKey().getName()) {
                                 case "Red":
-                                    leaderboard[i] = leaderboard[i] + "      ";
+                                    leaderboard[i] = leaderboard[i] + "    ";
                                     break;
                                 case "Green":
-                                    leaderboard[i] = leaderboard[i] + "   ";
+                                    leaderboard[i] = leaderboard[i] + " ";
                                     break;
                                 case "Blue":
-                                    leaderboard[i] = leaderboard[i] + "    " + ChatColor.BOLD + " ";
+                                    leaderboard[i] = leaderboard[i] + "  " + ChatColor.BOLD + " ";
                                     break;
                             }
                             leaderboard[i] = leaderboard[i]  + ChatColor.RESET + ChatColor.GRAY + "(" + entry.getValue() + "pts)";

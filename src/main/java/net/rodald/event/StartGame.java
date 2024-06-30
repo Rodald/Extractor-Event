@@ -88,7 +88,6 @@ public class StartGame {
                         if (isRoundOver().get()) {
                             intermission = true;
                             Timer.resetTimer(); // Makes it so timer stops counting down when round is over
-                            Bukkit.broadcastMessage("Round is over: " + isRoundOver().get());
                             Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute as @a at @s run function extractor:extractor2/stop");
 
                             Bukkit.getOnlinePlayers().forEach(player -> player.sendTitle(ChatColor.RED + "Round Over", "", 0, 80, 20));
@@ -139,6 +138,7 @@ public class StartGame {
                 player.removePotionEffect(PotionEffectType.GLOWING);
                 Team playerTeam = TeamSelector.getTeam(player);
                 if (Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(playerTeam))) {
+                    player.setMaxHealth(8);
                     player.getInventory().clear();
                 }
             }

@@ -18,6 +18,7 @@ import org.bukkit.block.data.type.Light;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -65,6 +66,7 @@ public final class Event extends JavaPlugin {
         new GameSpectator(this);
         powerGUI = new PowerGUI(this);
         hostGUI = new HostGUI(this);
+        hostGUI.setName(new ItemStack(Material.CROSSBOW), "test");
         playerStatsScoreboard = new PlayerStatsScoreboard(this);
         startGame = new StartGame(this, playerStatsScoreboard);
         extractionScoreboard = new ExtractionScoreboard(this, playerStatsScoreboard);
