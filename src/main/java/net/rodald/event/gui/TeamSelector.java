@@ -199,10 +199,6 @@ public class TeamSelector implements Listener {
 
         // give player armor
         setPlayerArmor(player);
-
-        // Debug: Verify the settings are applied
-        player.sendMessage(ChatColor.GREEN + "Friendly Fire: " + newTeam.allowFriendlyFire());
-        player.sendMessage(ChatColor.GREEN + "NameTagVisibility: " + newTeam.getNameTagVisibility());
     }
 
     public static void setPlayerArmor(Player player) {

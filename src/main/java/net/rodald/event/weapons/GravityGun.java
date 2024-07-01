@@ -1,6 +1,7 @@
 package net.rodald.event.weapons;
 
 import net.md_5.bungee.api.ChatColor;
+import net.rodald.event.block.MovableBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,10 +27,13 @@ public class GravityGun implements Listener {
     private boolean rightClicking = false;
     private static Entity rightClickedMob;
 
+    private static MovableBlock movableBlock;
+
 
     public GravityGun(JavaPlugin plugin) {
         this.plugin = plugin;
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        this.movableBlock = new MovableBlock(plugin);
 
         new BukkitRunnable() {
             @Override
@@ -54,6 +58,7 @@ public class GravityGun implements Listener {
         meta.setDisplayName(GRAVITY_GUN_ITEM_NAME);
         gravityGunItem.setItemMeta(meta);
         player.setItemOnCursor(gravityGunItem);
+
     }
 
     @EventHandler

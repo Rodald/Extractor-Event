@@ -130,8 +130,17 @@ public class StartGame {
 
         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute as @a at @s run function extractor:extractor2/stop");
         Timer.resetTimer();
+
+        Location spectatorLocation = Bukkit.getWorld("world").getEntitiesByClass(ArmorStand.class).stream()
+                .filter(as -> as.getScoreboardTags().contains("spectatorLobby"))
+                .findFirst()
+                .orElse(null).getLocation();
+
         Bukkit.getOnlinePlayers().forEach(player -> {
             GameSpectator.setSpectator(player, true); // Makes it so not playing team is in spectator. Playing teams will be set to false in balanceTeamPlayers
+
+            player.teleport(spectatorLocation);
+            player.getLocation().setY(spectatorLocation.getY());
 
             if (TeamSelector.getTeam(player) != null) {
                 player.heal(player.getMaxHealth());
@@ -236,7 +245,6 @@ public class StartGame {
     }
 
     public static void teleportPlayers(int round) {
-        Bukkit.broadcastMessage(rounds[round - 1].charAt(0) + " vs " + rounds[round - 1].charAt(2));
         Team team1 = getTeamByLetter(rounds[round - 1].charAt(0));
         Team team2 = getTeamByLetter(rounds[round - 1].charAt(2));
 

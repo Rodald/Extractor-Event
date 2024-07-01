@@ -1,5 +1,6 @@
 package net.rodald.event;
 
+import net.rodald.event.block.MovableBlock;
 import net.rodald.event.gameplay.Timer;
 import net.rodald.event.gameplay.arrow.ArrowDamage;
 import net.rodald.event.gui.ExtractionScoreboard;
@@ -36,6 +37,7 @@ public final class Event extends JavaPlugin {
     private static ExtractionScoreboard extractionScoreboard;
     private PlayerStatsScoreboard playerStatsScoreboard;
     private TeamSelector teamSelector;
+    private static MovableBlock movableBlock;
 
     @Override
     public void onEnable() {
@@ -69,6 +71,7 @@ public final class Event extends JavaPlugin {
         hostGUI.setName(new ItemStack(Material.CROSSBOW), "test");
         playerStatsScoreboard = new PlayerStatsScoreboard(this);
         startGame = new StartGame(this, playerStatsScoreboard);
+        movableBlock = new MovableBlock(this);
         extractionScoreboard = new ExtractionScoreboard(this, playerStatsScoreboard);
         Extractor checker = new Extractor(this, radius, playerStatsScoreboard);
         teamSelector = new TeamSelector(this);
@@ -100,6 +103,9 @@ public final class Event extends JavaPlugin {
                 }
 
                 switch (args[0].toLowerCase()) {
+                    case "block":
+                        movableBlock.spawnMovableBlock(player.getLocation());
+                        return true;
                     case "place":
                         // places the generator
                         // Hole die Welt, in der sich der Spieler befindet

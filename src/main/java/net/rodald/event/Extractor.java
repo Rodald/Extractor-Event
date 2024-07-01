@@ -57,7 +57,6 @@ public class Extractor extends BukkitRunnable {
 
 
                 if (player.getLocation().distance(nearestTextDisplay.getLocation()) >= 9) {
-                    player.sendMessage(String.valueOf(player.getLocation().distance(nearestTextDisplay.getLocation())));
                     GameSpectator.setSpectator(player, true);
 
                     Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
@@ -72,7 +71,7 @@ public class Extractor extends BukkitRunnable {
                     // Set the color of the firework based on the target's team
                     meta.addEffect(FireworkEffect.builder()
                             .withColor(Color.fromRGB(color.red(), color.green(), color.blue())) // Set the firework color
-                            .with(FireworkEffect.Type.BALL_LARGE) // Firework type
+                            .with(FireworkEffect.Type.BALL) // Firework type
                             .build());
 
                     meta.getPersistentDataContainer().set(new NamespacedKey(plugin, FIREWORK_TAG), PersistentDataType.BYTE, (byte) 1);
