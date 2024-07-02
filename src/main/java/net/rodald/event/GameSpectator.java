@@ -17,7 +17,7 @@ public class GameSpectator {
                 player.setMetadata("game_spectator", new FixedMetadataValue(plugin, true));
                 player.setGameMode(GameMode.ADVENTURE);
                 player.getInventory().clear();
-
+                player.setArrowsInBody(0);
             } else {
                 player.removeMetadata("game_spectator", plugin);
                 if (StartGame.gameIsRunning) {
