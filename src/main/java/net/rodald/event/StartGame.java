@@ -59,8 +59,6 @@ public class StartGame {
 
     public  static Boolean intermission = false;
 
-
-
     private static int round = 1;
     private static PlayerStatsScoreboard playerStatsScoreboard;
     public StartGame(JavaPlugin plugin, PlayerStatsScoreboard playerStatsScoreboard) {

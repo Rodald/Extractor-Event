@@ -25,7 +25,7 @@ public class GravityGun implements Listener {
     private final double range = 6;
     private boolean mobRightClicked = false;
     private boolean rightClicking = false;
-    private static Entity rightClickedMob;
+    private Entity rightClickedMob;
 
     private static MovableBlock movableBlock;
 
