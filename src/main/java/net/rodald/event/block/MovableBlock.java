@@ -2,8 +2,6 @@ package net.rodald.event.block;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -52,7 +50,6 @@ public class MovableBlock implements Listener {
                 if (shulker.isDead() || blockDisplay.isDead() || slime.isDead()) {
                     cancel();
                 } else {
-                    // blockDisplay.teleport(slime.getLocation().add(0, -0.5, 0));
                     shulker.teleport(blockDisplay.getLocation().add(0, -0.5, 0));
                 }
             }

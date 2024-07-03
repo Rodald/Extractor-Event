@@ -21,8 +21,6 @@ public class PowerGUI implements Listener {
 
     private final JavaPlugin plugin;
     public static int page = 0;
-    private static final int MAXPAGES = 112;
-
     public PowerGUI(JavaPlugin plugin) {
         this.plugin = plugin;
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -114,7 +112,6 @@ public class PowerGUI implements Listener {
     }
 
     private static void close(Player player) {
-        player.sendMessage("You closed!");
         player.closeInventory();
     }
 
