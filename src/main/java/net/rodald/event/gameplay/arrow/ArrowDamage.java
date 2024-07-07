@@ -50,11 +50,10 @@ public class ArrowDamage implements Listener {
             Arrow arrow = (Arrow) event.getDamager();
             if (trackedArrows.contains(arrow)) {
                 if (event.getEntity() instanceof Player) {
-                    Player shooter = (Player) arrow.getShooter();
+                    // Formula: wantedDamage = unknownDamage*(1-(min(20, max(6/5, 6-(4*unknownDamage)/8)))/25)
 
                     // set damage to make player do exactly 1 heart of damage even if player wears armor
                     event.setDamage(2.470910553583);
-                    shooter.sendMessage("enemy Health: " + ((Player) event.getEntity()).getHealth());
                     trackedArrows.remove(arrow);
                     arrow.remove(); // Remove the arrow after applying custom damage
                 }
