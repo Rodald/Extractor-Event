@@ -27,13 +27,10 @@ public class GravityGun implements Listener {
     private boolean rightClicking = false;
     private Entity rightClickedMob;
 
-    private static MovableBlock movableBlock;
-
 
     public GravityGun(JavaPlugin plugin) {
         this.plugin = plugin;
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        this.movableBlock = new MovableBlock(plugin);
 
         new BukkitRunnable() {
             @Override
