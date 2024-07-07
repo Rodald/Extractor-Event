@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -91,7 +90,6 @@ public class PortalGun implements Listener {
         }
         portalA = player.getTargetBlockExact(50).getLocation();
         player.getWorld().spawnParticle(Particle.DUST, portalA, 500, 0.5, 1, 0.5, new Particle.DustOptions(org.bukkit.Color.BLUE, 1)); // Blaue Partikel
-        player.sendMessage(ChatColor.GREEN + "Portal A gesetzt!");
         spawnPortalParticles(portalA, Particle.DUST, org.bukkit.Color.BLUE); // Dauerhafte Partikel für Portal A
     }
 
@@ -102,7 +100,6 @@ public class PortalGun implements Listener {
         }
         portalB = player.getTargetBlockExact(50).getLocation();
         player.getWorld().spawnParticle(Particle.DUST, portalB, 500, 0.5, 1, 0.5, new Particle.DustOptions(org.bukkit.Color.ORANGE, 1)); // Orange Partikel
-        player.sendMessage(ChatColor.BLUE + "Portal B gesetzt!");
         spawnPortalParticles(portalB, Particle.DUST, org.bukkit.Color.ORANGE); // Dauerhafte Partikel für Portal B
     }
 
