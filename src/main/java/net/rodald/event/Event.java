@@ -1,6 +1,5 @@
 package net.rodald.event;
 
-import net.rodald.event.block.MovableBlock;
 import net.rodald.event.gameplay.Timer;
 import net.rodald.event.gameplay.arrow.ArrowDamage;
 import net.rodald.event.gameplay.player_msgs.JoinLeaveMsg;
@@ -38,7 +37,6 @@ public final class Event extends JavaPlugin {
     private static ExtractionScoreboard extractionScoreboard;
     private PlayerStatsScoreboard playerStatsScoreboard;
     private TeamSelector teamSelector;
-    private static MovableBlock movableBlock;
 
     @Override
     public void onEnable() {
@@ -104,9 +102,6 @@ public final class Event extends JavaPlugin {
                 }
 
                 switch (args[0].toLowerCase()) {
-                    case "block":
-                        movableBlock.spawnMovableBlock(player.getLocation());
-                        return true;
                     case "place":
                         // places the generator
                         // Hole die Welt, in der sich der Spieler befindet
