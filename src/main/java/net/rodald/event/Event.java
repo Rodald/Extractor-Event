@@ -3,6 +3,7 @@ package net.rodald.event;
 import net.rodald.event.block.MovableBlock;
 import net.rodald.event.gameplay.Timer;
 import net.rodald.event.gameplay.arrow.ArrowDamage;
+import net.rodald.event.gameplay.player_msgs.JoinLeaveMsg;
 import net.rodald.event.gui.ExtractionScoreboard;
 import net.rodald.event.gui.HostGUI;
 import net.rodald.event.gui.TeamSelector;
@@ -66,12 +67,12 @@ public final class Event extends JavaPlugin {
 
         double radius = 2;
         new GameSpectator(this);
+        new JoinLeaveMsg(this);
         powerGUI = new PowerGUI(this);
         hostGUI = new HostGUI(this);
         hostGUI.setName(new ItemStack(Material.CROSSBOW), "test");
         playerStatsScoreboard = new PlayerStatsScoreboard(this);
         startGame = new StartGame(this, playerStatsScoreboard);
-        movableBlock = new MovableBlock(this);
         extractionScoreboard = new ExtractionScoreboard(this, playerStatsScoreboard);
         Extractor checker = new Extractor(this, radius, playerStatsScoreboard);
         teamSelector = new TeamSelector(this);

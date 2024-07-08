@@ -1,7 +1,6 @@
 package net.rodald.event.weapons;
 
 import net.md_5.bungee.api.ChatColor;
-import net.rodald.event.block.MovableBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
