@@ -34,8 +34,15 @@ public class JoinLeaveMsg implements Listener {
                 playerName + " just hopped in to the server",
                 "YOOOOO it's " + playerName,
                 "What's up " + playerName,
-                "Here have a welcome gift " + playerName,
-                "Have a fun time " + playerName
+                "You are my favourite player. Have a welcome gift " + playerName,
+                "Have a fun time " + playerName,
+                "print(\"Goodbye " + playerName + "!\")",
+                "Welcome, " + playerName + "! May your packets always reach their destination.",
+                "Catch you later, " + playerName + "! Don't let the zombies byte!",
+                playerName  + "s wifi disconnected",
+                playerName + "s cat ran over their keyboard",
+                playerName + " got an null"
+
         };
         int randomJoinMsg = random.nextInt(joinMessages.length);
         event.setJoinMessage(ChatColor.YELLOW + joinMessages[randomJoinMsg]);
@@ -70,7 +77,12 @@ public class JoinLeaveMsg implements Listener {
                 "Hope you had a fun time " + playerName,
                 "Yeah fuck off " + playerName,
                 "Bye " + playerName + "!",
-                "Guys don't be like " + playerName + ". Just stay online"
+                "Guys don't be like " + playerName + ". Just stay online",
+                "Catch you later, " + playerName + "! Exception: UserDisconnected",
+                "404 player " + playerName + " not found",
+                "Goodbye, " + playerName + "! OutOfMemoryError: No room for losers.",
+                "See you, " + playerName + "! NullPointerException: Players Skill Value Not Set.",
+                "Farewell, " + playerName + "! Infinite Loop: Running away from challenges."
         };
         int randomLeaveMsg = random.nextInt(leaveMessages.length);
         
