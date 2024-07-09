@@ -1,5 +1,6 @@
 package net.rodald.event.gameplay;
 
+import net.rodald.event.weapons.InstantTNT;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -19,6 +20,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static net.rodald.event.weapons.InstantTNT.TNT_ITEM_NAME;
 
 public class ItemSpawner {
 
@@ -48,9 +51,11 @@ public class ItemSpawner {
         jumpPotion.setItemMeta(jumpPotionMeta);
         spawnableItems.add(jumpPotion);
 
-        ItemStack firework = new ItemStack(Material.FIREWORK_ROCKET);
-        FireworkMeta fireworkMeta = (FireworkMeta) firework.getItemMeta();
-
+        ItemStack tntItem = new ItemStack(Material.TNT);
+        ItemMeta meta = tntItem.getItemMeta();
+        meta.setDisplayName(InstantTNT.TNT_ITEM_NAME);
+        tntItem.setItemMeta(meta);
+        spawnableItems.add(tntItem);
     }
     public static void spawnItems() {
         World world = Bukkit.getWorld("world");

@@ -91,6 +91,7 @@ public final class Event extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TeamSelector(this), this);
         getServer().getPluginManager().registerEvents(new AnvilOpener(), this);
         getServer().getPluginManager().registerEvents(new JoinLeaveMsg(), this);
+        getServer().getPluginManager().registerEvents(new InstantTNT(this), this);
     }
 
     @Override
