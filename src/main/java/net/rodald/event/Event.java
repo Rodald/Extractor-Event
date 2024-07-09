@@ -40,6 +40,7 @@ public final class Event extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         // Plugin startup logic
         instance = this;
 
@@ -65,7 +66,6 @@ public final class Event extends JavaPlugin {
 
         double radius = 2;
         new GameSpectator(this);
-        new JoinLeaveMsg(this);
         powerGUI = new PowerGUI(this);
         hostGUI = new HostGUI(this);
         hostGUI.setName(new ItemStack(Material.CROSSBOW), "test");
@@ -88,6 +88,7 @@ public final class Event extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new HostGUI(this), this);
         getServer().getPluginManager().registerEvents(new TeamSelector(this), this);
         getServer().getPluginManager().registerEvents(new AnvilOpener(), this);
+        getServer().getPluginManager().registerEvents(new JoinLeaveMsg(), this);
     }
 
     @Override
@@ -104,8 +105,6 @@ public final class Event extends JavaPlugin {
                 switch (args[0].toLowerCase()) {
                     case "place":
                         // places the generator
-                        // Hole die Welt, in der sich der Spieler befindet
-
                         placeCircle(player.getLocation().subtract(0, 1, 0), 3, Material.BLACK_CONCRETE.createBlockData());
                         Material flyZone = Material.LIGHT;
                         BlockData lightBlockData = flyZone.createBlockData();

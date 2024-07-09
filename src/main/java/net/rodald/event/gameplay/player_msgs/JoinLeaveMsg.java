@@ -11,27 +11,29 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class JoinLeaveMsg implements Listener {
 
-    private static Plugin plugin;
 
 
-    public JoinLeaveMsg(Plugin plugin) {
-        this.plugin = plugin;
-    }
+    public JoinLeaveMsg() {}
 
     @EventHandler
     public void PlayerJoinEvent(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        String playerName = player.getName();
+        String playerName;
+
+        if (TeamSelector.getTeam(player) != null) {
+            playerName = TeamSelector.getTeam(player).getColor() + player.getName() + ChatColor.YELLOW;
+        } else {
+            playerName = player.getName();
+        }
 
         Random random = new Random();
 
         String[] joinMessages = {
-                playerName + " just hopped in to the server",
+                playerName + " just hopped into the server",
                 "YOOOOO it's " + playerName,
                 "What's up " + playerName,
                 "You are my favourite player. Have a welcome gift " + playerName,
@@ -39,10 +41,13 @@ public class JoinLeaveMsg implements Listener {
                 "print(\"Goodbye " + playerName + "!\")",
                 "Welcome, " + playerName + "! May your packets always reach their destination.",
                 "Catch you later, " + playerName + "! Don't let the zombies byte!",
-                playerName  + "s wifi disconnected",
-                playerName + "s cat ran over their keyboard",
-                playerName + " got an null"
-
+                "A wild " + playerName + " appeared",
+                "Yay you made it " + playerName,
+                "Everyone welcome " + playerName,
+                playerName + " just slid into the server",
+                playerName + " just showed up,",
+                playerName + " joined the party",
+                "Good to see you, " + playerName
         };
         int randomJoinMsg = random.nextInt(joinMessages.length);
         event.setJoinMessage(ChatColor.YELLOW + joinMessages[randomJoinMsg]);
@@ -54,10 +59,16 @@ public class JoinLeaveMsg implements Listener {
     @EventHandler
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        String playerName = player.getName();
+        String playerName;
+
+        if (TeamSelector.getTeam(player) != null) {
+            playerName = TeamSelector.getTeam(player).getColor() + player.getName() + ChatColor.RED;
+        } else {
+            playerName = player.getName();
+        }
 
         Random random = new Random();
-        String prefixes[]  = {
+        String[] prefixes = {
                 ":(",
                 ";(",
                 "=(",
@@ -82,7 +93,10 @@ public class JoinLeaveMsg implements Listener {
                 "404 player " + playerName + " not found",
                 "Goodbye, " + playerName + "! OutOfMemoryError: No room for losers.",
                 "See you, " + playerName + "! NullPointerException: Players Skill Value Not Set.",
-                "Farewell, " + playerName + "! Infinite Loop: Running away from challenges."
+                "Farewell, " + playerName + "! Infinite Loop: Running away from challenges.",
+                playerName  + "s wifi disconnected",
+                playerName + "s cat ran over their keyboard",
+                playerName + " got an null exception"
         };
         int randomLeaveMsg = random.nextInt(leaveMessages.length);
         
