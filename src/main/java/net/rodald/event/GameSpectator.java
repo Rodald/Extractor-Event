@@ -18,6 +18,7 @@ public class GameSpectator {
                 player.setGameMode(GameMode.ADVENTURE);
                 player.getInventory().clear();
                 player.setArrowsInBody(0);
+                player.clearActivePotionEffects();
             } else {
                 player.removeMetadata("game_spectator", plugin);
                 if (StartGame.gameIsRunning) {

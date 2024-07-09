@@ -36,11 +36,10 @@ public class JoinLeaveMsg implements Listener {
                 playerName + " just hopped into the server",
                 "YOOOOO it's " + playerName,
                 "What's up " + playerName,
-                "You are my favourite player. Have a welcome gift " + playerName,
+                "You are my favourite player. Have a welcome diamond " + playerName,
                 "Have a fun time " + playerName,
-                "print(\"Goodbye " + playerName + "!\")",
+                "print(\"Hello " + playerName + "!\")",
                 "Welcome, " + playerName + "! May your packets always reach their destination.",
-                "Catch you later, " + playerName + "! Don't let the zombies byte!",
                 "A wild " + playerName + " appeared",
                 "Yay you made it " + playerName,
                 "Everyone welcome " + playerName,
@@ -52,7 +51,7 @@ public class JoinLeaveMsg implements Listener {
         int randomJoinMsg = random.nextInt(joinMessages.length);
         event.setJoinMessage(ChatColor.YELLOW + joinMessages[randomJoinMsg]);
         if (randomJoinMsg == 3) {
-            player.getInventory().addItem(new ItemStack(Material.BREAD));
+            player.getInventory().addItem(new ItemStack(Material.DIAMOND));
         }
     }
 
@@ -83,12 +82,13 @@ public class JoinLeaveMsg implements Listener {
         String prefix = prefixes[random.nextInt(prefixes.length)];
 
         String[] leaveMessages = {
-                prefix + playerName + " left the game",
+                prefix + " " + playerName + " left the game",
                 playerName + " you don't have to rage quit",
                 "Hope you had a fun time " + playerName,
                 "Yeah fuck off " + playerName,
                 "Bye " + playerName + "!",
                 "Guys don't be like " + playerName + ". Just stay online",
+                "Catch you later, " + playerName + "! Don't let the zombies byte!",
                 "Catch you later, " + playerName + "! Exception: UserDisconnected",
                 "404 player " + playerName + " not found",
                 "Goodbye, " + playerName + "! OutOfMemoryError: No room for losers.",
@@ -96,7 +96,8 @@ public class JoinLeaveMsg implements Listener {
                 "Farewell, " + playerName + "! Infinite Loop: Running away from challenges.",
                 playerName  + "s wifi disconnected",
                 playerName + "s cat ran over their keyboard",
-                playerName + " got an null exception"
+                playerName + " got an null exception",
+                "print(\"Goodbye " + playerName + "!\")",
         };
         int randomLeaveMsg = random.nextInt(leaveMessages.length);
         

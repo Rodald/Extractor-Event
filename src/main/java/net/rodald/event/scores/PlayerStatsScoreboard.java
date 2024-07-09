@@ -109,8 +109,7 @@ public class PlayerStatsScoreboard implements Listener {
             Team killerTeam = getTeam(killer);
             Team targetTeam = getTeam(target);
 
-            killer.sendMessage(String.valueOf(Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(killerTeam))));
-            killer.sendMessage(String.valueOf(Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(targetTeam))));
+
 
             if (Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(killerTeam)) && Arrays.stream(TeamSelector.validTeams).anyMatch(i -> i.equals(targetTeam))) {
                 World world = killer.getWorld();
@@ -153,6 +152,8 @@ public class PlayerStatsScoreboard implements Listener {
                 // Add kill to the killer's stats
                 addKill(killer);
             }
+
+
         }
     }
 
@@ -225,6 +226,7 @@ public class PlayerStatsScoreboard implements Listener {
 
     @EventHandler
     private void PlayerDeathEvent(PlayerDeathEvent event) {
+        // TODO: PLAYERS KILLED BY OTHER PLAYERS CAN STILL PLAY IN SPECTATOR MODE!
         Player player = event.getEntity();
 
         if (getTeam(player) != null) {
@@ -289,15 +291,11 @@ public class PlayerStatsScoreboard implements Listener {
                 world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1);
                 GameSpectator.setSpectator(player, true);
 
-                Location spectatorLocation = Bukkit.getWorld("world").getEntitiesByClass(ArmorStand.class).stream()
-                        .filter(as -> as.getScoreboardTags().contains("spectatorLobby"))
-                        .findFirst()
-                        .orElse(null).getLocation();
-
-                player.teleport(spectatorLocation);
-                player.getLocation().setY(spectatorLocation.getY());
+                player.setArrowsInBody(0);
 
                 event.setCancelled(true);
+
+
             };
         }
     }

@@ -1,5 +1,6 @@
 package net.rodald.event;
 
+import net.rodald.event.gameplay.ItemSpawner;
 import net.rodald.event.gameplay.Timer;
 import net.rodald.event.gameplay.arrow.ArrowDamage;
 import net.rodald.event.gameplay.player_msgs.JoinLeaveMsg;
@@ -66,6 +67,7 @@ public final class Event extends JavaPlugin {
 
         double radius = 2;
         new GameSpectator(this);
+        new ItemSpawner();
         powerGUI = new PowerGUI(this);
         hostGUI = new HostGUI(this);
         hostGUI.setName(new ItemStack(Material.CROSSBOW), "test");

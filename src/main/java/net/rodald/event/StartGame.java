@@ -2,6 +2,7 @@ package net.rodald.event;
 
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.rodald.event.gameplay.ItemSpawner;
 import net.rodald.event.gameplay.Timer;
 import net.rodald.event.gui.TeamSelector;
 import net.rodald.event.scores.PlayerStatsScoreboard;
@@ -125,6 +126,8 @@ public class StartGame {
 
     public static void startRound(int round) {
         intermission = false;
+
+        ItemSpawner.spawnItems(); // spawns power-ups
 
         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute as @a at @s run function extractor:extractor2/stop");
         Timer.resetTimer();

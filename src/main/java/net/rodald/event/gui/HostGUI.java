@@ -1,6 +1,7 @@
 package net.rodald.event.gui;
 
 import net.rodald.event.StartGame;
+import net.rodald.event.gameplay.ItemSpawner;
 import net.rodald.event.scores.PlayerStatsScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,6 +37,7 @@ public class HostGUI implements Listener {
         ItemStack teleportPlayers = setName(new ItemStack(Material.ENDER_PEARL), "teleportPlayers");
         ItemStack startRound = setName(new ItemStack(Material.STONE_BUTTON), "startRound");
         ItemStack startExtractionGame = setName(new ItemStack(Material.CROSSBOW), "startExtractionGame");
+        ItemStack spawnItems = setName(new ItemStack(Material.SPLASH_POTION), "spawnItems");
 
 
         // Set items in the inventory
@@ -44,6 +46,7 @@ public class HostGUI implements Listener {
         gui.setItem(2, startCountdown);
         gui.setItem(3, teleportPlayers);
         gui.setItem(4, startRound);
+        gui.setItem(4, spawnItems);
         gui.setItem(26, closeItem); // Bottom right
 
         // Open the inventory for the player
@@ -96,6 +99,8 @@ public class HostGUI implements Listener {
                 StartGame.startRound(StartGame.getRound());
             } else if (itemName.equals("startExtractionGame")) {
                 StartGame.startExtractionGame();
+            } else if (itemName.equals("spawnItems")) {
+                ItemSpawner.spawnItems();
             }
         }
     }
