@@ -147,7 +147,7 @@ public class TeamSelector implements Listener {
                     }
                 }
                 setPlayerArmor(player);
-                player.sendMessage(ChatColor.RED + "You cannot remove your armor!");
+                player.sendMessage(ChatColor.RED + "You can not remove your armor!");
             }
         }
 

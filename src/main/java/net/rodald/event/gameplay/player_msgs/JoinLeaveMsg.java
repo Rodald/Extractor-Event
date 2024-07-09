@@ -92,11 +92,11 @@ public class JoinLeaveMsg implements Listener {
                 "Catch you later, " + playerName + "! Exception: UserDisconnected",
                 "404 player " + playerName + " not found",
                 "Goodbye, " + playerName + "! OutOfMemoryError: No room for losers.",
-                "See you, " + playerName + "! NullPointerException: Players Skill Value Not Set.",
+                playerName + " got kicked! NullPointerException: Players Skill Value Not Set.",
                 "Farewell, " + playerName + "! Infinite Loop: Running away from challenges.",
                 playerName  + "s wifi disconnected",
                 playerName + "s cat ran over their keyboard",
-                playerName + " got an null exception",
+                playerName + " got a NullPointerException",
                 "print(\"Goodbye " + playerName + "!\")",
         };
         int randomLeaveMsg = random.nextInt(leaveMessages.length);
