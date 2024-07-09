@@ -288,6 +288,15 @@ public class PlayerStatsScoreboard implements Listener {
                 World world = location.getWorld();
                 world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1);
                 GameSpectator.setSpectator(player, true);
+
+                Location spectatorLocation = Bukkit.getWorld("world").getEntitiesByClass(ArmorStand.class).stream()
+                        .filter(as -> as.getScoreboardTags().contains("spectatorLobby"))
+                        .findFirst()
+                        .orElse(null).getLocation();
+
+                player.teleport(spectatorLocation);
+                player.getLocation().setY(spectatorLocation.getY());
+
                 event.setCancelled(true);
             };
         }
