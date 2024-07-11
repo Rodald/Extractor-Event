@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
@@ -60,11 +59,12 @@ public class ItemSpawner {
     public static void spawnItems() {
         World world = Bukkit.getWorld("world");
 
+        Random random = new Random();
+        int randomItem = random.nextInt(spawnableItems.size());
+
         world.getEntitiesByClass(ArmorStand.class).stream()
                 .filter(as -> as.getScoreboardTags().contains("item_spawner"))
                 .forEach(armorStand -> {
-                    Random random = new Random();
-                    int randomItem = random.nextInt(spawnableItems.size());
                     ItemStack item = spawnableItems.get(randomItem);
                     world.dropItem(armorStand.getLocation(), item);
                 });

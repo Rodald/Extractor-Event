@@ -61,7 +61,7 @@ public class InstantTNT implements Listener {
                     // Place the TNT at the clicked block face location
                     Location location = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation();
                     TNTPrimed tnt = (TNTPrimed) location.getWorld().spawnEntity(location.add(0.5, 0, 0.5), EntityType.TNT);
-                    tnt.setFuseTicks(80); // Set fuse time (4 seconds)
+                    tnt.setFuseTicks(40); // Set fuse time (4 seconds)
 
                     // Check if two TNTs are spawned within a short time frame
                     if (currentTime - lastTNTSpawnTime < 50) {
@@ -88,7 +88,7 @@ public class InstantTNT implements Listener {
     public void onEntityExplode(org.bukkit.event.entity.EntityExplodeEvent event) {
         if (event.getEntity() instanceof TNTPrimed) {
             event.blockList().clear(); // Prevent block damage
-            for (Entity entity : event.getEntity().getNearbyEntities(5, 5, 5)) { // Adjust radius as needed
+            for (Entity entity : event.getEntity().getNearbyEntities(7.5, 7.5, 7.5)) { // Adjust radius as needed
                 if (entity instanceof Player) {
                     ((Player) entity).damage(6); // Adjust damage as needed
                 }
