@@ -116,11 +116,6 @@ public class PlayerStatsScoreboard implements Listener {
                 Location location = killer.getLocation();
                 Location targetLocation = target.getLocation();
 
-                // returns if target is not a player
-                if (!(target instanceof Player)) {
-                    return;
-                }
-
                 TextColor targetColor = getTeam(target).color();
 
                 // Create and configure firework particle
@@ -129,18 +124,19 @@ public class PlayerStatsScoreboard implements Listener {
 
                 // Set the color of the firework based on the target's team
                 meta.addEffect(FireworkEffect.builder()
-                        .withColor(Color.fromRGB(targetColor.red(), targetColor.green(), targetColor.blue())) // Set the firework color
-                        .with(FireworkEffect.Type.BALL_LARGE) // Firework type
+                        .withColor(Color.fromRGB(targetColor.red(), targetColor.green(), targetColor.blue()))
+                        .with(FireworkEffect.Type.BALL_LARGE)
                         .build());
 
                 meta.getPersistentDataContainer().set(new NamespacedKey(plugin, FIREWORK_TAG), PersistentDataType.BYTE, (byte) 1);
                 firework.setFireworkMeta(meta);
                 firework.detonate();
 
-                // Spawn wax particles at the killer's location
+                // Spawn wax particles at the killer location
+                // TODO maybe create texturpack for mcc like win effect.
+                // Nah im fine. That's useless
                 world.spawnParticle(Particle.WAX_ON, location.add(0, 1, 0), 200, 0.5, 1, 0.5, 0.1);
 
-                // Display title and broadcast message for the kill
                 Team killersTeam = getTeam(killer);
 
                 ChatColor killerChatColor = convertTextColorToChatColor(killersTeam.color());
@@ -149,7 +145,6 @@ public class PlayerStatsScoreboard implements Listener {
                 Bukkit.broadcastMessage(ChatColor.RED + "[\uD83C\uDFF9] " + ChatColor.BOLD + targetChatColor + target.getName() + ChatColor.GRAY + " has been killed by " + killerChatColor + killer.getName());
                 killer.sendMessage(ChatColor.GREEN + "+8 points " + ChatColor.DARK_GREEN + "(kill)");
 
-                // Add kill to the killer's stats
                 addKill(killer);
             }
 
@@ -172,14 +167,12 @@ public class PlayerStatsScoreboard implements Listener {
                 }
 
                 // Set damage to 1 heart (2 health points)
-                event.setDamage(2);
-
                 TextColor targetColor = getTeam(target).color();
                 ChatColor targetChatColor = convertTextColorToChatColor(targetColor);
 
                 // displays enemy health above action bar
                 if (target.getHealth() > 2) {
-                    damager.sendActionBar(targetChatColor + target.getName() + ChatColor.WHITE + " - " + ChatColor.RED + (int) ((target.getHealth() - 2) / 2) + "❤");
+                    damager.sendActionBar(targetChatColor + target.getName() + ChatColor.WHITE + " - " + ChatColor.RED + (int) Math.ceil((target.getHealth() - 2) / 2) + "❤"); // Homeless hier ist der fehler ich caste es in einen integer und da wird dann alles weggerundet. Ich habe jetzt Math.ceil geadded dass sollte es immer aufrunden
                 } else {
                     damager.sendActionBar(targetChatColor + target.getName() + ChatColor.WHITE + " - " + ChatColor.DARK_RED + "☠");
                 }

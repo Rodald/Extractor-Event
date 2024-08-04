@@ -27,7 +27,6 @@ public class SignGUI implements Listener {
     private static Sign sign;
 
     private SignGUI() {
-        // Private constructor to prevent instantiation
     }
 
     public static SignGUI getInstance() {

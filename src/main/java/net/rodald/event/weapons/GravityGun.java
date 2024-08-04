@@ -1,7 +1,8 @@
 package net.rodald.event.weapons;
 
-
-import org.bukkit.Bukkit;
+/*
+    UPDATED VERSION IN PUZZLE PROJECT
+ */
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -42,7 +43,7 @@ public class GravityGun implements Listener {
                     }
                 }
             }
-        }.runTaskTimer(plugin, 0, 1); // Run every tick
+        }.runTaskTimer(plugin, 0, 1);
     }
 
 

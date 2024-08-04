@@ -56,7 +56,6 @@ public class BlackHoleGenerator implements Listener {
             long lastUseTime = cooldowns.getOrDefault(playerId, 0L);
 
             if (currentTime >= lastUseTime + COOLDOWN_DURATION) {
-                // Shoot a snowball as a placeholder for the black hole
                 Snowball snowball = player.launchProjectile(Snowball.class);
                 shooter = player;
                 snowball.setCustomName("BlackHole");
@@ -65,7 +64,7 @@ public class BlackHoleGenerator implements Listener {
                 player.sendMessage(ChatColor.RED + "Black Hole Generator is on cooldown. Please wait.");
             }
 
-            event.setCancelled(true); // Prevents the item from being used
+            event.setCancelled(true);
         }
     }
 
@@ -84,8 +83,8 @@ public class BlackHoleGenerator implements Listener {
         world.playSound(location, Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
 
         new BukkitRunnable() {
-            int duration = 400; // Duration of the black hole in ticks (20 seconds)
-            double radius = 7.5; // Radius of the black hole effect
+            int duration = 400;
+            double radius = 7.5;
 
             @Override
             public void run() {
@@ -94,10 +93,8 @@ public class BlackHoleGenerator implements Listener {
                     return;
                 }
 
-                // Display particle effects
                 world.spawnParticle(Particle.DUST, location, 500, radius / 3, radius / 3, radius / 3, 0, new Particle.DustOptions(Color.BLACK, 3));
 
-                // Attract nearby entities
                 for (Entity entity : world.getNearbyEntities(location, radius, radius, radius)) {
                     if (entity instanceof Player) {
                         if (entity == shooter) continue;  // makes sure that shooter doesnt take damage
@@ -109,9 +106,9 @@ public class BlackHoleGenerator implements Listener {
                         livingEntity.damage(1.25, shooter);
                     }
                     Vector direction = location.toVector().subtract(entity.getLocation().toVector()).normalize();
-                    entity.setVelocity(entity.getVelocity().add(direction.multiply(0.1))); // Adjust the strength of the attraction
+                    entity.setVelocity(entity.getVelocity().add(direction.multiply(0.1))); // 0.1 = strength of the pull
                 }
             }
-        }.runTaskTimer(plugin, 0, 1); // Task every tick
+        }.runTaskTimer(plugin, 0, 1);
     }
 }

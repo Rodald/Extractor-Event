@@ -70,8 +70,8 @@ public class Extractor extends BukkitRunnable {
 
                     // Set the color of the firework based on the target's team
                     meta.addEffect(FireworkEffect.builder()
-                            .withColor(Color.fromRGB(color.red(), color.green(), color.blue())) // Set the firework color
-                            .with(FireworkEffect.Type.BALL) // Firework type
+                            .withColor(Color.fromRGB(color.red(), color.green(), color.blue()))
+                            .with(FireworkEffect.Type.BALL)
                             .build());
 
                     meta.getPersistentDataContainer().set(new NamespacedKey(plugin, FIREWORK_TAG), PersistentDataType.BYTE, (byte) 1);
@@ -84,7 +84,7 @@ public class Extractor extends BukkitRunnable {
 
                 }
                     player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 10, 3, true, false, false));
-                Bukkit.getPluginManager().callEvent(new PlayerExtractionEvent(player)); // Auslösen des Events
+                Bukkit.getPluginManager().callEvent(new PlayerExtractionEvent(player));
             }
         }
     }
@@ -106,11 +106,10 @@ public class Extractor extends BukkitRunnable {
     }
 
     public void startChecking() {
-        this.runTaskTimer(plugin, 0, 1); // Run the task every tick
+        this.runTaskTimer(plugin, 0, 1);
     }
 
     private ChatColor convertTextColorToChatColor(TextColor textColor) {
-        // Hier ein einfaches Mapping als Beispiel, je nach API musst du dies anpassen
         if (String.valueOf(textColor).equals("red")) {
             return ChatColor.RED;
         } else if (String.valueOf(textColor).equals("blue")) {
@@ -118,6 +117,6 @@ public class Extractor extends BukkitRunnable {
         } else if (String.valueOf(textColor).equals("green")) {
             return ChatColor.GREEN;
         }
-        return ChatColor.WHITE; // Standardfallback, wenn die Farbe nicht übereinstimmt
+        return ChatColor.WHITE;
     }
 }

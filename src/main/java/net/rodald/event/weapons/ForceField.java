@@ -65,7 +65,7 @@ public class ForceField implements Listener {
                 player.sendMessage(ChatColor.RED + "Force Field is on cooldown. Please wait.");
             }
 
-            event.setCancelled(true); // Verhindert, dass das Item in die Hand genommen wird
+            event.setCancelled(true);
         }
     }
 
@@ -113,14 +113,13 @@ public class ForceField implements Listener {
                 Vector direction;
                 // slows player down when he is sneaking
                 if (player.isSneaking()) {
-                    direction = player.getLocation().getDirection().normalize().setY(0); // Richtung, in die der Spieler schaut
+                    direction = player.getLocation().getDirection().normalize().setY(0);
                 } else if (player.isSprinting()) {
-                    direction = player.getLocation().getDirection().normalize().multiply(2); // Richtung, in die der Spieler schaut
+                    direction = player.getLocation().getDirection().normalize().multiply(2);
                 } else {
                     direction = new Vector(0, 0, 0);
                 }
 
-                // Füge dem Y-Vektor des Spielers Velocity hinzu
                 currentVelocity.setY(currentVelocity.getY() + additionalY);
 
                 // Begrenze die Y-Geschwindigkeit
@@ -130,8 +129,8 @@ public class ForceField implements Listener {
                     currentVelocity.setY(currentVelocity.getY() * 0.98);
                 }
 
-                double forceMultiplier = 0.0005; // Stärke der Abstoßung anpassen
-                double forceHeightMultiplier = 1; // Stärke der Abstoßung anpassen
+                double forceMultiplier = 0.0005; // Stärke des Abstoß
+                double forceHeightMultiplier = 1; // Auch stärke des Abstoß
 
                 // Abstoßung von festen Blöcken im Radius
                 for (double x = -radius; x <= radius; x++) {
@@ -140,21 +139,14 @@ public class ForceField implements Listener {
                             Location blockLoc = playerLoc.clone().add(x, y, z);
                             Block block = blockLoc.getBlock();
 
-                            // Überprüfe, ob der Spieler in der Nähe von festen Blöcken ist
                             if (!block.isEmpty() && (block.getType().isSolid())) {
-                                // Berechne die Richtung vom Block zum Spieler
                                 Vector blockDirection = playerLoc.toVector().subtract(blockLoc.toVector()).normalize();
 
-                                // Bewege den Spieler von den Blöcken weg
                                 currentVelocity.add(blockDirection.multiply(forceMultiplier));
                                 currentVelocity.setY(currentVelocity.getY() * forceHeightMultiplier);
                             }
 
                             if (!block.isEmpty() && (block.isLiquid() && y <= radius)) {
-                                // Berechne die Richtung vom Block zum Spieler
-                                Vector blockDirection = playerLoc.toVector().subtract(blockLoc.toVector()).normalize();
-
-                                // Bewege den Spieler von den Blöcken weg
                                 currentVelocity.setY(currentVelocity.getY() + forceMultiplier);
                                 currentVelocity.setY(currentVelocity.getY() * forceHeightMultiplier);
                             }
@@ -172,7 +164,7 @@ public class ForceField implements Listener {
                 // Aktualisiere die Spielerposition für die nächste Iteration
                 playerLoc = newLoc;
             }
-        }.runTaskTimer(plugin, 0, 1); // Task alle 1 Tick ausführen
+        }.runTaskTimer(plugin, 0, 1);
     }
 
     private void deactivateForceField(Player player) {

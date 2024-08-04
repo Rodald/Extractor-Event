@@ -1,6 +1,7 @@
-package net.rodald.event;
+package net.rodald.event.gui;
 
 import net.md_5.bungee.api.ChatColor;
+import net.rodald.event.Event;
 import net.rodald.event.tests.AnvilGUI;
 import net.rodald.event.tests.SignGUI;
 import net.rodald.event.weapons.*;
@@ -33,7 +34,6 @@ public class PowerGUI implements Listener {
         ItemStack backgroundItem = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
         setName(backgroundItem, " ");
 
-        // Hintergrund-Items
         for (int i = 0; i < inventory.getSize() - 9; i++) {
             inventory.setItem(i, backgroundItem);
         }
@@ -42,24 +42,21 @@ public class PowerGUI implements Listener {
 
         // Platziere die Power-Items in der Mitte des Inventars
 
-        // Setze das Schließen-Item
         ItemStack close = new ItemStack(Material.BARRIER);
         setName(close, "Close");
         inventory.setItem(inventory.getSize() - 5, close);
 
-        // Öffne das Inventar für den Spieler
         // player.openInventory(inventory);
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getView().getTitle().equals("Power GUI")) {
-            event.setCancelled(true); // Verhindert, dass der Spieler das Item bewegt
+            event.setCancelled(true);
 
             Player player = (Player) event.getWhoClicked();
             ItemStack clickedItem = event.getCurrentItem();
 
-            // Überprüfe, welches Item angeklickt wurde
             if (clickedItem != null) {
                 if (clickedItem.getType() == Material.BARRIER) {
                     close(player);
@@ -226,7 +223,6 @@ public class PowerGUI implements Listener {
             return null;
         }
 
-        // Hole das ItemMeta des Gegenstands
         ItemMeta meta = item.getItemMeta();
         if (meta == null) {
             return item;
@@ -292,7 +288,6 @@ public class PowerGUI implements Listener {
             powerItems.add(health);
             powerItems.add(speed);
 
-            // Platziere die Power-Items in der Mitte des Inventars
             int startingIndex = (inventory.getSize() - powerItems.size() * 2 - 9) / 2 + 1;
             for (int i = 0; i < powerItems.size(); i++) {
                 inventory.setItem(startingIndex + 2*i, powerItems.get(i));
@@ -324,7 +319,6 @@ public class PowerGUI implements Listener {
             powerItems.add(gravityGun);
             powerItems.add(blackHoleGenerator);
 
-            // Platziere die Power-Items in der Mitte des Inventars
             int startingIndex = (inventory.getSize() - powerItems.size() * 2 - 9) / 2 + 1;
             for (int i = 0; i < powerItems.size(); i++) {
                 inventory.setItem(startingIndex + 2 * i, powerItems.get(i));

@@ -23,7 +23,7 @@ public class PortalGun implements Listener {
     private Location portalA = null;
     private Location portalB = null;
     private final Map<UUID, Long> cooldowns = new HashMap<>();
-    private final long COOLDOWN_DURATION = 100; // Cooldown in Millisekunden (1 Sekunde)
+    private final long COOLDOWN_DURATION = 100;
 
     public PortalGun(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -53,14 +53,11 @@ public class PortalGun implements Listener {
 
             if (currentTime >= lastUseTime + COOLDOWN_DURATION) {
                 if (event.getAction().toString().contains("LEFT_CLICK")) {
-                    // Erstelle Portal A
                     createPortalA(player);
                 } else if (event.getAction().toString().contains("RIGHT_CLICK")) {
-                    // Erstelle Portal B
                     createPortalB(player);
                 }
 
-                // Teleportiere den Spieler, wenn beide Portale existieren
                 float yaw = player.getYaw();
                 float pitch = player.getPitch();
                 if (portalA != null && portalB != null) {
@@ -74,12 +71,12 @@ public class PortalGun implements Listener {
                     }
                 }
 
-                cooldowns.put(playerId, currentTime); // Setze den Cooldown
+                cooldowns.put(playerId, currentTime);
             } else {
                 player.sendMessage(ChatColor.RED + "Portal Gun is on cooldown. Please wait.");
             }
 
-            event.setCancelled(true); // Verhindert Standardaktionen mit dem Item
+            event.setCancelled(true);
         }
     }
 
@@ -90,17 +87,17 @@ public class PortalGun implements Listener {
         }
         portalA = player.getTargetBlockExact(50).getLocation();
         player.getWorld().spawnParticle(Particle.DUST, portalA, 500, 0.5, 1, 0.5, new Particle.DustOptions(org.bukkit.Color.BLUE, 1)); // Blaue Partikel
-        spawnPortalParticles(portalA, Particle.DUST, org.bukkit.Color.BLUE); // Dauerhafte Partikel für Portal A
+        spawnPortalParticles(portalA, Particle.DUST, org.bukkit.Color.BLUE);
     }
 
     private void createPortalB(Player player) {
         if (portalB != null) {
-            // Entferne das alte Portal B
+            // kills old portal
             player.getWorld().spawnParticle(Particle.EXPLOSION, portalB, 50, 0.5, 0.5, 0.5, 0.1);
         }
         portalB = player.getTargetBlockExact(50).getLocation();
         player.getWorld().spawnParticle(Particle.DUST, portalB, 500, 0.5, 1, 0.5, new Particle.DustOptions(org.bukkit.Color.ORANGE, 1)); // Orange Partikel
-        spawnPortalParticles(portalB, Particle.DUST, org.bukkit.Color.ORANGE); // Dauerhafte Partikel für Portal B
+        spawnPortalParticles(portalB, Particle.DUST, org.bukkit.Color.ORANGE);
     }
 
     private void spawnPortalParticles(Location location, Particle particle, org.bukkit.Color color) {
@@ -113,6 +110,6 @@ public class PortalGun implements Listener {
                     cancel();
                 }
             }
-        }.runTaskTimer(plugin, 0, 2); // Partikel alle 10 Ticks spawnen
+        }.runTaskTimer(plugin, 0, 2);
     }
 }

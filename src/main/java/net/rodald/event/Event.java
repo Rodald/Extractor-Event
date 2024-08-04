@@ -4,9 +4,7 @@ import net.rodald.event.gameplay.ItemSpawner;
 import net.rodald.event.gameplay.Timer;
 import net.rodald.event.gameplay.arrow.ArrowDamage;
 import net.rodald.event.gameplay.player_msgs.JoinLeaveMsg;
-import net.rodald.event.gui.ExtractionScoreboard;
-import net.rodald.event.gui.HostGUI;
-import net.rodald.event.gui.TeamSelector;
+import net.rodald.event.gui.*;
 import net.rodald.event.scores.PlayerStatsScoreboard;
 import net.rodald.event.scores.PointSystem;
 import net.rodald.event.tests.AnvilGUI;
@@ -60,7 +58,7 @@ public final class Event extends JavaPlugin {
             objective.setDisplaySlot(org.bukkit.scoreboard.DisplaySlot.SIDEBAR);
         }
 
-        // Füge Spielern das Scoreboard hinzu (optional)
+        // Adds players to the scoreboard (not necessary I think)
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.setScoreboard(scoreboard);
         }
@@ -252,8 +250,11 @@ public final class Event extends JavaPlugin {
                                     pSender.setAllowFlight(!pSender.getAllowFlight());
                                     return true;
                                 case "invisible":
-                                    if (pSender.isInvisible()) pSender.sendMessage("You are no longer invisible");
-                                    else pSender.sendMessage("You are now Invisible");
+                                    if (pSender.isInvisible()) {
+                                        sender.sendMessage("You are no longer invisible");
+                                    } else {
+                                        pSender.sendMessage("You are now Invisible");
+                                    }
                                     pSender.setInvisible(!pSender.isInvisible());
                                     return true;
                                 case "invulnerable":

@@ -33,7 +33,7 @@ public class PointSystem implements Listener {
 
         if (objective == null) {
             Bukkit.getLogger().warning("Objective '" + objectiveName + "' does not exist in the scoreboard.");
-            return; // Beende die Methode, wenn das Objective nicht existiert
+            return;
         }
 
         Score score = objective.getScore(player.getName());
@@ -51,7 +51,7 @@ public class PointSystem implements Listener {
 
         if (objective == null) {
             Bukkit.getLogger().warning("Objective '" + objectiveName + "' does not exist in the scoreboard.");
-            return; // Beende die Methode, wenn das Objective nicht existiert
+            return;
         }
 
         Score score = objective.getScore(player.getName());
@@ -64,7 +64,7 @@ public class PointSystem implements Listener {
 
         if (objective == null) {
             Bukkit.getLogger().warning("Objective '" + objectiveName + "' does not exist in the scoreboard.");
-            return; // Beende die Methode, wenn das Objective nicht existiert
+            return;
         }
 
         Score score = objective.getScore(player.getName());
@@ -78,7 +78,7 @@ public class PointSystem implements Listener {
 
         if (objective == null) {
             Bukkit.getLogger().warning("Objective '" + objectiveName + "' does not exist in the scoreboard.");
-            return; // Beende die Methode, wenn das Objective nicht existiert
+            return;
         }
 
         Score score = objective.getScore(player.getName());
@@ -91,7 +91,7 @@ public class PointSystem implements Listener {
 
         if (objective == null) {
             Bukkit.getLogger().warning("Objective '" + objectiveName + "' does not exist in the scoreboard.");
-            return; // Beende die Methode, wenn das Objective nicht existiert
+            return;
         }
 
         for (Player player : Bukkit.getOnlinePlayers()) {

@@ -98,6 +98,7 @@ public class Timer {
         timerReset = true;
     }
 
+    // unused methode
     private static void giveArrow(Player player) {
         player.getInventory().addItem(new ItemStack(Material.ARROW));
     }

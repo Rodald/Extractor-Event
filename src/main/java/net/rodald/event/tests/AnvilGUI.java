@@ -47,7 +47,7 @@ public class AnvilGUI implements Listener {
         meta.setDisplayName("Type here");
         paper.setItemMeta(meta);
 
-        anvil.setItem(0, paper); // Setzt das Papier in den ersten Slot des Ambosses
+        anvil.setItem(0, paper);
 
         player.sendMessage("Slot 0: ");
         player.sendMessage(String.valueOf(anvil.getItem(0)));
@@ -83,7 +83,7 @@ public class AnvilGUI implements Listener {
     public void AnvilTakeResultEvent(InventoryClickEvent event) {
         if (event.getView().getTitle().equals("Enter your text")) {
             if (event.getInventory().getType() == InventoryType.ANVIL) {
-                if (event.getRawSlot() == 2) { // Überprüfen, ob der Spieler das Ergebnis-Slot angeklickt hat
+                if (event.getRawSlot() == 2) { // tests if player cklickes outout slot
                     Player player = (Player) event.getWhoClicked();
                     ItemStack resultItem = event.getCurrentItem();
                     if (resultItem != null) {
@@ -97,10 +97,10 @@ public class AnvilGUI implements Listener {
     @EventHandler
     public void AnvilUpdateResultEvent(InventoryClickEvent event) {
         if (event.getInventory().getType() == InventoryType.ANVIL) {
-            if (event.getRawSlot() == 0 || event.getRawSlot() == 1) { // Überprüfen, ob einer der Eingabe-Slots angeklickt wurde
+            if (event.getRawSlot() == 0 || event.getRawSlot() == 1) {
                 Player player = (Player) event.getWhoClicked();
-                ItemStack inputItem1 = event.getInventory().getItem(0); // Erster Eingabe-Slot
-                ItemStack inputItem2 = event.getInventory().getItem(1); // Zweiter Eingabe-Slot
+                ItemStack inputItem1 = event.getInventory().getItem(0);
+                ItemStack inputItem2 = event.getInventory().getItem(1);
                 if (inputItem1 != null && inputItem2 != null) {
                     player.sendMessage("Die Eingabe wurde aktualisiert. Neue Kombination: " + inputItem1.getType() + " + " + inputItem2.getType());
                 }

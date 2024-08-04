@@ -43,14 +43,13 @@ public class GrapplingHook implements Listener {
             if (event.getState() == PlayerFishEvent.State.REEL_IN || event.getState() == PlayerFishEvent.State.IN_GROUND) {
                 FishHook hook = event.getHook();
                 if (hook.getHookedEntity() == null || hook.getHookedEntity().getType() == EntityType.PLAYER) {
-                    // Berechne die Richtung vom Spieler zum Haken
+                    // caluclates vector from player to hook
                     Vector hookLocation = hook.getLocation().toVector();
                     Vector playerLocation = player.getLocation().toVector();
                     Vector direction = hookLocation.subtract(playerLocation).normalize();
 
-                    // Setze die Geschwindigkeit des Spielers in Richtung des Hakens
                     double distance = player.getLocation().distance(hook.getLocation());
-                    player.setVelocity(direction.multiply(distance * 0.3)); // Stärke des Ziehens anpassen
+                    player.setVelocity(direction.multiply(distance * 0.3));
                 }
             }
         }

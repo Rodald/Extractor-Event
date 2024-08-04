@@ -26,7 +26,6 @@ public class AnvilOpener implements Listener {
     public static void openAnvilGUI(Player player) {
 
         Inventory anvil = Bukkit.createInventory(null, InventoryType.ANVIL, "Enter your text");
-        // Erstelle ein Papierstapel, um das Texteingabefeld zu simulieren
         ItemStack paperStack = new ItemStack(Material.PAPER);
         ItemMeta paperMeta = paperStack.getItemMeta();
         paperMeta.setDisplayName("Enter text");
@@ -61,7 +60,9 @@ public class AnvilOpener implements Listener {
             Player player = (Player) event.getWhoClicked();
             if (event.getCurrentItem() != null) {
                 ItemStack resultItem = event.getCurrentItem();
-                if (debugMode) player.sendMessage("Du hast ein Item aus dem Amboss genommen: " + resultItem.getType());
+                if (debugMode) {
+                    player.sendMessage("Du hast ein Item aus dem Amboss genommen: " + resultItem.getType());
+                }
             }
         }
     }
@@ -69,10 +70,10 @@ public class AnvilOpener implements Listener {
     @EventHandler
     public void AnvilUpdateResultEvent(InventoryClickEvent event) {
         event.setCancelled(false);
-        if (event.getRawSlot() == 0 || event.getRawSlot() == 1) { // Überprüfen, ob einer der Eingabe-Slots angeklickt wurde
+        if (event.getRawSlot() == 0 || event.getRawSlot() == 1) {
             Player player = (Player) event.getWhoClicked();
-            ItemStack inputItem1 = event.getInventory().getItem(0); // Erster Eingabe-Slot
-            ItemStack inputItem2 = event.getInventory().getItem(1); // Zweiter Eingabe-Slot
+            ItemStack inputItem1 = event.getInventory().getItem(0);
+            ItemStack inputItem2 = event.getInventory().getItem(1);
             if (inputItem1 != null && inputItem2 != null) {
                 if (debugMode) player.sendMessage("Die Eingabe wurde aktualisiert. Neue Kombination: " + inputItem1.getType() + " + " + inputItem2.getType());
             }

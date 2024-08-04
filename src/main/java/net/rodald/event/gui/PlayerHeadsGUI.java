@@ -1,4 +1,4 @@
-package net.rodald.event;
+package net.rodald.event.gui;
 
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -22,7 +22,6 @@ public class PlayerHeadsGUI implements Listener {
     private final Map<UUID, Consumer<Player>> playerSelectionCallbacks = new HashMap<>();
 
     private PlayerHeadsGUI() {
-        // Private constructor to prevent instantiation
     }
 
     public static PlayerHeadsGUI getInstance() {

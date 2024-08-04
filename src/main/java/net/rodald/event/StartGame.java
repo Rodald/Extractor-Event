@@ -127,7 +127,7 @@ public class StartGame {
     public static void startRound(int round) {
         intermission = false;
 
-        ItemSpawner.spawnItems(); // spawns power-ups
+        ItemSpawner.spawnItems(); // spawns power-ups // no way fr?
 
         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute as @a at @s run function extractor:extractor2/stop");
         Timer.resetTimer();
@@ -383,7 +383,6 @@ public class StartGame {
                     TeamSelector.setPlayerArmor(player);
                 }
 
-                // Makes playing team spectator to false
                 players.add(player);
             }
         }

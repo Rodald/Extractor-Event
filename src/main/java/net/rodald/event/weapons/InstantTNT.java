@@ -48,7 +48,7 @@ public class InstantTNT implements Listener {
                 item.hasItemMeta() && item.getItemMeta().getDisplayName().equals(TNT_ITEM_NAME) &&
                 event.getAction() == Action.RIGHT_CLICK_BLOCK) { // Check if the action is right-clicking a block
 
-            event.setCancelled(true); // Prevents the item from being used normally
+            event.setCancelled(true);
 
             // Check if the main hand is used
             if (event.getHand() == EquipmentSlot.HAND) {
@@ -61,8 +61,10 @@ public class InstantTNT implements Listener {
                     // Place the TNT at the clicked block face location
                     Location location = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation();
                     TNTPrimed tnt = (TNTPrimed) location.getWorld().spawnEntity(location.add(0.5, 0, 0.5), EntityType.TNT);
-                    tnt.setFuseTicks(40); // Set fuse time (4 seconds)
+                    tnt.setFuseTicks(40);
 
+                    // TODO: There is a bug that the offhand spawn tnt and the mainhand. I really dont bother fixing it the correct way.
+                    // TODO: If u want to know the correct way of doing it look it up in the cooking game plugin.
                     // Check if two TNTs are spawned within a short time frame
                     if (currentTime - lastTNTSpawnTime < 50) {
                         tnt.remove(); // Remove the duplicate TNT

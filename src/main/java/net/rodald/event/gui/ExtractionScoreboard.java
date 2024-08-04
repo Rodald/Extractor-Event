@@ -35,12 +35,12 @@ public class ExtractionScoreboard {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    // Sortiere die Teams nach Punkten in absteigender Reihenfolge
+                    // sort team after point score
                     List<Map.Entry<Team, Integer>> sortedTeams = playerStatsScoreboard.getTeamPoints().entrySet().stream()
                             .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
                             .collect(Collectors.toList());
 
-                    // Erstelle das Leaderboard
+                    // leaderboard
                     String[] leaderboard = new String[sortedTeams.size()];
                     for (int i = 0; i < sortedTeams.size(); i++) {
                         Map.Entry<Team, Integer> entry = sortedTeams.get(i);
@@ -65,7 +65,7 @@ public class ExtractionScoreboard {
                         }
                     }
 
-                    // Aktualisiere die Scoreboards der Spieler
+                    // updates scoreboard
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         int kills = playerStatsScoreboard.getKills(player);
                         int damage = playerStatsScoreboard.getDamage(player);
@@ -74,7 +74,7 @@ public class ExtractionScoreboard {
                         showScoreboard(player, Timer.getTime(), StartGame.getRound(), leaderboard, kills, damage, extractions);
                     }
                 }
-            }.runTaskTimer(plugin, 0, 10); // Aktualisiere jede Sekunde (20 Ticks)
+            }.runTaskTimer(plugin, 0, 10);
         }
     }
 
@@ -118,7 +118,6 @@ public class ExtractionScoreboard {
     }
 
     private ChatColor convertTextColorToChatColor(TextColor textColor) {
-        // Hier ein einfaches Mapping als Beispiel, je nach API musst du dies anpassen
         if (String.valueOf(textColor).equals("red")) {
             return ChatColor.RED;
         } else if (String.valueOf(textColor).equals("blue")) {
@@ -126,6 +125,6 @@ public class ExtractionScoreboard {
         } else if (String.valueOf(textColor).equals("dark_green")) {
             return ChatColor.GREEN;
         }
-        return ChatColor.WHITE; // Standardfallback, wenn die Farbe nicht übereinstimmt
+        return ChatColor.WHITE;
     }
 }
